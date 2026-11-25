@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">同一模型的四本资源账</title>
+  <desc id="desc">模型权重形状分别转换为参数、运算、显存和性能上界四本账，底部以假设、环境和Profiler核验。</desc>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker>
+    <style>
+      .t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 18px system-ui,sans-serif;fill:#172033}.b{font:14px system-ui,sans-serif;fill:#334155}.s{font:12px system-ui,sans-serif;fill:#475569}.card{stroke-width:2}.arr{stroke:#d97706;stroke-width:2.2;fill:none;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="960" height="430" rx="18" fill="#f8fafc"/>
+  <text x="480" y="36" text-anchor="middle" class="t">同一结构，四个问题，四种单位</text>
+  <rect x="35" y="118" width="180" height="125" rx="14" fill="#eef2ff" stroke="#4f46e5" class="card"/>
+  <text x="125" y="151" text-anchor="middle" class="h">模型结构</text>
+  <text x="125" y="180" text-anchor="middle" class="b">权重形状 · B · T</text>
+  <text x="125" y="204" text-anchor="middle" class="b">dtype · 生命周期</text>
+  <text x="125" y="226" text-anchor="middle" class="s">先固定假设与工作负载</text>
+  <path d="M215 181H254" class="arr"/>
+  <path d="M254 181V83H285" class="arr"/><path d="M254 181V153H285" class="arr"/>
+  <path d="M254 181V223H285" class="arr"/><path d="M254 181V293H285" class="arr"/>
+  <rect x="285" y="50" width="630" height="66" rx="12" fill="#eff6ff" stroke="#2563eb" class="card"/>
+  <text x="315" y="78" class="h">参数账</text><text x="455" y="78" class="b">数权重表中的可学习标量</text><text x="880" y="78" text-anchor="end" class="h">P</text>
+  <text x="315" y="101" class="s">不随当前 B、T 改变</text><text x="880" y="101" text-anchor="end" class="s">单位：参数个数</text>
+  <rect x="285" y="120" width="630" height="66" rx="12" fill="#ecfdf5" stroke="#059669" class="card"/>
+  <text x="315" y="148" class="h">运算账</text><text x="455" y="148" class="b">数明确工作负载执行的运算</text><text x="880" y="148" text-anchor="end" class="h">F</text>
+  <text x="315" y="171" class="s">投影按 BT，位置对可按 T²</text><text x="880" y="171" text-anchor="end" class="s">单位：FLOPs</text>
+  <rect x="285" y="190" width="630" height="66" rx="12" fill="#fff7ed" stroke="#ea580c" class="card"/>
+  <text x="315" y="218" class="h">显存账</text><text x="455" y="218" class="b">数同一时刻仍存活的对象</text><text x="880" y="218" text-anchor="end" class="h">M(τ)</text>
+  <text x="315" y="241" class="s">元素数 × dtype bytes × 生命周期</text><text x="880" y="241" text-anchor="end" class="s">单位：bytes / GiB</text>
+  <rect x="285" y="260" width="630" height="66" rx="12" fill="#f5f3ff" stroke="#7c3aed" class="card"/>
+  <text x="315" y="288" class="h">性能上界账</text><text x="455" y="288" class="b">比较运算与指定接口流量</text><text x="880" y="288" text-anchor="end" class="h">I = F / Q</text>
+  <text x="315" y="311" class="s">计算屋顶 vs. 带宽屋顶</text><text x="880" y="311" text-anchor="end" class="s">单位：FLOPs/byte</text>
+  <rect x="115" y="358" width="730" height="46" rx="23" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="480" y="386" text-anchor="middle" class="b">共同核验层：公式假设 + 软件/硬件环境 + 参数枚举、内存统计、Profiler 与计时</text>
+  <path d="M600 326V356" class="arr"/>
+</svg>

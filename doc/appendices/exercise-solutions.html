@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>附录 C — 习题答案与提示 – 拆开大模型</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../appendices/references.html" rel="next">
+<link href="../appendices/notation.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-e9b880ddb15872a1c17b20ebf15c20bb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9ce463b964bd3338f1a703a30fb1d110.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">跳至主要内容</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="工具栏">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../appendices/prerequisites.html">附录</a></li><li class="breadcrumb-item"><a href="../appendices/exercise-solutions.html"><span class="chapter-title">习题答案与提示</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="搜索" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="网站">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">拆开大模型</a> 
+        <div class="sidebar-tools-main">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式" aria-label="切换深色模式"><i class="bi"></i></button>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="切换阅读器模式">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">读者导览</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">模型基础与结构</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-foundations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 1 章 大语言模型基础</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-transformer.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 2 章 Transformer 模型结构</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-compute-and-gpu.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 3 章 模型计算复杂度与 GPU 计算基础</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">训练与并行系统</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-pretraining.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 4 章 大语言模型的预训练原理与训练流程</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-distributed-training.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 5 章 大规模分布式训练</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-efficient-attention.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 6 章 高性能 Attention 与 GPU Kernel 优化</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">推理、后训练与前沿</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-inference-serving.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 7 章 大语言模型推理与高性能服务系统</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08-post-training-evaluation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 8 章 大语言模型微调、对齐与评测</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09-frontiers.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">综合实践</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10-projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">附录</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/prerequisites.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">必要前置知识</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">统一符号与贯穿配置</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/exercise-solutions.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">习题答案与提示</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">参考资料</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#第1章答案与提示" id="toc-第1章答案与提示" class="nav-link active" data-scroll-target="#第1章答案与提示">第1章答案与提示</a></li>
+  <li><a href="#第2章答案与提示" id="toc-第2章答案与提示" class="nav-link" data-scroll-target="#第2章答案与提示">第2章答案与提示</a></li>
+  <li><a href="#第3章答案与提示" id="toc-第3章答案与提示" class="nav-link" data-scroll-target="#第3章答案与提示">第3章答案与提示</a></li>
+  <li><a href="#第4章答案与提示" id="toc-第4章答案与提示" class="nav-link" data-scroll-target="#第4章答案与提示">第4章答案与提示</a></li>
+  <li><a href="#第5章答案与提示" id="toc-第5章答案与提示" class="nav-link" data-scroll-target="#第5章答案与提示">第5章答案与提示</a></li>
+  <li><a href="#第6章答案与提示" id="toc-第6章答案与提示" class="nav-link" data-scroll-target="#第6章答案与提示">第6章答案与提示</a></li>
+  <li><a href="#第7章答案与提示" id="toc-第7章答案与提示" class="nav-link" data-scroll-target="#第7章答案与提示">第7章答案与提示</a></li>
+  <li><a href="#第8章答案与提示" id="toc-第8章答案与提示" class="nav-link" data-scroll-target="#第8章答案与提示">第8章答案与提示</a></li>
+  <li><a href="#第9章答案与提示" id="toc-第9章答案与提示" class="nav-link" data-scroll-target="#第9章答案与提示">第9章答案与提示</a></li>
+  <li><a href="#第10章答案与提示" id="toc-第10章答案与提示" class="nav-link" data-scroll-target="#第10章答案与提示">第10章答案与提示</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../appendices/prerequisites.html">附录</a></li><li class="breadcrumb-item"><a href="../appendices/exercise-solutions.html"><span class="chapter-title">习题答案与提示</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">附录 C — 习题答案与提示</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>本附录收录第 1–10 章的 40 道习题答案与提示；正文题目均链接到对应章节锚点。</p>
+<p><a href="../index.html">总目录</a> · <a href="../appendices/prerequisites.html">必要前置知识</a> · <a href="../appendices/notation.html">符号表</a></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">提示</span>把答案当作诊断工具
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>先独立作答：</strong> 写出假设、公式、单位和结论边界，再打开本页核对。</li>
+<li><strong>再比较路径：</strong> 不只看末位数字；先检查分母、dtype、逻辑量/物理量和“解析/实测”标签是否一致。</li>
+<li><strong>最后定位误差：</strong> 概念或单位卡住时回看<a href="../appendices/prerequisites.html">必要前置知识</a>，符号混淆时查<a href="../appendices/notation.html">符号表</a>，再重新完成原题。</li>
+</ol>
+</div>
+</div>
+<p>开放性题目的其他结论若假设与证据充分，也可能成立。以下导航中的主题词说明每组答案主要检查什么。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>章节</th>
+<th>快速定位</th>
+<th>主要检查</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 1 章</td>
+<td><a href="#solutions-1">答案</a></td>
+<td>环节边界、Token 成本、损失与采样</td>
+</tr>
+<tr class="even">
+<td>第 2 章</td>
+<td><a href="#solutions-2">答案</a></td>
+<td>GQA shape、因果性、归一化与参数</td>
+</tr>
+<tr class="odd">
+<td>第 3 章</td>
+<td><a href="#solutions-3">答案</a></td>
+<td>参数、FLOPs、GPU 映射与 Roofline</td>
+</tr>
+<tr class="even">
+<td>第 4 章</td>
+<td><a href="#solutions-4">答案</a></td>
+<td>Token 归一化、混合精度、训练预算与恢复</td>
+</tr>
+<tr class="odd">
+<td>第 5 章</td>
+<td><a href="#solutions-5">答案</a></td>
+<td>collective、并行布局与 pipeline</td>
+</tr>
+<tr class="even">
+<td>第 6 章</td>
+<td><a href="#solutions-6">答案</a></td>
+<td>Tile、Online Softmax 与测量协议</td>
+</tr>
+<tr class="odd">
+<td>第 7 章</td>
+<td><a href="#solutions-7">答案</a></td>
+<td>KV、PD 分离、推测解码与服务指标</td>
+</tr>
+<tr class="even">
+<td>第 8 章</td>
+<td><a href="#solutions-8">答案</a></td>
+<td>SFT、LoRA、DPO 与安全评测</td>
+</tr>
+<tr class="odd">
+<td>第 9 章</td>
+<td><a href="#solutions-9">答案</a></td>
+<td>长上下文、多模态、Agent 与混合架构</td>
+</tr>
+<tr class="even">
+<td>第 10 章</td>
+<td><a href="#solutions-10">答案</a></td>
+<td>项目账本、证据层级与 Gate 状态</td>
+</tr>
+</tbody>
+</table>
+<p><a id="solutions-1"></a></p>
+<section id="第1章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第1章答案与提示">第1章答案与提示</h2>
+<ol type="1">
+<li>四项依次是预训练、后训练、推理、服务。“生成了文本”只能说明用过前向计算；是单请求推理还是经过排队和批处理的服务，还需查看请求调度边界。</li>
+<li>长度比为<span class="math inline">\(1200/750=1.6\)</span>，所以线性主项约为1.6倍，完整方阵Attention位置对为<span class="math inline">\(1.6^2=2.56\)</span>倍。Kernel形状、因果三角是否跳过、数据搬运、并行利用率和启动开销都会让墙钟比例偏离这两个理论主项。</li>
+<li>序列概率为<span class="math inline">\(0.8\times0.5\times0.25=0.1\)</span>；总NLL为<span class="math inline">\(-\log0.1=\log10\approx2.302585\)</span>，平均损失为<span class="math inline">\(\log10/3\approx0.767528\)</span>，困惑度为<span class="math inline">\(10^{1/3}\approx2.154435\)</span>。掩掉中间目标后，只汇总其余两个NLL，分母从3改为2；不能仍除3。</li>
+<li>温度1时，最短核集保留前两项，因为<span class="math inline">\(0.60+0.25=0.85\ge0.8\)</span>；重归一化为<span class="math inline">\((12/17,5/17)\)</span>。温度0.5时概率正比于原概率的平方，第一项为<span class="math inline">\(0.36/(0.36+0.0625+0.01+0.0025)=0.36/0.435\approx0.827586\)</span>，已达阈值，因而只保留第一项并重归一化为1。EOS按Token ID停止；文本停止串可能横跨Token或流式块，须保留尾部做匹配，并预先约定是否返回停止文本。</li>
+</ol>
+<p><a id="solutions-2"></a></p>
+</section>
+<section id="第2章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第2章答案与提示">第2章答案与提示</h2>
+<ol type="1">
+<li>Q为<code>[2,32,8,128]</code>，K/V各为<code>[2,8,8,128]</code>，在头映射后的Attention分数为<code>[2,32,8,8]</code>，合并后输出为<code>[2,8,4096]</code>。分组比<span class="math inline">\(g=H/H_{\mathrm{KV}}=4\)</span>，每个KV头服务4个Query头。</li>
+<li>可见对数为<span class="math inline">\(1+2+3+4=10\)</span>。改动第4个Token不应改变前三个位置的输出；否则实现泄露了未来信息。RoPE编码位置不等于限制可见性，不能取消因果掩码。</li>
+<li>LayerNorm的均值为3.5，方差为0.25，输出<span class="math inline">\((-1,1)\)</span>。RMS为<span class="math inline">\(\sqrt{(3^2+4^2)/2}=\sqrt{12.5}\)</span>，无仿射RMSNorm输出约<span class="math inline">\((0.848528,1.131371)\)</span>；乘<span class="math inline">\(\boldsymbol\gamma\)</span>后为<span class="math inline">\((1.697056,0.565685)\)</span>。顺序Block先得<span class="math inline">\(\mathbf U=\mathbf X+\operatorname{Attention}(\operatorname{Norm}(\mathbf X))\)</span>，MLP须读取残差相加后的<span class="math inline">\(\operatorname{Norm}(\mathbf U)\)</span>。</li>
+<li>Q/O各有<span class="math inline">\(d^2=16{,}777{,}216\)</span>个参数；K/V各有<span class="math inline">\(d(H_{\mathrm{KV}}d_h)=4096\times1024=4{,}194{,}304\)</span>个，GQA合计<span class="math inline">\(41{,}943{,}040\)</span>。MHA的四个投影均为<span class="math inline">\(d\times d\)</span>，合计<span class="math inline">\(67{,}108{,}864\)</span>，GQA减少<span class="math inline">\(25{,}165{,}824\)</span>。这是结构账本；质量、Kernel效率与墙钟时间还需在固定工作负载上验证。</li>
+</ol>
+<p><a id="solutions-3"></a></p>
+</section>
+<section id="第3章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第3章答案与提示">第3章答案与提示</h2>
+<ol type="1">
+<li>解除绑定增加<span class="math inline">\(Vd=32000\times4096=131{,}072{,}000\)</span>个参数。每参数新增<span class="math inline">\(2+2+4+4=12\)</span> bytes，共1,572,864,000 bytes，约1.464844 GiB。这里没有FP32主权重，也没有激活或工作空间。</li>
+<li>所有含<span class="math inline">\(BT\)</span>但不额外含<span class="math inline">\(T\)</span>的投影、MLP和全位置输出项变为2倍；<span class="math inline">\(BT^2\)</span> Attention项变为4倍。真实时间还受是否跳过因果上三角、Kernel形状、数据搬运、启动和利用率影响。</li>
+<li><span class="math inline">\(\lceil2050/256\rceil=9\)</span>个Block；前8个覆盖2048个元素，最后一个只有2个有效线程。1024线程会减少Block数量，并可能增加寄存器/共享内存压力或边界浪费；应结合设备上限与测量选择。</li>
+<li>拐点<span class="math inline">\(120/3=40\)</span> FLOPs/byte。A的带宽屋顶为30 TFLOP/s，故上界30、带宽受限；B的带宽屋顶240 TFLOP/s，故上界120、计算受限。A的bytes减半使强度变为20，上界升至60 TFLOP/s；这是Roofline预测上界，不保证墙钟恰好加速2倍。</li>
+</ol>
+<p><a id="solutions-4"></a></p>
+</section>
+<section id="第4章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第4章答案与提示">第4章答案与提示</h2>
+<ol type="1">
+<li>正确loss为<span class="math inline">\((12+9)/(8+3)=21/11\approx1.909091\)</span>。无权平均为<span class="math inline">\((12/8+9/3)/2=(1.5+3)/2=2.25\)</span>，它让只有3个有效Token的第二批与8个Token的第一批拥有相同批级权重。</li>
+<li>正确顺序先得未缩放范数<span class="math inline">\(512/1024=0.5\)</span>，低于阈值，裁剪因子为1。忘记反缩放会按<span class="math inline">\(1/512\)</span>裁剪；之后即使再除1024，有效梯度也被额外缩小512倍，不再等价于原loss。</li>
+<li><span class="math inline">\(C=6\times5{,}802{,}037{,}248\times2\times10^{10}=6.9624446976\times10^{20}\)</span> FLOPs。有效聚合吞吐为<span class="math inline">\(32\times250\times10^{12}\times0.35=2.8\times10^{15}\)</span> FLOP/s，耗时约248,658.739秒，即2.878天。未覆盖项可包括checkpoint/评估/故障停机、长序列Attention偏离<span class="math inline">\(6PD\)</span>、激活重计算、padding实际工作、通信与数据等待。</li>
+<li>至少还需scheduler与loss scaler状态、各随机源RNG状态、sampler/数据shard与样本游标、数据/分词器/代码/依赖及并行拓扑版本。对照测试可让确定性小模型连续跑20步，另一条在第8步保存退出后续跑，比较第9步batch ID、学习率、loss scale及第20步模型/optimizer状态。缺optimizer、数据游标或不兼容状态而只加载权重时应称为热启动。</li>
+</ol>
+<p><a id="solutions-5"></a></p>
+</section>
+<section id="第5章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第5章答案与提示">第5章答案与提示</h2>
+<ol type="1">
+<li>应用SUM Reduce-Scatter：四个64 MiB输入先逐元素求和，再让每rank保留16 MiB的不重叠分片。若每rank都需完整64 MiB和，则用SUM All-Reduce。两者都不是仅切分而不归约的Scatter。</li>
+<li><span class="math inline">\(B_{\mathrm{global}}=2\times8\times4=64\)</span>条序列；最大输入Token数为<span class="math inline">\(64\times2048=131{,}072\)</span>。TP切一份模型的层内张量，PP切同一份模型的层，均不制造独立样本。变长或mask训练还要汇总全DP组有效目标Token数，并用NLL总和除总有效数，不能无权平均rank loss。</li>
+<li>bubble占比为<span class="math inline">\((8-1)/(16+8-1)=7/23\approx30.435\%\)</span>，相对理想时间开销为<span class="math inline">\(7/16=43.75\%\)</span>。<span class="math inline">\(m=32\)</span>时占比为<span class="math inline">\(7/39\approx17.949\%\)</span>。增大<span class="math inline">\(m\)</span>可能增加同时存活激活、调度buffer或更新延迟，并可能改变micro-batch shape与Kernel效率，仍须做显存和墙钟测量。</li>
+<li><span class="math inline">\(4096/16=256\)</span>、<span class="math inline">\(32/16=2\)</span>、<span class="math inline">\(11008/16=688\)</span>、<span class="math inline">\(32/1=32\)</span>均为整数，但<span class="math inline">\(H_{\mathrm{KV}}=8\)</span>不能按16个TP rank各分至少一个KV头；朴素头分片失败。可改为TP=8、PP=2、DP=8，乘积仍为128，且每TP rank一个KV头、每stage 16层。若重放比例<span class="math inline">\(q=0.5\)</span>且<span class="math inline">\(C_b\approx2C_f\)</span>，训练主项算术增幅约<span class="math inline">\(q/3=1/6\approx16.67\%\)</span>；这不是墙钟减速保证。</li>
+</ol>
+<p><a id="solutions-6"></a></p>
+</section>
+<section id="第6章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第6章答案与提示">第6章答案与提示</h2>
+<ol type="1">
+<li>完整概率矩阵为<span class="math inline">\(4096^2\times2=33{,}554{,}432\)</span> bytes，即32 MiB。局部Tile为<span class="math inline">\(64^2\times2=8192\)</span> bytes，即8 KiB；元素数比例为<span class="math inline">\(4096^2/64^2=4096\)</span>。Tile式只比较一个局部score与完整矩阵，不含Q/K/V/O、统计量、反向和临时缓冲；算法仍遍历所有稠密score，所以不能把4096当作峰值节省或FLOPs加速。</li>
+<li><span class="math inline">\(m_A=2,\ell_A=e^{-2}+1\approx1.135335,z_A=e^{-2}+2\approx2.135335\)</span>；<span class="math inline">\(m_B=3,\ell_B=e^{-2}+1\approx1.135335,z_B=4e^{-2}+8\approx8.541341\)</span>。共同<span class="math inline">\(m=3\)</span>，<span class="math inline">\(\ell=e^{-1}\ell_A+\ell_B\approx1.553002\)</span>，<span class="math inline">\(z=e^{-1}z_A+z_B\approx9.326887\)</span>，<span class="math inline">\(o=z/\ell\approx6.005716\)</span>。块内输出的分母与最大值尺度不同，直接平均没有全局Softmax依据。</li>
+<li>至少应：固定并记录实际后端并把fallback单列；用相同shape/dtype/mask/dropout/grad工作量；预热编译、allocator与Kernel选择；用CUDA Event或前后同步；做足够重复并报告median/P10/P90和原始毫秒；先验证输出/梯度容限；在独立、同等待遇的进程中重置峰值并报告allocated与reserved；把Profiler诊断与无Profiler计时分开；记录硬件/驱动/PyTorch版本。<code>nvidia-smi</code>进程占用不等于Tensor allocated峰值。</li>
+<li><span class="math inline">\(N_{\mathrm{TB,fwd}}\approx2\times32\times\lceil8192/128\rceil=4096\)</span>；<span class="math inline">\(g=32/8=4\)</span>。GQA让4个Query头共享一组K/V，但32个Query头仍各自产生score、Softmax统计量和输出。causal可跳过完整未来Tile，却产生三角边界与不均匀有效Key数；实际任务合并、边界mask、occupancy和Kernel调度决定launch与时间，不能由面积简单宣称减半。</li>
+</ol>
+<p><a id="solutions-7"></a></p>
+</section>
+<section id="第7章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第7章答案与提示">第7章答案与提示</h2>
+<ol type="1">
+<li>逻辑Token数为<span class="math inline">\(513+1024+2049=3586\)</span>，逻辑payload为<span class="math inline">\(3586\times128\)</span> KiB = 448.25 MiB。块数为<span class="math inline">\(\lceil513/256\rceil+\lceil1024/256\rceil+\lceil2049/256\rceil=3+4+9=16\)</span>，物理payload为<span class="math inline">\(16\times256\times128\)</span> KiB = 512 MiB，末块浪费63.75 MiB。块表、引用、对齐、未分配池、workspace、权重和allocator保留池另计，所以不能推出reserved显存。</li>
+<li><span class="math inline">\((O-1)(28-18)&gt;45\)</span>给出<span class="math inline">\(10(O-1)&gt;45\)</span>，最小整数<span class="math inline">\(O=6\)</span>。2048 Token的逻辑交接payload为<span class="math inline">\(2048\times128\)</span> KiB = 256 MiB。该判断仍未计两池排队、模型副本、Batch变化和故障。</li>
+<li><span class="math inline">\(\mathbb E[N]=1+0.75+0.75^2+0.75^3=2.734375\)</span>。基线生成这些Token约需<span class="math inline">\(2.734375\times11=30.078125\)</span> ms；推测轮成本为<span class="math inline">\(3\times1.5+13+1=18.5\)</span> ms，估计速度约<span class="math inline">\(1.626\times\)</span>。未覆盖项可包括接受事件相关性、Target验证随<span class="math inline">\(K\)</span>/Batch的非线性、采样与KV回滚开销、TTFT/尾延迟、Draft/Target后处理一致性及暂存显存。</li>
+<li>offered load为<span class="math inline">\(720/120=6\)</span> requests/s，完成吞吐<span class="math inline">\(660/120=5.5\)</span> requests/s，输出吞吐<span class="math inline">\(79{,}200/120=660\)</span> tokens/s，SLO goodput<span class="math inline">\(594/120=4.95\)</span> requests/s。60条可能在途、拒绝、超时或取消；若被静默删去，会掩盖过载。长度分布决定工作量，P95/P99揭示均值/吞吐看不到的尾延迟，比较还须固定采样、资源和窗口/drain口径。</li>
+</ol>
+<p><a id="solutions-8"></a></p>
+</section>
+<section id="第8章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第8章答案与提示">第8章答案与提示</h2>
+<ol type="1">
+<li>正确窗口loss为<span class="math inline">\((12+9)/(6+3)=21/9=7/3\approx2.333333\)</span>；batch mean无权平均为<span class="math inline">\((12/6+9/3)/2=(2+3)/2=2.5\)</span>。前者按全窗口assistant有效Token归一，符合F-SFT-LOSS；后者让只有3个目标Token的batch获得相同批级权重。Prompt Token不进入该assistant-only分子/分母，但仍作为因果上下文参与Attention。</li>
+<li>参数量为<span class="math inline">\(8(4096+1024)=40{,}960\)</span>。每参数<span class="math inline">\(2+2+4+4=12\)</span> bytes，payload为491,520 bytes，即0.46875 MiB。把冻结Base改为4-bit存储不改变LoRA参数数目及上述LoRA状态口径；它只压缩Base码payload，实际训练仍含量化元数据、反量化/MatMul、激活、LoRA分支、workspace和allocator，故不能推出峰值或速度。</li>
+<li><span class="math inline">\(a^+=-4.0-(-4.5)=0.5\)</span>，<span class="math inline">\(a^-=-3.0-(-2.8)=-0.2\)</span>，所以<span class="math inline">\(\Delta=0.7\)</span>。<span class="math inline">\(\beta\Delta=0.14\)</span>，chosen成对概率<span class="math inline">\(\sigma(0.14)\approx0.534943\)</span>，loss<span class="math inline">\(=-\log\sigma(0.14)\approx0.625596\)</span>。DPO比较相对Reference的变化；尽管Policy的chosen绝对log probability仍低于rejected，它把chosen相对提高、rejected相对降低，故margin为正。</li>
+<li><span class="math inline">\(\operatorname{ASR}=10/200=5\%\)</span>，危险拒答率<span class="math inline">\(170/200=85\%\)</span>，良性误拒率<span class="math inline">\(30/300=10\%\)</span>，良性有用率<span class="math inline">\(240/300=80\%\)</span>。四项不互补，剩余输出类别也须解释。新版本必须同时报告ASR、误拒、有用性、质量切片、置信区间及固定负载下的吞吐；ASR下降不能抵消误拒翻倍，吞吐提升也不能证明内容质量或权限安全。</li>
+</ol>
+<p><a id="solutions-9"></a></p>
+</section>
+<section id="第9章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第9章答案与提示">第9章答案与提示</h2>
+<ol type="1">
+<li>Full为<span class="math inline">\(16384\times16385/2=134{,}225{,}920\)</span>对。窗口为<span class="math inline">\(2048\times2049/2+(16384-2048)\times2048=31{,}458{,}304\)</span>对，比例约23.437%。贯穿配置128 KiB/Token，所以逻辑KV为<span class="math inline">\(16384\times128\)</span> KiB = 2 GiB。它们只描述可见图与容量；训练位置、证据位置、任务难度、Tokenizer、输出预算和质量阈值共同决定有效上下文。</li>
+<li>每边<span class="math inline">\(448/14=32\)</span>个Patch，故<span class="math inline">\(N_v=1024\)</span>、总Token为2048。文本单独可见对为<span class="math inline">\(1024\times1025/2=524{,}800\)</span>，拼接后为<span class="math inline">\(2048\times2049/2=2{,}098{,}176\)</span>，约3.998倍；视觉前缀KV为<span class="math inline">\(1024\times128\)</span> KiB = 128 MiB。未计成本可包括视觉编码器/连接器、激活、workspace、图像预处理和物理填充中的任意两项。</li>
+<li>理想覆盖为<span class="math inline">\(1-(1-0.25)^6=1-0.75^6\approx82.2021\%\)</span>；Decode工作量为<span class="math inline">\(6\times100=600\)</span> Token。串行延迟为<span class="math inline">\(90+110+30+150+20+10=410\)</span> ms。覆盖假设候选独立且还需Verifier正确选择；延迟未说明工具授权、结果正确、重试、副作用或质量，因此两者都不是任务成功率。</li>
+<li>8个Attention层的KV为<span class="math inline">\(4\times8/32=1\)</span> GiB。24个SSM层状态为<span class="math inline">\(24\times8192\times16\times2=6{,}291{,}456\)</span> bytes = 6 MiB，理想和为1030 MiB。模型仍有Attention层KV；8 MiB是32个SSM层的另一构造口径，本题只有24层。实际还含卷积状态、权重、workspace、对齐与可能的MoE通信，质量和速度也须实测。</li>
+</ol>
+<p><a id="solutions-10"></a></p>
+</section>
+<section id="第10章答案与提示" class="level2">
+<h2 class="anchored" data-anchor-id="第10章答案与提示">第10章答案与提示</h2>
+<ol type="1">
+<li>绑定Embedding为<span class="math inline">\(Vd=2{,}097{,}152\)</span>。每层为<span class="math inline">\(2d^2+2dH_{\mathrm{KV}}d_h+3dd_{\mathrm{ff}}+2d=754{,}176\)</span>，四层加final RMSNorm后总计<span class="math inline">\(5{,}114{,}112\)</span>参数。KV为<span class="math inline">\(2BLTH_{\mathrm{KV}}d_hs=2{,}097{,}152\)</span> bytes = 2 MiB。物理显存还可能含分页末块浪费/元数据、allocator保留/碎片、workspace或其他临时Tensor中的任意两类。</li>
+<li>128 MiB是按shape与dtype得到的解析逻辑中间量；RSS多110 MiB是该CPU进程与测量口径下的观测，但不是Tensor专属峰值，更不是GPU allocated/reserved。可以说该配置的理论score容量和CPU RSS观测；不能声称FlashAttention节省GPU显存或绘制GPU Flash加速/峰值对比图。</li>
+<li>offered load为<span class="math inline">\(720/120=6\)</span> requests/s，完成吞吐为<span class="math inline">\(660/120=5.5\)</span> requests/s，output throughput为<span class="math inline">\(79{,}200/120=660\)</span> tokens/s，SLO goodput为<span class="math inline">\(594/120=4.95\)</span> requests/s。还需给60条未完成请求是在途、超时、拒绝还是取消，以及窗口末队列、drain时间和到达/完成随时间变化。</li>
+<li>Gate 1可以在源码、配置与实际权重shape一致时PASS；Gate 2可在参数精确核对且其余资源假设明确时PASS。Gate 3只有解析设计通过，GPU正确性/性能子项为<code>not_run</code>；Gate 4因未部署而<code>not_run</code>。最终报告只能写“结构与解析阶段完成，目标训练/服务未运行”，不能标为端到端实验完成。</li>
+</ol>
+<p>完成核对后，若错误集中在通用数学、单位或 Python 表达，先走<a href="../appendices/prerequisites.html">必要前置知识</a>的按需复习路径；若只是变量含义或口径混淆，直接查<a href="../appendices/notation.html">符号表</a>。修正后应回到原题重新计算，而不是以本页答案替换自己的推导。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "切换深色模式");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "切换深色模式");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "已复制");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "已复制");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"可滚动的代码","output":"可滚动的输出"};
+  </script>
+<nav class="page-navigation" aria-label="页面">
+  <div class="nav-page nav-page-previous">
+      <a href="../appendices/notation.html" class="pagination-link" aria-label="统一符号与贯穿配置">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">统一符号与贯穿配置</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../appendices/references.html" class="pagination-link" aria-label="参考资料">
+        <span class="nav-page-text"><span class="chapter-title">参考资料</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

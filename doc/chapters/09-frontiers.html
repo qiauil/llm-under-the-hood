@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第 9 章 前沿模型技术专题（选修） – 拆开大模型</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/10-projects.html" rel="next">
+<link href="../chapters/08-post-training-evaluation.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-e9b880ddb15872a1c17b20ebf15c20bb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9ce463b964bd3338f1a703a30fb1d110.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">跳至主要内容</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="工具栏">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/07-inference-serving.html">推理、后训练与前沿</a></li><li class="breadcrumb-item"><a href="../chapters/09-frontiers.html"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="搜索" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="网站">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">拆开大模型</a> 
+        <div class="sidebar-tools-main">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式" aria-label="切换深色模式"><i class="bi"></i></button>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="切换阅读器模式">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">读者导览</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">模型基础与结构</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-foundations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 1 章 大语言模型基础</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-transformer.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 2 章 Transformer 模型结构</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-compute-and-gpu.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 3 章 模型计算复杂度与 GPU 计算基础</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">训练与并行系统</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-pretraining.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 4 章 大语言模型的预训练原理与训练流程</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-distributed-training.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 5 章 大规模分布式训练</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-efficient-attention.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 6 章 高性能 Attention 与 GPU Kernel 优化</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">推理、后训练与前沿</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-inference-serving.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 7 章 大语言模型推理与高性能服务系统</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08-post-training-evaluation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 8 章 大语言模型微调、对齐与评测</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09-frontiers.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">综合实践</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10-projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">附录</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/prerequisites.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">必要前置知识</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">统一符号与贯穿配置</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/exercise-solutions.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">习题答案与提示</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">参考资料</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#学习目标与前置知识" id="toc-学习目标与前置知识" class="nav-link active" data-scroll-target="#学习目标与前置知识">学习目标与前置知识</a></li>
+  <li><a href="#长上下文语言模型" id="toc-长上下文语言模型" class="nav-link" data-scroll-target="#长上下文语言模型">9.1 长上下文语言模型</a>
+  <ul class="collapse">
+  <li><a href="#长度增长同时放大什么" id="toc-长度增长同时放大什么" class="nav-link" data-scroll-target="#长度增长同时放大什么">9.1.1 长度增长同时放大什么</a></li>
+  <li><a href="#fullsliding-window与sparse-attention" id="toc-fullsliding-window与sparse-attention" class="nav-link" data-scroll-target="#fullsliding-window与sparse-attention">9.1.2 Full、Sliding Window与Sparse Attention</a></li>
+  <li><a href="#rope-position-interpolation与scaling" id="toc-rope-position-interpolation与scaling" class="nav-link" data-scroll-target="#rope-position-interpolation与scaling">9.1.3 RoPE Position Interpolation与Scaling</a></li>
+  <li><a href="#context-parallelism与ring-attention" id="toc-context-parallelism与ring-attention" class="nav-link" data-scroll-target="#context-parallelism与ring-attention">9.1.4 Context Parallelism与Ring Attention</a></li>
+  <li><a href="#从针到有效上下文长度" id="toc-从针到有效上下文长度" class="nav-link" data-scroll-target="#从针到有效上下文长度">9.1.5 从“针”到有效上下文长度</a></li>
+  </ul></li>
+  <li><a href="#多模态大模型multimodal-llm" id="toc-多模态大模型multimodal-llm" class="nav-link" data-scroll-target="#多模态大模型multimodal-llm">9.2 多模态大模型（Multimodal LLM）</a>
+  <ul class="collapse">
+  <li><a href="#图像如何成为visual-tokens" id="toc-图像如何成为visual-tokens" class="nav-link" data-scroll-target="#图像如何成为visual-tokens">9.2.1 图像如何成为Visual Tokens</a></li>
+  <li><a href="#连接模块与三种融合位置" id="toc-连接模块与三种融合位置" class="nav-link" data-scroll-target="#连接模块与三种融合位置">9.2.2 连接模块与三种融合位置</a></li>
+  <li><a href="#visual-token的attention与kv账本" id="toc-visual-token的attention与kv账本" class="nav-link" data-scroll-target="#visual-token的attention与kv账本">9.2.3 Visual Token的Attention与KV账本</a></li>
+  <li><a href="#训练与评测边界" id="toc-训练与评测边界" class="nav-link" data-scroll-target="#训练与评测边界">9.2.4 训练与评测边界</a></li>
+  </ul></li>
+  <li><a href="#推理模型与-test-time-compute" id="toc-推理模型与-test-time-compute" class="nav-link" data-scroll-target="#推理模型与-test-time-compute">9.3 推理模型与 Test-time Compute</a>
+  <ul class="collapse">
+  <li><a href="#chain-of-thought可见中间文本" id="toc-chain-of-thought可见中间文本" class="nav-link" data-scroll-target="#chain-of-thought可见中间文本">9.3.1 Chain-of-Thought：可见中间文本</a></li>
+  <li><a href="#self-consistency与best-of-n" id="toc-self-consistency与best-of-n" class="nav-link" data-scroll-target="#self-consistency与best-of-n">9.3.2 Self-Consistency与Best-of-N</a></li>
+  <li><a href="#verifier与过程结果监督" id="toc-verifier与过程结果监督" class="nav-link" data-scroll-target="#verifier与过程结果监督">9.3.3 Verifier与过程/结果监督</a></li>
+  <li><a href="#推理成本不是一个token数" id="toc-推理成本不是一个token数" class="nav-link" data-scroll-target="#推理成本不是一个token数">9.3.4 推理成本不是一个Token数</a></li>
+  <li><a href="#训练如何改变测试时策略" id="toc-训练如何改变测试时策略" class="nav-link" data-scroll-target="#训练如何改变测试时策略">9.3.5 训练如何改变测试时策略</a></li>
+  </ul></li>
+  <li><a href="#rag-与工具调用" id="toc-rag-与工具调用" class="nav-link" data-scroll-target="#rag-与工具调用">9.4 RAG 与工具调用</a>
+  <ul class="collapse">
+  <li><a href="#rag从语料版本到回答证据" id="toc-rag从语料版本到回答证据" class="nav-link" data-scroll-target="#rag从语料版本到回答证据">9.4.1 RAG：从语料版本到回答证据</a></li>
+  <li><a href="#embedding相似度与检索边界" id="toc-embedding相似度与检索边界" class="nav-link" data-scroll-target="#embedding相似度与检索边界">9.4.2 Embedding、相似度与检索边界</a></li>
+  <li><a href="#context-construction不是字符串拼接" id="toc-context-construction不是字符串拼接" class="nav-link" data-scroll-target="#context-construction不是字符串拼接">9.4.3 Context Construction不是字符串拼接</a></li>
+  <li><a href="#tool-calling提议验证执行观察" id="toc-tool-calling提议验证执行观察" class="nav-link" data-scroll-target="#tool-calling提议验证执行观察">9.4.4 Tool Calling：提议、验证、执行、观察</a></li>
+  <li><a href="#agentic-workflow与失败恢复" id="toc-agentic-workflow与失败恢复" class="nav-link" data-scroll-target="#agentic-workflow与失败恢复">9.4.5 Agentic Workflow与失败恢复</a></li>
+  <li><a href="#联合评测与威胁边界" id="toc-联合评测与威胁边界" class="nav-link" data-scroll-target="#联合评测与威胁边界">9.4.6 联合评测与威胁边界</a></li>
+  </ul></li>
+  <li><a href="#新型模型架构与计算范式" id="toc-新型模型架构与计算范式" class="nav-link" data-scroll-target="#新型模型架构与计算范式">9.5 新型模型架构与计算范式</a>
+  <ul class="collapse">
+  <li><a href="#transformer的成本与能力来自同一机制" id="toc-transformer的成本与能力来自同一机制" class="nav-link" data-scroll-target="#transformer的成本与能力来自同一机制">9.5.1 Transformer的成本与能力来自同一机制</a></li>
+  <li><a href="#离散state-space递推" id="toc-离散state-space递推" class="nav-link" data-scroll-target="#离散state-space递推">9.5.2 离散State Space递推</a></li>
+  <li><a href="#mamba的选择性与硬件扫描" id="toc-mamba的选择性与硬件扫描" class="nav-link" data-scroll-target="#mamba的选择性与硬件扫描">9.5.3 Mamba的选择性与硬件扫描</a></li>
+  <li><a href="#训练扫描decode状态与长度能力" id="toc-训练扫描decode状态与长度能力" class="nav-link" data-scroll-target="#训练扫描decode状态与长度能力">9.5.4 训练扫描、Decode状态与长度能力</a></li>
+  <li><a href="#hybrid-architecture" id="toc-hybrid-architecture" class="nav-link" data-scroll-target="#hybrid-architecture">9.5.5 Hybrid Architecture</a></li>
+  <li><a href="#展望架构kernel与系统共同设计" id="toc-展望架构kernel与系统共同设计" class="nav-link" data-scroll-target="#展望架构kernel与系统共同设计">9.5.6 展望：架构、Kernel与系统共同设计</a></li>
+  </ul></li>
+  <li><a href="#本章实验" id="toc-本章实验" class="nav-link" data-scroll-target="#本章实验">本章实验</a></li>
+  <li><a href="#本章小结与习题" id="toc-本章小结与习题" class="nav-link" data-scroll-target="#本章小结与习题">本章小结与习题</a></li>
+  <li><a href="#参考资料" id="toc-参考资料" class="nav-link" data-scroll-target="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/07-inference-serving.html">推理、后训练与前沿</a></li><li class="breadcrumb-item"><a href="../chapters/09-frontiers.html"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="../index.html">总目录</a> · 上一章：<a href="../chapters/08-post-training-evaluation.html">第 8 章</a> · 下一章：<a href="../chapters/10-projects.html">第 10 章</a></p>
+<p>一次技术评审同时摆出五份提案：把上下文扩到 128K、接入图像、增加测试时采样、让模型检索并调用工具、用新架构替换部分 Attention。每份提案都附着一个亮眼数字，却回答着不同问题——有的是接口长度，有的是论文任务分数，有的是渐近复杂度，还有的是特定硬件吞吐。若不先固定状态、成本、能力与证据边界，这些数字既不能彼此比较，也不能直接变成部署决策。</p>
+<p>本章用同一套审查顺序阅读这些方向：9.1 从长度口径进入长上下文，9.2 把视觉输入换算成 Token 与 KV，9.3 追踪测试时计算的候选和选择成本，9.4 把检索、工具、权限与外部状态接回系统，9.5 再比较 SSM 与混合架构的递归状态和 Kernel。每节都先问“改变了什么”，再列解析账本、论文报告与待本机实测项。</p>
+<p><a id="learning"></a></p>
+<section id="学习目标与前置知识" class="level2">
+<h2 class="anchored" data-anchor-id="学习目标与前置知识">学习目标与前置知识</h2>
+<p>以下目标均可检验。学完本章后，读者应能够：</p>
+<ol type="1">
+<li>区分配置窗口、训练位置范围与协议相关有效上下文，推导Full/Window可见对、KV容量和RoPE插值坐标，并设计位置—长度二维评测。</li>
+<li>用<span class="math inline">\([B,T,d]\)</span>行向量形状画出视觉编码器—连接器—语言模型数据流，计算Patch/Visual Token数及其Attention/KV增量，区分前缀、Cross-Attention与Resampler接口。</li>
+<li>区分CoT、Self-Consistency、Best-of-<span class="math inline">\(N\)</span>和Verifier，计算候选Oracle覆盖与Token工作量，并以质量—延迟—吞吐—成本联合协议评测测试时计算。</li>
+<li>为RAG建立文档版本到引用的provenance链，为工具调用设计Schema、授权、确认、幂等、Observation与失败恢复边界。</li>
+<li>按行向量约定写出SSM状态递推及shape，比较Attention KV与固定递归状态，并解释Selective Scan为何仍受Kernel和任务质量约束。</li>
+<li>对任一新架构给出同预算验收表，明确解析账本、论文报告与本机实测三种证据，不用单一Benchmark或渐近复杂度宣称普遍优越。</li>
+</ol>
+<p>必要前置是<a href="../chapters/02-transformer.html#sec-2-1">第2章Transformer与RoPE</a>、<a href="../chapters/05-distributed-training.html#sec-5-7-2">第5章Context Parallel</a>、<a href="../chapters/06-efficient-attention.html#sec-6-3">第6章分块Attention</a>、<a href="../chapters/07-inference-serving.html#sec-7-2">第7章KV与服务指标</a>及<a href="../chapters/08-post-training-evaluation.html#sec-8-5">第8章评测与安全</a>。本章整体为选修，公式仍采用全书固定的行向量、GQA、SwiGLU与绑定嵌入配置。</p>
+<p>本章统一使用三类证据标签：<strong>解析账本</strong>来自公式推导或作者构造输入，只说明给定假设下的shape、数量级与字节；<strong>论文报告</strong>保留原研究的模型、任务、硬件与协议；只有按本书记录要求实际运行并保存原始输出，才称<strong>本机实测</strong>。没有执行的路线统一标为<strong>未运行</strong>，不把它写成第四类结果。</p>
+<p><a id="sec-9-1"></a></p>
+</section>
+<section id="长上下文语言模型" class="level2">
+<h2 class="anchored" data-anchor-id="长上下文语言模型">9.1 长上下文语言模型</h2>
+<blockquote class="blockquote">
+<p><strong>选修/扩展。</strong> 本节把第 2 章的位置编码、第 5 章的 Context Parallel、第 6 章的分块 Attention 和第 7 章的 KV Cache 放到同一条长度轴上。以下复杂度与容量是解析账本；未运行长上下文模型、GPU Kernel、分布式训练或长文档 Benchmark。</p>
+</blockquote>
+<p>设想一个上线评审：旧版只接收 32K Token，新版把入口放宽到 128K，一份 90K Token 的文档也确实能够完成生成。此时仍不能宣布“有效上下文达到 128K”——训练是否覆盖这些位置？长输入的 KV 与 Attention 账能否承受？放在文档中部的关键条件能否被稳定找到并参与多跳推理？本节沿着<strong>长度口径 → 资源与可见性 → 位置映射与并行 → 质量协议</strong>逐项回答。</p>
+<p>“支持 128K 上下文”至少可能指三件不同的事：接口能接收多少 Token、模型训练时见过多少位置，以及模型在任务上能可靠利用多远的信息。为避免把它们混成一个窗口数字，本书记</p>
+<ul>
+<li><span class="math inline">\(T_{\mathrm{cfg}}\)</span>：配置或服务入口允许的最大输入长度；</li>
+<li><span class="math inline">\(T_{\mathrm{train}}\)</span>：预训练或后训练实际覆盖的位置范围；</li>
+<li><span class="math inline">\(T_{\mathrm{eff}}(\tau,\mathcal E)\)</span>：在评测协议<span class="math inline">\(\mathcal E\)</span>下仍达到质量阈值<span class="math inline">\(\tau\)</span>的最大长度。</li>
+</ul>
+<p><span class="math inline">\(T_{\mathrm{cfg}}\)</span>大不推出<span class="math inline">\(T_{\mathrm{train}}\)</span>同样大，更不推出对任意任务都有同样的<span class="math inline">\(T_{\mathrm{eff}}\)</span>。Tokenizer、Prompt模板和输出预算也占用窗口，因此报告“文档字符数”而不报告实际Token数不可复现。</p>
+<p><a href="#fig-ch09-context-length-ledger" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-context-length-ledger</span></a> 把声明与验收分开：三种长度是三个不同问题；算力、状态、位置和利用能力则是四条不能互相替代的证据线。</p>
+<div id="fig-ch09-context-length-ledger" class="quarto-float quarto-figure quarto-figure-center anchored" alt="入口允许的配置长度、训练覆盖的位置范围和协议下达到质量阈值的有效长度依次排列，但没有自动推出关系。下方四条并列证据线分别是Attention计算、KV状态、位置分布和任务利用；只有在固定协议下联合报告，才能说明长上下文能力。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-context-length-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/context-length-ledger.svg" class="img-fluid figure-img" alt="入口允许的配置长度、训练覆盖的位置范围和协议下达到质量阈值的有效长度依次排列，但没有自动推出关系。下方四条并列证据线分别是Attention计算、KV状态、位置分布和任务利用；只有在固定协议下联合报告，才能说明长上下文能力。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-context-length-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.1: 长上下文声明需要区分配置长度、训练长度与有效长度，并分别核对四条证据线。
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>先问是哪一种长度
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>配置加载成功只证明入口和实现接受该形状；训练位置覆盖只说明模型见过相应坐标；有效上下文还必须绑定任务、阈值与协议。三者数值可以相同，但不能靠名称或配置互相推出。</p>
+</div>
+</div>
+<section id="长度增长同时放大什么" class="level3">
+<h3 class="anchored" data-anchor-id="长度增长同时放大什么">9.1.1 长度增长同时放大什么</h3>
+<p>设单条因果序列有<span class="math inline">\(T\)</span>个Token。若实现跳过严格上三角，无窗口限制的每个头需要处理的可见Query–Key对数为<span class="math inline">\(T(T+1)/2\)</span>。若固定滑动窗口最多包含当前Token及此前共<span class="math inline">\(w-1\)</span>个Token，则可见对数为</p>
+<p><a id="eq-09-context-pairs"></a></p>
+<p><span class="math display">\[
+N_{\mathrm{full}}=\frac{T(T+1)}{2}.
+\]</span></p>
+<p>当<span class="math inline">\(T&lt;w\)</span>时，</p>
+<p><span class="math display">\[
+N_{\mathrm{win}}=\frac{T(T+1)}{2}.
+\]</span></p>
+<p>当<span class="math inline">\(T\ge w\)</span>时，前<span class="math inline">\(w\)</span>个Query贡献<span class="math inline">\(w(w+1)/2\)</span>个可见对，其余<span class="math inline">\(T-w\)</span>个Query各贡献<span class="math inline">\(w\)</span>个；合并同类项后得到等价的紧凑形式</p>
+<p><span class="math display">\[
+N_{\mathrm{win}}=Tw-\frac{w(w-1)}{2}.
+\]</span></p>
+<div class="text-end">
+<p>（09-Context-Pairs）</p>
+</div>
+<p>因此全注意力的score与Value聚合主项随<span class="math inline">\(T^2\)</span>增长，固定<span class="math inline">\(w\)</span>的窗口主项随<span class="math inline">\(Tw\)</span>增长。这里数的是数学可见对，不是实际Kernel FLOPs：实现可能把因果Tile整块跳过，也可能仍计算部分被mask元素。</p>
+<p>推理时，KV Cache则按长度线性增长。复用<a href="../chapters/07-inference-serving.html#eq-07-kv-cache-memory">式（07-KV-Cache-Memory）</a>，贯穿配置在<span class="math inline">\(B=1\)</span>、<span class="math inline">\(L=32\)</span>、<span class="math inline">\(H_{kv}=8\)</span>、<span class="math inline">\(d_h=128\)</span>、BF16时每Token为128 KiB；<span class="math inline">\(T=4096\)</span>的逻辑KV payload为0.5 GiB，<span class="math inline">\(T=32768\)</span>为4 GiB。长度扩大8倍时，KV payload扩大8倍，而全注意力可见对约扩大64倍。两者都不含权重、激活、workspace、页表、碎片和通信缓冲。</p>
+<p>于是长度账本至少有四列：<strong>Attention计算</strong>核对可见对与实际Kernel，<strong>KV状态</strong>核对逻辑payload与物理驻留，<strong>位置分布</strong>核对训练范围与RoPE规则，<strong>任务利用</strong>核对不同位置、长度和难度下的质量。即使内存与算力足够，训练范围之外的相位或位置模式也未必可用；即使输入成功，模型仍可能忽略中部证据或无法完成跨文档多跳推理。四类瓶颈必须分别测量。</p>
+</section>
+<section id="fullsliding-window与sparse-attention" class="level3">
+<h3 class="anchored" data-anchor-id="fullsliding-window与sparse-attention">9.1.2 Full、Sliding Window与Sparse Attention</h3>
+<p>三类方法改变的是每个Query允许访问的Key集合，而不只是一个复杂度标签。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>方式</th>
+<th>因果可见集合</th>
+<th>主项量级</th>
+<th>直接长距离路径与边界</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Full Attention</td>
+<td>所有不晚于当前Token的Key</td>
+<td><span class="math inline">\(O(T^2d_h)\)</span></td>
+<td>任意历史位置一步可达；代价最高</td>
+</tr>
+<tr class="even">
+<td>Sliding Window</td>
+<td>最近至多<span class="math inline">\(w\)</span>个位置</td>
+<td><span class="math inline">\(O(Twd_h)\)</span></td>
+<td>局部依赖直接可见；远距离信息需跨层传播，层数与窗口共同决定感受野</td>
+</tr>
+<tr class="odd">
+<td>Sparse Attention</td>
+<td>由局部、膨胀、随机或全局Token等图模式指定</td>
+<td>依稀疏边数<span class="math inline">\(|E|\)</span>而定</td>
+<td>可用少量长边缩短路径；稀疏模式、Kernel支持和任务结构必须匹配</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#fig-ch09-context-visibility-evaluation" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-context-visibility-evaluation</span></a> 先把三种机制画成“允许哪些边”，再把质量出口画成位置—长度网格。减少边数并不直接回答剩余路径是否覆盖任务依赖；单独测一个长度或一个证据位置也不能回答模型是否稳定利用窗口。</p>
+<div id="fig-ch09-context-visibility-evaluation" class="quarto-float quarto-figure quarto-figure-center anchored" alt="左侧并列三种因果可见图。Full中当前Query连接全部历史Key；Sliding Window只连接最近四个Key；Sparse保留局部边并加入少量远距离虚线边。右侧是总长度从短到长、证据位置从开头到结尾的二维格，每格都需记录质量和失败类型，不能只报告一个最好点。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-context-visibility-evaluation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/context-visibility-evaluation.svg" class="img-fluid figure-img" alt="左侧并列三种因果可见图。Full中当前Query连接全部历史Key；Sliding Window只连接最近四个Key；Sparse保留局部边并加入少量远距离虚线边。右侧是总长度从短到长、证据位置从开头到结尾的二维格，每格都需记录质量和失败类型，不能只报告一个最好点。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-context-visibility-evaluation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.2: Full、Sliding Window与Sparse Attention的可见边，以及位置—长度二维评测网格。
+</figcaption>
+</figure>
+</div>
+<p>Longformer用局部窗口配合任务相关的全局注意力连接长文档；BigBird把局部、随机与全局连接组合为稀疏图。这些论文提供的是具体设计与实验，不证明任意稀疏模式都等价于Full Attention。窗口或稀疏模式还可能降低score矩阵的中间量，却不会自动缩小所有层的KV状态；若Decode仍需保留可能被后续访问的Key/Value，缓存策略要按可见图另行推导。</p>
+<p>工程选择应先回答“哪些依赖必须一步可达”。局部语言建模可从窗口受益；跨全书检索、全局聚合或远距离代码引用则可能需要全局Token、分层摘要、检索或周期性Full层。最终仍要在目标任务上比较质量、TTFT/TPOT、峰值显存与吞吐，不能只比较渐近符号。</p>
+</section>
+<section id="rope-position-interpolation与scaling" class="level3">
+<h3 class="anchored" data-anchor-id="rope-position-interpolation与scaling">9.1.3 RoPE Position Interpolation与Scaling</h3>
+<p>第 2 章已定义RoPE：第<span class="math inline">\(j\)</span>个二维子空间在位置<span class="math inline">\(u\)</span>使用相位<span class="math inline">\(u\omega_j\)</span>。若原训练范围为<span class="math inline">\(T_{\mathrm{train}}\)</span>，目标窗口为<span class="math inline">\(T'=sT_{\mathrm{train}}\)</span>且<span class="math inline">\(s&gt;1\)</span>，Position Interpolation（PI）的核心是把目标坐标压回原范围：</p>
+<p><a id="eq-09-rope-pi"></a></p>
+<p><span class="math display">\[
+u'=\frac{u}{s}.
+\]</span></p>
+<p>于是第<span class="math inline">\(j\)</span>个二维子空间使用<span class="math inline">\(u'\omega_j\)</span>，等价地写成</p>
+<p><span class="math display">\[
+\theta_j(u)=\frac{u\omega_j}{s}.
+\]</span></p>
+<div class="text-end">
+<p>（09-RoPE-PI）</p>
+</div>
+<p>这样<span class="math inline">\(u&lt;T'\)</span>时的相位范围不超过原坐标范围，但相邻位置的角分辨率也被压缩。PI论文在插值后继续微调；它不是“改一个配置即可无损扩窗”的保证。更广义的RoPE scaling还会按频段、位置或目标长度调整频率，方法之间不可只用一个<code>rope_scaling=true</code>互换。复现实验至少要记录：原始与目标长度、scale factor、RoPE base、各频段规则、是否动态变化、微调数据/步数，以及评测时实际Token长度。</p>
+<p>这也解释了“外推”和“插值”的差别：直接把<span class="math inline">\(u\)</span>送到训练范围外是位置外推；PI先映射<span class="math inline">\(u\mapsto u/s\)</span>，在坐标上是插值，但模型是否学会利用压缩后的远距离信息仍是经验问题。配置可加载、短样本不报错或困惑度没有爆炸，都不能单独证明长距离推理可靠。</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>位置可表示，不等于信息会被利用
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RoPE scaling处理的是坐标与相位分布；它不自动支付Attention/KV成本，也不保证模型在长距离检索、聚合或推理上达标。扩窗实验仍需回到位置—长度协议。</p>
+</div>
+</div>
+</section>
+<section id="context-parallelism与ring-attention" class="level3">
+<h3 class="anchored" data-anchor-id="context-parallelism与ring-attention">9.1.4 Context Parallelism与Ring Attention</h3>
+<p><a href="../chapters/05-distributed-training.html#sec-5-7-2">5.7.2</a>的 Context Parallelism（CP）把一条序列沿<span class="math inline">\(T\)</span>维分到<span class="math inline">\(p\)</span>个设备，每个设备保留约<span class="math inline">\(T/p\)</span>个Query及本地激活。在Dense Attention中，本地Query仍需看到所有合法Key/Value；实现可以All-Gather K/V，也可以让K/V块在设备间流动。Ring Attention采用后一类思路：每个设备计算本地Query与当前K/V块，再沿环传递K/V块，直到覆盖全部块。</p>
+<p>每轮的局部score块不能各自Softmax后直接相加，因为各块的归一化分母不同。正确合并须复用<a href="../chapters/06-efficient-attention.html#eq-06-online-softmax-merge">Online Softmax统计量与输出合并</a>：携带逐Query的最大值<span class="math inline">\(m\)</span>、指数和<span class="math inline">\(\ell\)</span>及同尺度的未归一化Value和<span class="math inline">\(z\)</span>，再按共同最大值重缩放。因果掩码还必须使用全局绝对位置，不能把每个设备的局部下标都从零解释。</p>
+<p>CP/Ring改变的是状态放置、通信方式和可承载长度，不减少Dense Attention的全局总算术量。其可扩展性取决于块大小、设备拓扑、K/V通信量、计算—通信重叠、负载均衡与数值归并；训练还要考虑反向通信和激活保存。论文报告的长度或速度必须保留其硬件与配置，不能写成本机结果。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">注记</span>并行改变放置，不改全局问题
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>CP回答“一条长序列如何分到多卡”，Ring回答“K/V块如何流动”；若可见图仍是Full，所有合法Query–Key关系仍需在某处完成。它们扩大可承载长度，却不等于把Dense Attention变成线性算术量。</p>
+</div>
+</div>
+</section>
+<section id="从针到有效上下文长度" class="level3">
+<h3 class="anchored" data-anchor-id="从针到有效上下文长度">9.1.5 从“针”到有效上下文长度</h3>
+<p>长上下文评测至少包含三层，而不是只跑一次 Needle-in-a-Haystack（NIAH）：</p>
+<ol type="1">
+<li><strong>受控检索。</strong> 在不同总长度和相对位置插入一个或多个可核验键值，改变干扰项、键数与措辞，报告位置—长度二维曲线。单针命中主要测检索，不等同长文档理解。</li>
+<li><strong>聚合与推理。</strong> 要求跨段计数、排序、状态跟踪、跨文档多跳问答或代码依赖分析；RULER把检索、multi-hop tracing、aggregation与QA放在统一合成长上下文评测中。</li>
+<li><strong>真实长文档任务。</strong> 固定文档、问题、答案判据与生成预算，检查证据引用、不可回答样本和污染；同时记录延迟、峰值内存与失败类型。</li>
+</ol>
+<p>Lost in the Middle在多文档问答和键值检索中观察到相关证据位置改变会显著影响表现，常见现象是首尾强、中部弱。这是其被测模型与协议的结果，不应外推为每个模型必然呈同一曲线；但它说明只在开头放针会高估利用能力。</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>一根针只回答一个较窄的问题
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NIAH命中可以证明某个长度与位置上的受控检索成功，却不能代替聚合、多跳推理、真实文档任务或全位置稳定性。把它作为协议的一层，而不是长上下文能力的总分。</p>
+</div>
+</div>
+<p>给定长度集合<span class="math inline">\(\mathcal T\)</span>、证据位置集合<span class="math inline">\(\mathcal P\)</span>、指标<span class="math inline">\(M(T,p)\)</span>和门槛<span class="math inline">\(\tau\)</span>，先定义长度<span class="math inline">\(T\)</span>上跨位置的协议分数</p>
+<p><span class="math display">\[
+A_{\mathcal E}(T)
+=\operatorname{Q}_{q}\bigl(\{M(T,p):p\in\mathcal P\}\bigr).
+\]</span></p>
+<p>再把“有效上下文”操作化为</p>
+<p><a id="eq-09-effective-context"></a></p>
+<p><span class="math display">\[
+\begin{aligned}
+T_{\mathrm{eff}}(\tau,\mathcal E)
+&amp;=\max\bigl\{T\in\mathcal T:\\
+&amp;\qquad A_{\mathcal E}(T)\ge\tau\bigr\}.
+\end{aligned}
+\]</span></p>
+<div class="text-end">
+<p>（09-Effective-Context）</p>
+</div>
+<p>其中<span class="math inline">\(\operatorname Q_q\)</span>是预先选定的分位数，例如用较低分位而非最好位置；<span class="math inline">\(A_{\mathcal E}(T)\)</span>只是把原式中的跨位置聚合单独命名。协议<span class="math inline">\(\mathcal E\)</span>必须固定Tokenizer、Prompt、长度生成方式、位置网格、解码参数、输出预算、指标与阈值；换协议就不能直接比较<span class="math inline">\(T_{\mathrm{eff}}\)</span>。若最长测试点仍达标，只能报告“至少达到该点”，不能外推到更长。</p>
+<p><strong>解析检查。</strong> 取<span class="math inline">\(T=32768\)</span>、<span class="math inline">\(w=4096\)</span>，式（09-Context-Pairs）给出<span class="math inline">\(N_{\mathrm{win}}=125{,}831{,}168\)</span>，而<span class="math inline">\(N_{\mathrm{full}}=536{,}887{,}296\)</span>，可见对约为Full的23.44%。这不是运行时间或显存实测：稀疏Kernel效率、KV Cache、其他层与通信可能改变端到端比例。</p>
+<p><strong>理解检查。</strong> 某API从32K扩到128K且能成功生成，为什么还不能宣称“有效上下文为128K”？请至少从训练位置、证据位置切片、任务难度、输出预算和资源指标中列出四项补充证据。</p>
+<p><a id="sec-9-2"></a></p>
+</section>
+</section>
+<section id="多模态大模型multimodal-llm" class="level2">
+<h2 class="anchored" data-anchor-id="多模态大模型multimodal-llm">9.2 多模态大模型（Multimodal LLM）</h2>
+<blockquote class="blockquote">
+<p><strong>选修/扩展。</strong> 本节只建立图像—文本模型的结构与资源账本，不把“能生成有关图片的文字”等同于可靠感知或grounding。下列尺寸例是作者构造的解析算术；未加载视觉编码器、图像数据或多模态模型。</p>
+</blockquote>
+<p>设想要为一张图表截图回答“哪一条曲线在中段反超”。方案A把全部视觉Token拼进LLM，方案B让文本通过Cross-Attention读取视觉memory，方案C先把图像压成固定数量的latent。三者都可能输出流畅答案，但窗口占用、KV状态、细节损失和视觉证据依赖并不相同。本节沿着<strong>像素 → Visual Token → 融合接口 → 证据干预</strong>拆开这条链。</p>
+<p>一个常见的多模态LLM可以拆成三部分：视觉编码器<span class="math inline">\(E_v\)</span>把像素变成视觉特征，连接模块<span class="math inline">\(C\)</span>把特征压缩或投影到语言侧可消费的表示，语言模型<span class="math inline">\(L\)</span>再根据视觉条件与文本历史生成Token。写成数据流是</p>
+<p><span class="math display">\[
+\mathbf I\xrightarrow{E_v}\mathbf V
+\xrightarrow{C}\widetilde{\mathbf V}
+\xrightarrow[\text{与文本融合}]{L}p(y_t\mid \mathbf I,x,y_{&lt;t}).
+\]</span></p>
+<p>这里“多模态”不是单一架构名：<span class="math inline">\(E_v\)</span>可能冻结或训练，<span class="math inline">\(C\)</span>可以是线性/MLP投影、查询式重采样器或Cross-Attention，视觉信息可以作为LLM前缀Token，也可以作为独立memory被语言层读取。必须记录具体接口，不能只写“接入图片”。</p>
+<section id="图像如何成为visual-tokens" class="level3">
+<h3 class="anchored" data-anchor-id="图像如何成为visual-tokens">9.2.1 图像如何成为Visual Tokens</h3>
+<p>设批量图像<span class="math inline">\(\mathbf I\in\mathbb R^{B\times H\times W\times C}\)</span>，Patch大小为<span class="math inline">\(P_h\times P_w\)</span>。若先把高宽补齐到Patch整数倍，再按不重叠网格切分，则</p>
+<p><a id="eq-09-visual-patch-tokens"></a></p>
+<p><span class="math display">\[
+N_v=\left\lceil\frac{H}{P_h}\right\rceil
+    \left\lceil\frac{W}{P_w}\right\rceil.
+\]</span></p>
+<p>记展平后的Patch矩阵为<span class="math inline">\(\mathbf P(\mathbf I)=\operatorname{vec}(\operatorname{patch}(\mathbf I))\)</span>，则</p>
+<p><span class="math display">\[
+\mathbf Z_0=\mathbf P(\mathbf I)\mathbf W_{\mathrm{patch}}+\mathbf b.
+\]</span></p>
+<div class="text-end">
+<p>（09-Visual-Patch-Tokens）</p>
+</div>
+<p>其中<span class="math inline">\(\mathbf Z_0\in\mathbb R^{B\times N_v\times d_v}\)</span>，按本书行向量约定，<span class="math inline">\(\mathbf W_{\mathrm{patch}}\in\mathbb R^{(P_hP_wC)\times d_v}\)</span>。实际实现也可能裁剪/缩放到固定分辨率、加入CLS Token、使用卷积stem、动态分块或多尺度特征；此时<span class="math inline">\(N_v\)</span>必须按预处理后的真实网格重新计算。ViT的关键抽象正是把图像Patch序列送入Transformer，而不是把每个像素直接当语言Token。</p>
+<p>位置也不能省略。文本通常是一维顺序，图像Token来自二维网格；视觉编码器要通过二维位置嵌入、相对位置或其他结构保留空间关系。把网格展平只规定存储顺序，并不自动让模型知道“左上”和“右下”。</p>
+<p><a href="#fig-ch09-visual-token-pipeline" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-visual-token-pipeline</span></a> 把shape变化放回数据流。预处理是模型接口的一部分：同一原图若采用不同缩放、裁剪、补齐或动态分块，后续<span class="math inline">\(N_v\)</span>与可见细节都会改变。</p>
+<div id="fig-ch09-visual-token-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored" alt="输入批量图像形状为B乘H乘W乘C，先经缩放裁剪或补齐形成真实输入，再按Ph乘Pw网格得到Nv个Patch。视觉编码器输出B乘Nv乘dv，连接器投影或重采样后输出B乘M乘d；若只投影则M等于Nv，若重采样则M可小于Nv。图下强调预处理、二维位置和Token预算都必须记录。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-visual-token-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/visual-token-pipeline.svg" class="img-fluid figure-img" alt="输入批量图像形状为B乘H乘W乘C，先经缩放裁剪或补齐形成真实输入，再按Ph乘Pw网格得到Nv个Patch。视觉编码器输出B乘Nv乘dv，连接器投影或重采样后输出B乘M乘d；若只投影则M等于Nv，若重采样则M可小于Nv。图下强调预处理、二维位置和Token预算都必须记录。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-visual-token-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.3: 图像从预处理、Patch网格、视觉编码到连接器后的Visual Token shape变化。
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>预处理不是无关紧要的前处理
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>报告原图尺寸却不记录送入编码器的实际尺寸、裁剪、补齐和多图拼接规则，无法复算<span class="math inline">\(N_v\)</span>，也无法判断小目标或边缘证据是否在进入模型前已经丢失。</p>
+</div>
+</div>
+</section>
+<section id="连接模块与三种融合位置" class="level3">
+<h3 class="anchored" data-anchor-id="连接模块与三种融合位置">9.2.2 连接模块与三种融合位置</h3>
+<p>若视觉编码器宽度<span class="math inline">\(d_v\)</span>与LLM宽度<span class="math inline">\(d\)</span>不同，最简单的行向量投影为</p>
+<p><span class="math display">\[
+\widetilde{\mathbf V}=\mathbf V\mathbf W_c+\mathbf b_c.
+\]</span></p>
+<p>其中shape为</p>
+<p><span class="math display">\[
+\mathbf W_c\in\mathbb R^{d_v\times d}.
+\]</span></p>
+<p>投影不改变Token数，因此</p>
+<p><span class="math display">\[
+\widetilde{\mathbf V}\in\mathbb R^{B\times N_v\times d}.
+\]</span></p>
+<p>LLaVA给出了一条代表性路线：连接预训练视觉编码器与语言模型，并通过视觉指令数据做阶段化训练。线性或MLP projector形状简单，但它既没有保证逐Token语义对齐，也没有自动解决分辨率、OCR与空间grounding。</p>
+<p>另一类路线把视觉特征保留为独立memory。Flamingo用Perceiver Resampler把可变数量的视觉特征压到固定数量的视觉Token，并在冻结语言模型中插入门控Cross-Attention，以处理图文交错输入。由此可见，融合方式至少有三类资源语义：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>融合方式</th>
+<th>语言侧接口</th>
+<th>主要资源后果</th>
+<th>典型风险</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>前缀/交错拼接</td>
+<td>投影后的视觉Token进入LLM自注意力序列</td>
+<td>增加LLM序列长度和对应KV</td>
+<td>视觉Token过多挤占文本/输出窗口</td>
+</tr>
+<tr class="even">
+<td>Cross-Attention</td>
+<td>文本Query读取独立视觉K/V</td>
+<td>文本自注意力长度不变，另增<span class="math inline">\(O(T_xN_v)\)</span>跨模态计算与视觉memory</td>
+<td>插层位置、门控与缓存策略依实现</td>
+</tr>
+<tr class="odd">
+<td>Resampler/Query Token</td>
+<td>先把<span class="math inline">\(N_v\)</span>压为<span class="math inline">\(M\)</span>个latent，再拼接或Cross-Attend</td>
+<td>用信息瓶颈换取固定接口成本</td>
+<td><span class="math inline">\(M\)</span>过小可能丢细节，过大仍昂贵</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#fig-ch09-multimodal-fusion-ledger" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-multimodal-fusion-ledger</span></a> 用同一文本Query对齐三条路线。区别不在于是否“看图”，而在于视觉状态进入哪一种序列、在哪些层被读取，以及Decode时哪些K/V需要保留。</p>
+<div id="fig-ch09-multimodal-fusion-ledger" class="quarto-float quarto-figure quarto-figure-center anchored" alt="三行比较多模态融合。前缀拼接把M个视觉Token和Tx个文本Token放入同一LLM自注意力序列，增加总长度和LLM KV；Cross-Attention保持文本自注意力长度Tx，另存视觉memory并产生文本乘视觉的跨注意力；Resampler先将Nv个视觉特征压为M个latent，再选择拼接或跨注意力，成本固定但形成信息瓶颈。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-multimodal-fusion-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/multimodal-fusion-ledger.svg" class="img-fluid figure-img" alt="三行比较多模态融合。前缀拼接把M个视觉Token和Tx个文本Token放入同一LLM自注意力序列，增加总长度和LLM KV；Cross-Attention保持文本自注意力长度Tx，另存视觉memory并产生文本乘视觉的跨注意力；Resampler先将Nv个视觉特征压为M个latent，再选择拼接或跨注意力，成本固定但形成信息瓶颈。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-multimodal-fusion-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.4: 视觉前缀拼接、Cross-Attention与Resampler三种融合接口及其状态账。
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>Token更少只说明接口更窄
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(M&lt;N_v\)</span>能降低下游接口成本，却不能单独推出更快或更准：视觉编码器仍要处理输入，Cross-Attention还需额外Kernel，而压缩可能丢失OCR、小目标或空间关系。</p>
+</div>
+</div>
+<p>训练时还要声明冻结策略和目标：只训连接器、解冻视觉编码器、解冻LLM，或分阶段进行，优化问题与显存都不同。图文配对预训练、caption/VQA和多模态指令微调的数据目标也不等价；语言回答流畅不证明视觉证据被正确使用。</p>
+</section>
+<section id="visual-token的attention与kv账本" class="level3">
+<h3 class="anchored" data-anchor-id="visual-token的attention与kv账本">9.2.3 Visual Token的Attention与KV账本</h3>
+<p>若把<span class="math inline">\(N_v\)</span>个视觉Token作为前缀直接放进decoder-only LLM，文本侧有<span class="math inline">\(T_x\)</span>个Token，总长度<span class="math inline">\(T=T_x+N_v\)</span>。在标准稠密因果可见对口径下，视觉前缀带来的增量为</p>
+<p><a id="eq-09-multimodal-token-cost"></a></p>
+<p><span class="math display">\[
+\Delta N_{\mathrm{pair}}
+=T_xN_v+\frac{N_v(N_v+1)}{2}.
+\]</span></p>
+<p><span class="math display">\[
+\Delta M_{\mathrm{KV}}=2L N_vH_{kv}d_hs_{kv}.
+\]</span></p>
+<div class="text-end">
+<p>（09-Multimodal-Token-Cost）</p>
+</div>
+<p>第二式复用第7章KV Cache口径：只算视觉前缀在全层的逻辑K/V payload；若框架不把视觉Token送入LLM自注意力、对视觉前缀采用不同缓存或只在部分层融合，就不能套用。第一式也不是Cross-Attention的公式。</p>
+<p><strong>解析例。</strong> 一张<span class="math inline">\(336\times336\)</span>图像用<span class="math inline">\(14\times14\)</span> Patch且不加CLS Token，得到<span class="math inline">\(N_v=24^2=576\)</span>；若文本长度<span class="math inline">\(T_x=512\)</span>，拼接后为1088 Token。稠密因果可见对从131,328增至592,416，约为4.51倍。贯穿配置每Token全层KV为128 KiB，因此视觉前缀另加72 MiB逻辑KV payload。以上没有计视觉编码器、连接器、激活、workspace、物理填充或图像预处理。</p>
+<p>分辨率每边扩大2倍且Patch大小不变时，<span class="math inline">\(N_v\)</span>约扩大4倍；多图或视频帧数也通常使视觉Token近似线性增加，而拼接后的Dense Attention随总Token数平方增长。工程上常用更大Patch、裁剪/缩放、Token pruning/merging、Resampler、局部视觉Attention或分层特征控制成本，但压缩是否保留OCR、小目标和时序信息必须按任务实测。</p>
+</section>
+<section id="训练与评测边界" class="level3">
+<h3 class="anchored" data-anchor-id="训练与评测边界">9.2.4 训练与评测边界</h3>
+<p>多模态系统的错误可能来自视觉编码、连接器、语言先验或数据标注。诊断时应至少成对比较：有图与遮图、正确图与干扰图、问题所需证据所在区域，以及不同分辨率/裁剪；若遮图后答案几乎不变，模型可能主要依赖语言先验。评测还要分开记录感知、OCR、空间关系、知识问答、幻觉/grounding、安全与延迟显存，不能用一个聊天示例替代。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">注记</span>把答案变成可证伪的视觉利用声明
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>对开场的曲线反超问题，应同时保存原图答案、遮住交点区域后的答案、替换为干扰图后的答案，以及指向证据区域的grounding结果。只有输出随相关视觉证据按预期变化，才比“回答看起来合理”提供更强证据。</p>
+</div>
+</div>
+<p><strong>理解检查。</strong> 同一张图像，方案A把576个视觉Token作为LLM前缀，方案B把它们重采样为64个latent后做Cross-Attention。为什么不能仅凭“64更少”断言B更准确或端到端更快？请分别列出自注意力、跨注意力、信息瓶颈、视觉编码器与Kernel实现五方面需要测量的量。</p>
+<p><a id="sec-9-3"></a></p>
+</section>
+</section>
+<section id="推理模型与-test-time-compute" class="level2">
+<h2 class="anchored" data-anchor-id="推理模型与-test-time-compute">9.3 推理模型与 Test-time Compute</h2>
+<blockquote class="blockquote">
+<p><strong>选修/扩展。</strong> Test-time Compute指在权重固定后，为单个问题分配更多生成、搜索、验证或工具计算。它与训练算力、模型参数量和“输出更长”都不是同义词。本节只给机制与解析账本，未运行推理模型、采样搜索、Verifier或Benchmark。</p>
+</blockquote>
+<p>设想一道题单次直接回答失败，但系统还允许多花一份预算。预算可以用来把一条轨迹写得更长，也可以生成多条不同轨迹；有了候选后，又可以按答案频数投票、用规则执行，或交给学习型Verifier。真正的问题不是“算得越多是否越好”，而是额外工作落在哪一步、选择信号是否可信，以及质量增益能否覆盖延迟、KV和吞吐代价。</p>
+<p>直接生成一次答案只是推理策略的一个点。额外预算可以沿两条轴分配：让一条轨迹更长，例如显式分解与反思；或生成多条轨迹，再投票、验证或搜索。是否收益取决于基础模型在该题上的非零成功概率、候选多样性、Verifier质量和预算分配；困难度不同，最佳策略也可能不同。因此必须画“质量—计算”曲线，而不是只比较一次最高分。</p>
+<section id="chain-of-thought可见中间文本" class="level3">
+<h3 class="anchored" data-anchor-id="chain-of-thought可见中间文本">9.3.1 Chain-of-Thought：可见中间文本</h3>
+<p>Chain-of-Thought（CoT）提示用带中间步骤的示例或指令，引导模型在最终答案前生成一段推理文本。它可以把部分多步任务展开成更多自回归Token，使后续Token条件于已写出的中间状态。原始研究在特定大模型和算术、常识、符号任务上观察到收益；这不是所有模型、所有Prompt或所有任务的单调保证。</p>
+<p>可见CoT有四个边界。第一，语法连贯的步骤仍可能含早期错误，且错误会沿后续Token传播。第二，生成文本是模型输出，不自动等同内部计算的忠实解释；正确答案可配错误理由，错误答案也可配貌似合理的理由。第三，更长轨迹增加Decode Token、延迟和暴露不必要内容的风险。第四，精确匹配评测必须从轨迹中稳定抽取最终答案，否则格式差异会污染分数。因此生产系统可把“用于求解的内部状态”“给用户的简洁依据”和“可审计的外部证据”分开设计。</p>
+</section>
+<section id="self-consistency与best-of-n" class="level3">
+<h3 class="anchored" data-anchor-id="self-consistency与best-of-n">9.3.2 Self-Consistency与Best-of-N</h3>
+<p>Self-Consistency从同一问题采样<span class="math inline">\(N\)</span>条不同推理轨迹，把每条轨迹解析为规范化答案<span class="math inline">\(a_i\)</span>，再选频数最高者：</p>
+<p><span class="math display">\[
+\widehat a=\arg\max_a\sum_{i=1}^{N}\mathbf 1[\operatorname{canon}(a_i)=a].
+\]</span></p>
+<p>它不要求选择一条“最漂亮”的推理，而是对不同路径边缘化后看答案一致性。若答案是开放文本，<code>canon</code>、等价类、平票规则和无法解析样本必须预先定义；多数一致也可能是共享偏差。</p>
+<p>Best-of-<span class="math inline">\(N\)</span>则用分数器<span class="math inline">\(v(x,y_i)\)</span>从候选中选<span class="math inline">\(arg\max_i v(x,y_i)\)</span>。分数器可以是规则执行器、单元测试、Outcome Reward Model或Process Reward Model。两者区别是：Self-Consistency依赖候选间的答案频数，Best-of-<span class="math inline">\(N\)</span>依赖外部或学习到的选择信号。</p>
+<p><a href="#fig-ch09-test-time-candidate-tree" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-test-time-candidate-tree</span></a> 把“有没有正确候选”和“能不能选中它”拆开。Oracle只检查候选集合上限，实际系统还要经过答案解析、投票或Verifier，最后才能得到对用户可见的结果。</p>
+<div id="fig-ch09-test-time-candidate-tree" class="quarto-float quarto-figure quarto-figure-center anchored" alt="同一问题分成N条候选轨迹，每条产生答案和Token工作量。候选集合一方面进入Oracle检查，判断是否至少包含一个正确答案；另一方面进入答案规范化与频数投票，或进入Verifier评分选择。两条实际选择路径汇合为最终答案，Oracle与最终正确率之间的差距由解析和选择错误造成。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-test-time-candidate-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/test-time-candidate-tree.svg" class="img-fluid figure-img" alt="同一问题分成N条候选轨迹，每条产生答案和Token工作量。候选集合一方面进入Oracle检查，判断是否至少包含一个正确答案；另一方面进入答案规范化与频数投票，或进入Verifier评分选择。两条实际选择路径汇合为最终答案，Oracle与最终正确率之间的差距由解析和选择错误造成。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-test-time-candidate-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.5: 测试时计算从候选生成到投票或Verifier选择，并区分Oracle覆盖与最终结果。
+</figcaption>
+</figure>
+</div>
+<p>若每条候选独立且单条正确概率为<span class="math inline">\(p\)</span>，至少含一条正确候选的概率为</p>
+<p><a id="eq-09-candidate-coverage"></a></p>
+<p><span class="math display">\[
+P_{\ge1}(N)=1-(1-p)^N.
+\]</span></p>
+<div class="text-end">
+<p>（09-Candidate-Coverage）</p>
+</div>
+<p>这是“候选集合覆盖正确答案”的理想账本，不是最终准确率：真实样本相关，且Verifier未必能选出正确候选。例：<span class="math inline">\(p=0.3\)</span>时，<span class="math inline">\(N=1,4,8\)</span>的理想覆盖率为30%、75.99%、94.24%；边际收益递减，而Token成本继续增加。</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>Oracle@N只给候选集合的上限
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Oracle上升而最终准确率不升，说明瓶颈已经从“生成不到”转到答案解析、共享偏差或选择器误选。继续增大<span class="math inline">\(N\)</span>会增加工作量，却不自动修复这条转换链。</p>
+</div>
+</div>
+</section>
+<section id="verifier与过程结果监督" class="level3">
+<h3 class="anchored" data-anchor-id="verifier与过程结果监督">9.3.3 Verifier与过程/结果监督</h3>
+<p>Verifier接收问题与候选答案或步骤，输出有效性、奖励或排序信号。按监督粒度可分为：</p>
+<ul>
+<li><strong>Outcome监督</strong>只判断最终答案，例如数学终值、代码测试或棋局结果；标签便宜且目标直接，但可能给“答案碰巧正确、过程错误”的轨迹高分。</li>
+<li><strong>Process监督</strong>逐步判断中间推理；能更早定位错误并为搜索提供密集信号，但步骤边界、局部正确性与人工标签成本更复杂。</li>
+</ul>
+<p>GSM8K的Verifier研究展示了生成多个解答再排名的具体路线；Let’s Verify Step by Step在其MATH设定中比较了Outcome与Process监督。它们是任务相关证据，不证明学习型Verifier普遍可靠。Verifier会有分布外失效、长度/文风偏好、Reward Hacking及与生成器共错；规则检查器也只覆盖可形式化条件。验收必须同时报告候选覆盖率、Oracle@N、实际选择准确率、Verifier校准/误选率，以及没有正确候选时的行为。</p>
+</section>
+<section id="推理成本不是一个token数" class="level3">
+<h3 class="anchored" data-anchor-id="推理成本不是一个token数">9.3.4 推理成本不是一个Token数</h3>
+<p>令第<span class="math inline">\(i\)</span>条候选输出<span class="math inline">\(O_i\)</span>个Token，Verifier额外处理<span class="math inline">\(V_i\)</span>个计费或计算Token。一个最小工作量账本是</p>
+<p><a id="eq-09-test-time-work"></a></p>
+<p><span class="math display">\[
+W_{\mathrm{decode}}=\sum_{i=1}^{N}O_i.
+\]</span></p>
+<p><span class="math display">\[
+W_{\mathrm{score}}=\sum_{i=1}^{N}V_i.
+\]</span></p>
+<div class="text-end">
+<p>（09-Test-Time-Work）</p>
+</div>
+<p>它仍不等于FLOPs、费用或延迟：独立调用会重复Prefill，Prefix Cache可复用部分Prompt状态；并行采样能降低墙钟延迟，却占用更多并发槽位、KV Cache和总Token吞吐；顺序早停可以省工作，但引入策略相关的尾延迟。长CoT还使每条序列的KV随长度增加，<span class="math inline">\(N\)</span>条并发候选则近似把活跃KV乘以<span class="math inline">\(N\)</span>。服务评测至少联合报告准确率/通过率、平均与分位输出Token、候选数、Verifier调用、TTFT、TPOT/E2E、峰值并发KV、completed token/s、请求goodput和单位正确答案成本。</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>并行采样降低墙钟，不减少总工作
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>把<span class="math inline">\(N\)</span>条候选同时解码可能缩短单请求等待，却会同时占用调度槽、KV和Token吞吐。必须分别报告单请求延迟与系统goodput，不能把并行度当作免费加速。</p>
+</div>
+</div>
+<p>例如4条候选分别输出120、180、160、140 Token，则<span class="math inline">\(W_{\mathrm{decode}}=600\)</span>；若Verifier每条读取问题与候选共220、280、260、240 Token，则<span class="math inline">\(W_{\mathrm{score}}=1000\)</span>。这只是Token工作量构造例，不代表任何API费用、GPU FLOPs或墙钟时间。</p>
+</section>
+<section id="训练如何改变测试时策略" class="level3">
+<h3 class="anchored" data-anchor-id="训练如何改变测试时策略">9.3.5 训练如何改变测试时策略</h3>
+<p>测试时搜索只能重排或扩展当前策略能产生的候选；训练则改变候选分布和Verifier。可验证奖励把单元测试、最终答案或形式化检查器作为结果信号，在线策略优化用新策略rollout继续更新权重；<a href="../chapters/08-post-training-evaluation.html#sec-8-4-3">8.4.3</a>已说明PPO、GRPO与RLVR的边界。过程监督还可以训练Process Reward Model，为测试时树搜索或逐步选择提供分数。</p>
+<p>三者必须分账：SFT/RL训练是否改善单样本<span class="math inline">\(p\)</span>，测试时增加<span class="math inline">\(N\)</span>是否扩大候选覆盖，Verifier是否把覆盖转化为最终正确率。训练集可验证不等于开放世界回答可验证；若奖励只检查终值，模型也可能学会利用检查器漏洞。测试时计算扩展研究进一步表明，策略效果随题目难度变化，固定Best-of-<span class="math inline">\(N\)</span>未必是计算最优分配；这一论文结论仍受其模型、任务与Verifier设置限制。</p>
+<p><strong>理解检查。</strong> 系统把<span class="math inline">\(N\)</span>从1增到16后Oracle@N显著上升，但最终准确率几乎不变。请分别从候选相关性、答案解析、Verifier误选、分布外题目和并发资源竞争提出诊断，并说明为何不能仅继续增大<span class="math inline">\(N\)</span>。</p>
+<p><a id="sec-9-4"></a></p>
+</section>
+</section>
+<section id="rag-与工具调用" class="level2">
+<h2 class="anchored" data-anchor-id="rag-与工具调用">9.4 RAG 与工具调用</h2>
+<blockquote class="blockquote">
+<p><strong>选修/扩展。</strong> RAG给模型提供外部文本证据，Tool Calling允许系统产生外部动作；前者不自动保证事实正确，后者也不能把模型输出直接当授权。本节是架构与验收设计，未连接向量数据库、外部API、账户或真实工具。</p>
+</blockquote>
+<p>设想用户问“这笔订单是否符合取消政策，并在符合时帮我取消”。系统先要从一个有版本和权限的知识库中找到适用条款，再把证据交给模型；若进入取消动作，还必须验证参数、身份、资源权限与副作用确认。<strong>检索到一段文字</strong>和<strong>获准改变外部状态</strong>是两种不同能力，本节分别建立证据链与执行状态机，最后再联合评测。</p>
+<section id="rag从语料版本到回答证据" class="level3">
+<h3 class="anchored" data-anchor-id="rag从语料版本到回答证据">9.4.1 RAG：从语料版本到回答证据</h3>
+<p>一个最小Retrieval-Augmented Generation（RAG）链路为：文档摄取与版本化<span class="math inline">\(\rightarrow\)</span>切块/元数据<span class="math inline">\(\rightarrow\)</span>向量或稀疏索引<span class="math inline">\(\rightarrow\)</span>query改写<span class="math inline">\(\rightarrow\)</span>召回<span class="math inline">\(\rightarrow\)</span>过滤/重排<span class="math inline">\(\rightarrow\)</span>上下文构造<span class="math inline">\(\rightarrow\)</span>带证据生成。原始RAG研究把参数化生成器与显式非参数memory结合；现代工程实现可以替换任何模块，因此“用了RAG”不足以说明具体系统。</p>
+<p>离线索引端必须保存文档ID、来源、版本/时间、权限标签、chunk边界与embedding模型版本。在线端则保存原始query、实际检索query、候选及分数、过滤原因、送入模型的chunk顺序、Prompt模板和最终引用。没有这条provenance链，就难以区分“库里没有”“没召回”“重排丢失”“Prompt截断”与“模型无依据生成”。</p>
+<p><a href="#fig-ch09-rag-provenance-chain" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-rag-provenance-chain</span></a> 把离线版本与在线事件连到最终原子主张。引用ID只有在能回指具体版本、chunk和实际送入上下文的内容时，才是可审计证据，而不只是答案末尾的装饰链接。</p>
+<div id="fig-ch09-rag-provenance-chain" class="quarto-float quarto-figure quarto-figure-center anchored" alt="离线侧保存来源文档、版本时间、权限和chunk边界，再用指定embedding或稀疏索引形成可版本化索引。在线侧保存原始query和改写query，记录召回候选、分数、过滤与重排，随后按Token预算构造带稳定引用ID的上下文。答案拆成原子主张，每个主张回指实际使用的chunk；无充分证据时进入拒答。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-rag-provenance-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/rag-provenance-chain.svg" class="img-fluid figure-img" alt="离线侧保存来源文档、版本时间、权限和chunk边界，再用指定embedding或稀疏索引形成可版本化索引。在线侧保存原始query和改写query，记录召回候选、分数、过滤与重排，随后按Token预算构造带稳定引用ID的上下文。答案拆成原子主张，每个主张回指实际使用的chunk；无充分证据时进入拒答。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-rag-provenance-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.6: RAG从语料版本、切块索引、召回重排、上下文构造到带引用答案的provenance链。
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="embedding相似度与检索边界" class="level3">
+<h3 class="anchored" data-anchor-id="embedding相似度与检索边界">9.4.2 Embedding、相似度与检索边界</h3>
+<p>Dense Retriever通常分别编码查询与文档chunk：<span class="math inline">\(\mathbf q=f_q(x)\in\mathbb R^{d_r}\)</span>，<span class="math inline">\(\mathbf e_j=f_d(c_j)\in\mathbb R^{d_r}\)</span>。若用余弦相似度，必须明确是否已归一化：</p>
+<p><a id="eq-09-retrieval-score"></a></p>
+<p><span class="math display">\[
+s_{\cos}(x,c_j)=\frac{\mathbf q\mathbf e_j^{\mathsf T}}
+{\lVert\mathbf q\rVert_2\lVert\mathbf e_j\rVert_2}.
+\]</span></p>
+<p><span class="math display">\[
+\widehat{\mathcal C}_k=\operatorname{TopK}_{j}\;s_{\cos}(x,c_j).
+\]</span></p>
+<div class="text-end">
+<p>（09-Retrieval-Score）</p>
+</div>
+<p>这里<span class="math inline">\(\mathbf q,\mathbf e_j\)</span>都是行向量；若二者预先做L2归一化，余弦排序才与点积排序相同。未归一化内积会同时受方向和向量范数影响。DPR给出双编码器Dense Passage Retrieval的代表性路线，但其特定开放域问答结果不代表Dense必然优于BM25；专名、数字、低资源语言和新领域可能需要稀疏/稠密混合及reranker。</p>
+<p>Chunk不是越小或越大越好。过小会丢标题、表格与跨段关系，过大会降低检索分辨率并占Prompt；overlap提高召回机会，却造成重复证据和索引膨胀。评测应在固定语料版本上分别报告Recall@k/命中、MRR或nDCG、权限过滤正确率、重排后证据覆盖，以及端到端答案正确性、引用支持率和不可回答识别。只有最终答案分数无法定位检索故障。</p>
+</section>
+<section id="context-construction不是字符串拼接" class="level3">
+<h3 class="anchored" data-anchor-id="context-construction不是字符串拼接">9.4.3 Context Construction不是字符串拼接</h3>
+<p>送入模型前要处理总Token预算<span class="math inline">\(T_{\mathrm{ctx}}\)</span>：系统指令、对话历史、query、chunk标题/正文/元数据与预留输出共享同一窗口。构造器应去重、保留来源边界、按query相关性与文档结构排序，并对每段分配稳定引用ID；截断必须在可记录的chunk/字段边界发生，而非静默切掉证据末尾。</p>
+<p>检索文本属于<strong>不可信数据</strong>。即使它写着“忽略先前指令”也不应改变系统策略、权限或工具参数；模型需要明确的数据定界，执行层仍须Schema校验、Allowlist与最小权限。RAG只让证据可见，不保证模型引用它、不曲解它或拒绝库外问题。可用“答案中的原子主张是否被所引chunk支持”做grounding检查，并保留无充分证据时的abstain路径。</p>
+</section>
+<section id="tool-calling提议验证执行观察" class="level3">
+<h3 class="anchored" data-anchor-id="tool-calling提议验证执行观察">9.4.4 Tool Calling：提议、验证、执行、观察</h3>
+<p>工具调用的安全接口是状态转换，而不是让模型输出任意代码。模型先生成结构化候选</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"tool"</span><span class="fu">:</span><span class="st">"lookup_order"</span><span class="fu">,</span><span class="dt">"arguments"</span><span class="fu">:{</span><span class="dt">"order_id"</span><span class="fu">:</span><span class="st">"A-104"</span><span class="fu">},</span><span class="dt">"call_id"</span><span class="fu">:</span><span class="st">"c7"</span><span class="fu">}</span></span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p>编排器再按版本化JSON Schema解析并校验类型、范围、必填字段与额外字段；随后做身份认证、资源级授权、策略检查、速率/金额限制和必要的用户确认。只有验证通过才由隔离执行器调用工具，返回带<code>call_id</code>、状态、时间和截断标记的Observation，模型才能继续生成。Toolformer研究了模型何时、如何调用API及利用结果的训练路线；它不替代运行时权限控制。</p>
+<p><a href="#fig-ch09-tool-call-state-machine" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-tool-call-state-machine</span></a> 把模型输出限制为“提议”。验证、授权、确认和执行都属于模型外控制面；超时后外部状态未知时，状态机必须先查询或对账，不能把重试当成默认成功路径。</p>
+<div id="fig-ch09-tool-call-state-machine" class="quarto-float quarto-figure quarto-figure-center anchored" alt="模型先提出带tool、arguments和call_id的结构化候选。编排器依次进行Schema校验、身份与资源授权、高影响操作用户确认，再交给隔离执行器。成功或明确失败都返回结构化Observation；超时导致未知外部状态时进入查询和对账，只有幂等或已确认未执行的操作才可重试。Observation再反馈模型，但不能提升权限。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-tool-call-state-machine-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/tool-call-state-machine.svg" class="img-fluid figure-img" alt="模型先提出带tool、arguments和call_id的结构化候选。编排器依次进行Schema校验、身份与资源授权、高影响操作用户确认，再交给隔离执行器。成功或明确失败都返回结构化Observation；超时导致未知外部状态时进入查询和对账，只有幂等或已确认未执行的操作才可重试。Observation再反馈模型，但不能提升权限。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-tool-call-state-machine-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.7: 工具调用从模型提议到验证授权执行和Observation的有界状态机。
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>模型提出动作，不授予动作
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Schema有效只说明结构正确；身份认证、资源级授权、风险策略和用户确认必须在执行层独立成立。检索文本或工具Observation中的指令也不能越过这些门。</p>
+</div>
+</div>
+<p>读操作也可能泄露数据，写操作还可能不可逆。高影响调用要区分<code>preview/plan</code>与<code>commit</code>，对转账、发送、删除或发布使用明确确认；幂等键防止超时重试造成重复副作用。工具错误必须是结构化状态，例如<code>timeout</code>、<code>rate_limited</code>、<code>validation_error</code>、<code>permission_denied</code>，不能让模型把失败文本想象成成功。</p>
+</section>
+<section id="agentic-workflow与失败恢复" class="level3">
+<h3 class="anchored" data-anchor-id="agentic-workflow与失败恢复">9.4.5 Agentic Workflow与失败恢复</h3>
+<p>Agent工作流把多次“观察<span class="math inline">\(\rightarrow\)</span>决策<span class="math inline">\(\rightarrow\)</span>动作<span class="math inline">\(\rightarrow\)</span>新观察”连成有界状态机。ReAct是交错生成推理痕迹与动作的代表性研究范式；生产编排还需要模型之外的控制面：最大步数/总Token/工具调用/墙钟预算，状态持久化，循环检测，取消，checkpoint，以及补偿或人工接管。</p>
+<p>令一条串行关键路径包含<span class="math inline">\(S\)</span>次模型调用、<span class="math inline">\(R\)</span>次检索和<span class="math inline">\(K\)</span>次工具调用，其端到端延迟账本为</p>
+<p><a id="eq-09-agent-latency"></a></p>
+<p><span class="math display">\[
+\begin{aligned}
+L_{\mathrm{e2e}}
+&amp;=\sum_{i=1}^{S}L^{(i)}_{\mathrm{model}}
++\sum_{j=1}^{R}L^{(j)}_{\mathrm{retrieval}}\\
+&amp;\quad+\sum_{k=1}^{K}L^{(k)}_{\mathrm{tool}}
++L_{\mathrm{queue}}+L_{\mathrm{orchestration}}.
+\end{aligned}
+\]</span></p>
+<div class="text-end">
+<p>（09-Agent-Latency）</p>
+</div>
+<p>该式只适用于未重叠的串行关键路径；并行工具取关键路径最大值而非简单相加，重试则新增调用与排队。构造例中两次模型调用80/120 ms、一次检索35 ms、两次工具50/200 ms、排队40 ms、编排15 ms，总延迟为540 ms。这不是本机或网络实测。</p>
+<p>恢复策略必须按副作用分类。纯读取可在退避和截止时间内重试；带幂等键的写入可查询已有结果；非幂等且状态未知时应停止并对账，不能盲目重放。每一步保存输入摘要、工具版本、权限决策、调用ID、结果哈希和状态，但日志要脱敏并限制访问。</p>
+</section>
+<section id="联合评测与威胁边界" class="level3">
+<h3 class="anchored" data-anchor-id="联合评测与威胁边界">9.4.6 联合评测与威胁边界</h3>
+<p>系统至少同时测四层：检索层的证据召回与权限过滤，生成层的正确/引用支持/拒答，工具层的Schema有效率、授权拒绝、幂等与副作用正确性，工作流层的任务成功、步数、延迟、成本和恢复率。Prompt Injection测试要覆盖用户直接注入与检索页面/工具Observation中的间接注入，并验证攻击即使影响模型文本，也不能越过执行层权限。</p>
+<p>建议保存失败归因矩阵：<code>retrieval_miss</code>、<code>context_truncated</code>、<code>unsupported_claim</code>、<code>bad_arguments</code>、<code>policy_denied</code>、<code>tool_failed</code>、<code>loop_budget_exceeded</code>与<code>unknown_external_state</code>。只有端到端“成功/失败”会掩盖改进方向；只看检索Recall也不能证明最终回答可靠。</p>
+<p><strong>理解检查。</strong> 某Agent在工具超时后自动重试三次，最终报告订单已取消。为什么仍不能据此认定状态正确？请从幂等键、超时后的未知外部状态、资源级授权、Observation真实性与审计对账说明所需证据。</p>
+<p><a id="sec-9-5"></a></p>
+</section>
+</section>
+<section id="新型模型架构与计算范式" class="level2">
+<h2 class="anchored" data-anchor-id="新型模型架构与计算范式">9.5 新型模型架构与计算范式</h2>
+<blockquote class="blockquote">
+<p><strong>选修/扩展。</strong> 本节用State Space Model（SSM）说明Attention之外的序列混合路线，并讨论混合架构。所有容量例都是统一口径下的解析账本；未实现或运行S4、Mamba、Jamba、Selective Scan或对应Kernel。</p>
+</blockquote>
+<p>设想为32K流式会话选择骨干：Dense Attention保留全部可寻址KV，SSM把历史压进固定状态，Hybrid只在部分层保留Attention。选择不能只看<span class="math inline">\(O(T^2)\)</span>与<span class="math inline">\(O(T)\)</span>标签；还要问训练如何并行扫描、Decode保存什么、Kernel在目标硬件上是否高效，以及压缩状态能否保留任务所需信息。本节沿着<strong>信息路径 → 递推shape → 状态字节 → Kernel → 质量协议</strong>比较。</p>
+<section id="transformer的成本与能力来自同一机制" class="level3">
+<h3 class="anchored" data-anchor-id="transformer的成本与能力来自同一机制">9.5.1 Transformer的成本与能力来自同一机制</h3>
+<p>Dense causal Attention让当前Query可按内容直接读取任意历史Key/Value，这提供短信息路径与显式内容寻址，但训练/Prefill的可见对为<span class="math inline">\(O(T^2)\)</span>，Decode还要保存并读取随<span class="math inline">\(T\)</span>增长的KV Cache。Sliding/Sparse Attention降低边数，却改变可见图；线性Attention改变核或归一化；循环/SSM则把历史压入固定尺寸状态。它们不是“同一Attention的更快实现”，信息路径与归纳偏置已经变化。</p>
+<p>比较新架构至少要固定参数量/激活参数、训练Token、数据、上下文、精度、硬件和质量目标，再同时报告Prefill、Decode、显存与任务质量。仅凭渐近量级无法判断短序列Kernel开销、并行度、内存布局或训练稳定性。</p>
+</section>
+<section id="离散state-space递推" class="level3">
+<h3 class="anchored" data-anchor-id="离散state-space递推">9.5.2 离散State Space递推</h3>
+<p>设单Token输入<span class="math inline">\(\mathbf x_t\in\mathbb R^{1\times d}\)</span>、状态<span class="math inline">\(\mathbf h_t\in\mathbb R^{1\times n}\)</span>、输出<span class="math inline">\(\mathbf y_t\in\mathbb R^{1\times d}\)</span>。按本书行向量方向，一个离散状态空间层可写成</p>
+<p><a id="eq-09-ssm-recurrence"></a></p>
+<p><span class="math display">\[
+\mathbf h_t=\mathbf h_{t-1}\overline{\mathbf A}_t^{\mathsf T}
++\mathbf x_t\overline{\mathbf B}_t^{\mathsf T}.
+\]</span></p>
+<p><span class="math display">\[
+\mathbf y_t=\mathbf h_t\mathbf C_t^{\mathsf T}
++\mathbf x_t\mathbf D^{\mathsf T}.
+\]</span></p>
+<div class="text-end">
+<p>（09-SSM-Recurrence）</p>
+</div>
+<p>其中<span class="math inline">\(\overline{\mathbf A}_t\in\mathbb R^{n\times n}\)</span>、<span class="math inline">\(\overline{\mathbf B}_t\in\mathbb R^{n\times d}\)</span>、<span class="math inline">\(\mathbf C_t\in\mathbb R^{d\times n}\)</span>、<span class="math inline">\(\mathbf D\in\mathbb R^{d\times d}\)</span>，所以两项都分别落到<span class="math inline">\(1\times n\)</span>与<span class="math inline">\(1\times d\)</span>。上横线常表示连续系统离散化后的参数，但本节从离散递推本身出发。</p>
+<p>当<span class="math inline">\(\overline{\mathbf A},\overline{\mathbf B},\mathbf C\)</span>与输入和时间无关时，递推可展开为卷积核<span class="math inline">\(\mathbf C\overline{\mathbf A}^{k}\overline{\mathbf B}\)</span>；训练可利用卷积或结构化算法并行，逐Token生成则保留最终状态递推。S4通过结构化参数化提高长序列SSM计算的可行性。固定状态意味着Decode无需保存全部历史KV，但过去信息被压入<span class="math inline">\(n\)</span>维状态，不能像Attention那样按内容直接随机读取任意旧Token。</p>
+</section>
+<section id="mamba的选择性与硬件扫描" class="level3">
+<h3 class="anchored" data-anchor-id="mamba的选择性与硬件扫描">9.5.3 Mamba的选择性与硬件扫描</h3>
+<p>语言Token往往要求根据当前内容决定“保留什么、忘记什么”。Mamba让部分SSM参数成为输入的函数，使状态更新具有选择性；代价是不能直接使用一条固定的全序列卷积核。其实现使用面向硬件的Selective Scan，在训练时并行组织扫描、在Decode时递归更新状态，并尽量减少慢速内存往返。</p>
+<p>“序列长度线性”描述的是该层随<span class="math inline">\(T\)</span>的主项，不等于任意GPU、batch和长度上更快。扫描含数据依赖，实际性能还受状态宽度、扩展维度、融合Kernel、并行前缀算法、重计算、dtype和内存带宽影响。论文报告的吞吐或百万长度结果只属于其模型、任务与硬件，不能写成本机结果。</p>
+<p>若实现每层维护<span class="math inline">\(\mathbf H\in\mathbb R^{B\times d_s\times n}\)</span>的递归状态，其理想payload为</p>
+<p><a id="eq-09-recurrent-state-memory"></a></p>
+<p><span class="math display">\[
+M_{\mathrm{state}}=B L d_s n s_{\mathrm{state}}.
+\]</span></p>
+<div class="text-end">
+<p>（09-Recurrent-State-Memory）</p>
+</div>
+<p>它对已处理长度<span class="math inline">\(T\)</span>为<span class="math inline">\(O(1)\)</span>，但不含局部卷积状态、门控激活、权重、workspace、对齐或混合Attention层KV。构造例取<span class="math inline">\(B=1,L=32,d_s=8192,n=16\)</span>、BF16状态，理想payload为8 MiB；贯穿Transformer在32K Token下的逻辑KV为4 GiB。二者不是同质量、同参数或同实现模型的Benchmark，只展示“固定递归状态”与“随长度增长的KV”这一个结构差异。</p>
+</section>
+<section id="训练扫描decode状态与长度能力" class="level3">
+<h3 class="anchored" data-anchor-id="训练扫描decode状态与长度能力">9.5.4 训练扫描、Decode状态与长度能力</h3>
+<p>SSM训练仍要读取全部<span class="math inline">\(T\)</span>个输入，并保存或重算反向所需中间量；<span class="math inline">\(O(T)\)</span>不能解读为常数训练内存。Decode每步更新固定状态可避免全历史KV读取，但状态更新、门控、MLP和词表头仍有成本。状态损坏或量化误差还会传播到未来步骤，流式会话的reset、截断、batch重排与状态迁移都要明确。</p>
+<p>更重要的是，固定状态容量不自动等于无限有效上下文。长距离复制、任意关联回忆、精确计数和多跳推理会暴露不同瓶颈；必须像<a href="#sec-9-1">9.1</a>一样在长度与证据位置上评测，而不能只证明模型接受更长输入。Attention的显式KV昂贵却便于内容寻址，递归状态便宜却形成压缩瓶颈，任务决定取舍。</p>
+</section>
+<section id="hybrid-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="hybrid-architecture">9.5.5 Hybrid Architecture</h3>
+<p>混合架构在同一网络交错Attention与SSM/卷积层：SSM层承担大部分局部和流式混合，周期性Attention层提供全局内容寻址；也可混合MoE扩大总容量而控制每Token激活参数。Jamba是Transformer—Mamba—MoE混合的具体研究实例，但它的一种层比例或专家配置不是通用最优解。</p>
+<p>混合方案的资源账本必须逐层相加：只有Attention层产生对应KV Cache，只有MoE层产生路由与All-to-All，SSM层产生递归/卷积状态。若<span class="math inline">\(L_a\)</span>个Attention层沿用贯穿配置，则其KV是全<span class="math inline">\(L=32\)</span> Transformer的<span class="math inline">\(L_a/32\)</span>，再加所有SSM状态；不能把整模型简单标成“无KV”或“线性”。质量评测还需分解局部建模、关联回忆、长文档推理和流式生成。</p>
+<p><a href="#fig-ch09-architecture-state-ledger" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch09-architecture-state-ledger</span></a> 将训练路径、Decode状态和主要质量风险并排。Hybrid不是第三种免费方案，而是把各层账本相加，并用周期性内容寻址换取额外KV。</p>
+<div id="fig-ch09-architecture-state-ledger" class="quarto-float quarto-figure quarto-figure-center anchored" alt="三列比较架构。Transformer训练使用全局或稀疏注意力图，Decode保存随长度增长的KV，支持按内容直接寻址；SSM训练使用扫描或结构化算法，Decode保存固定递归和局部卷积状态，形成信息压缩瓶颈；Hybrid逐层组合二者，只有Attention层增加KV，SSM层增加递归状态，资源必须逐层相加。底部共同要求同预算质量、Kernel与系统测量。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch09-architecture-state-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch09/architecture-state-ledger.svg" class="img-fluid figure-img" alt="三列比较架构。Transformer训练使用全局或稀疏注意力图，Decode保存随长度增长的KV，支持按内容直接寻址；SSM训练使用扫描或结构化算法，Decode保存固定递归和局部卷积状态，形成信息压缩瓶颈；Hybrid逐层组合二者，只有Attention层增加KV，SSM层增加递归状态，资源必须逐层相加。底部共同要求同预算质量、Kernel与系统测量。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch09-architecture-state-ledger-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;10.8: Transformer、SSM与Hybrid在训练、Decode状态和信息路径上的对比。
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>固定状态不是无限有效上下文
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>状态字节不随<span class="math inline">\(T\)</span>增长，只说明存储形态；它不保证任意旧信息仍可精确恢复。长度能力仍要在位置、任务难度和质量阈值上验证。</p>
+</div>
+</div>
+</section>
+<section id="展望架构kernel与系统共同设计" class="level3">
+<h3 class="anchored" data-anchor-id="展望架构kernel与系统共同设计">9.5.6 展望：架构、Kernel与系统共同设计</h3>
+<p>未来系统更可能组合Dense/Sparse Attention、SSM、卷积、MoE、检索与工具，而不是由单一渐近复杂度胜出。架构决定信息可见性和状态，Kernel决定算子是否真正利用硬件，分布式布局决定状态如何分片通信，服务调度决定不同长度与状态的请求能否高效共存。</p>
+<p>因此新架构验收表至少包含：数学递推与shape、训练/Decode算法、状态与缓存字节、目标硬件Kernel、长度—质量曲线、故障恢复/状态迁移，以及与同预算基线的端到端测量。没有可用Kernel时，较低理论FLOPs可能更慢；没有任务质量约束时，较小状态也可能只是丢失信息。</p>
+<p><strong>理解检查。</strong> 某模型宣称“SSM使上下文成本从二次降为线性，且Decode状态不随长度增长”。为什么仍不能推出它在128K检索任务上优于Transformer？请从状态容量、内容寻址、训练长度、Selective Scan Kernel、混合Attention层和有效上下文评测回答。</p>
+<p><a id="experiment"></a></p>
+</section>
+</section>
+<section id="本章实验" class="level2">
+<h2 class="anchored" data-anchor-id="本章实验">本章实验</h2>
+<p>本章不设独立运行实验；第10章把实现和测量拆成六个可执行项目。本章安排一份<strong>前沿方案审计任务</strong>：从9.1–9.5任选一个系统，提交不执行外部副作用的设计与证据包。</p>
+<ul>
+<li><strong>输入：</strong> 固定的模型/论文版本、目标任务、长度/Batch/精度/硬件假设、质量与资源基线；若涉及RAG/工具，另给语料版本、权限矩阵和模拟工具Schema。</li>
+<li><strong>步骤：</strong> 画数据流与状态边界；用本章公式复算至少一个shape/bytes/Token/延迟账本；列出解析主项、论文报告和待本机实测项；设计质量、系统和安全切片；给出失败停止与回滚条件。</li>
+<li><strong>正确性门槛：</strong> 数学shape闭合，单位可追溯，基线同预算；不得把论文数字称本机实测，不得把可接收长度当有效上下文，不得真实调用写工具；所有假设和未运行项显式列出。</li>
+<li><strong>记录字段：</strong> 方案ID、来源revision、配置、公式口径、构造输入、计算输出、评测矩阵、威胁模型、未测项、预期日志与复现命令。</li>
+<li><strong>低资源路线：</strong> 只做纸面/脚本解析复算和模拟Observation；不下载模型、不建立外部索引、不连接账户。该任务当前未运行，没有性能或质量结果。</li>
+</ul>
+<p><a id="exercises"></a></p>
+</section>
+<section id="本章小结与习题" class="level2">
+<h2 class="anchored" data-anchor-id="本章小结与习题">本章小结与习题</h2>
+<p>本章把前沿方向还原为可检查的状态、Token和系统边界：长上下文要区分窗口与有效利用，多模态要把Visual Token纳入Attention/KV账本，测试时计算要把候选覆盖与选择准确率分开，RAG/Agent要把外部数据与权限置于模型之外验证，SSM/混合架构则要同时看固定状态、内容寻址和Kernel。共同原则是：解析账本解释结构与数量级，论文报告界定已有证据，本机性能只能由本机实测支持。</p>
+<ol type="1">
+<li>对<span class="math inline">\(T=16384,w=2048\)</span>的因果序列，计算Full与Sliding Window可见对及比例。贯穿配置在该长度的逻辑KV是多少？为何这些数字仍不能给出有效上下文长度？</li>
+<li>一张<span class="math inline">\(448\times448\)</span>图像使用<span class="math inline">\(14\times14\)</span> Patch，不加CLS Token，并与1024个文本Token拼接。求视觉Token、总Token、拼接前后稠密因果可见对比例及视觉前缀逻辑KV；列出两个未计成本。</li>
+<li>单候选正确概率<span class="math inline">\(p=0.25\)</span>，独立生成<span class="math inline">\(N=6\)</span>条时理想候选覆盖是多少？若每条输出100 Token，Decode工作量是多少？一个串行Agent另有两次模型调用90/110 ms、检索30 ms、工具150 ms、排队20 ms、编排10 ms，求延迟，并解释为何覆盖率和延迟都不能证明最终任务成功。</li>
+<li>一个Hybrid含8个Attention层与24个SSM层；Attention层沿用贯穿配置，在32K长度时全32层Transformer逻辑KV为4 GiB。SSM取<span class="math inline">\(B=1,d_s=8192,n=16\)</span>、BF16。求Attention KV、SSM状态和二者理想和；说明为何不能称该模型“无KV且固定8 MiB状态”。</li>
+</ol>
+<p><a href="../appendices/exercise-solutions.html#solutions-9">答案与提示</a></p>
+<p>第 10 章将把这里的审查框架变成六个可执行项目：不再只评价提案，而是要求配置、公式、脚本、原始结果和未运行边界能汇入同一份证据包。</p>
+<p><a id="references"></a></p>
+</section>
+<section id="参考资料" class="level2">
+<h2 class="anchored" data-anchor-id="参考资料">参考资料</h2>
+<ul>
+<li>长上下文：<a href="https://arxiv.org/abs/2306.15595">Position Interpolation</a>、<a href="https://arxiv.org/abs/2310.01889">Ring Attention</a>、<a href="https://arxiv.org/abs/2404.06654">RULER</a>、<a href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a>。</li>
+<li>多模态：<a href="https://arxiv.org/abs/2010.11929">Vision Transformer</a>、<a href="https://arxiv.org/abs/2204.14198">Flamingo</a>、<a href="https://arxiv.org/abs/2304.08485">LLaVA</a>。</li>
+<li>测试时计算：<a href="https://arxiv.org/abs/2201.11903">Chain-of-Thought</a>、<a href="https://arxiv.org/abs/2203.11171">Self-Consistency</a>、<a href="https://arxiv.org/abs/2305.20050">Let’s Verify Step by Step</a>。</li>
+<li>RAG与Agent：<a href="https://arxiv.org/abs/2005.11401">RAG</a>、<a href="https://arxiv.org/abs/2004.04906">DPR</a>、<a href="https://arxiv.org/abs/2302.04761">Toolformer</a>、<a href="https://arxiv.org/abs/2210.03629">ReAct</a>。</li>
+<li>新架构：<a href="https://arxiv.org/abs/2111.00396">S4</a>、<a href="https://arxiv.org/abs/2312.00752">Mamba</a>、<a href="https://arxiv.org/abs/2403.19887">Jamba</a>。</li>
+</ul>
+<p>完整书目信息、访问日期和所支持论点见<a href="../appendices/references.html">参考资料附录</a>与来源台账。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "切换深色模式");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "切换深色模式");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "已复制");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "已复制");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"可滚动的代码","output":"可滚动的输出"};
+  </script>
+<nav class="page-navigation" aria-label="页面">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/08-post-training-evaluation.html" class="pagination-link" aria-label="第 8 章 大语言模型微调、对齐与评测">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">第 8 章 大语言模型微调、对齐与评测</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/10-projects.html" class="pagination-link" aria-label="第 10 章 综合实践与课程项目">
+        <span class="nav-page-text"><span class="chapter-title">第 10 章 综合实践与课程项目</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

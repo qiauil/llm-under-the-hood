@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第 10 章 综合实践与课程项目 – 拆开大模型</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../appendices/prerequisites.html" rel="next">
+<link href="../chapters/09-frontiers.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-e9b880ddb15872a1c17b20ebf15c20bb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9ce463b964bd3338f1a703a30fb1d110.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">跳至主要内容</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="工具栏">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/10-projects.html">综合实践</a></li><li class="breadcrumb-item"><a href="../chapters/10-projects.html"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="搜索" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="网站">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">拆开大模型</a> 
+        <div class="sidebar-tools-main">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式" aria-label="切换深色模式"><i class="bi"></i></button>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="切换阅读器模式">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">读者导览</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">模型基础与结构</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-foundations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 1 章 大语言模型基础</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-transformer.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 2 章 Transformer 模型结构</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-compute-and-gpu.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 3 章 模型计算复杂度与 GPU 计算基础</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">训练与并行系统</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-pretraining.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 4 章 大语言模型的预训练原理与训练流程</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-distributed-training.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 5 章 大规模分布式训练</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-efficient-attention.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 6 章 高性能 Attention 与 GPU Kernel 优化</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">推理、后训练与前沿</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-inference-serving.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 7 章 大语言模型推理与高性能服务系统</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08-post-training-evaluation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 8 章 大语言模型微调、对齐与评测</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09-frontiers.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">综合实践</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10-projects.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">附录</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/prerequisites.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">必要前置知识</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">统一符号与贯穿配置</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/exercise-solutions.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">习题答案与提示</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">参考资料</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#学习目标与前置知识" id="toc-学习目标与前置知识" class="nav-link active" data-scroll-target="#学习目标与前置知识">学习目标与前置知识</a>
+  <ul class="collapse">
+  <li><a href="#遇到失败时先定位哪一层" id="toc-遇到失败时先定位哪一层" class="nav-link" data-scroll-target="#遇到失败时先定位哪一层">遇到失败时，先定位哪一层</a></li>
+  </ul></li>
+  <li><a href="#项目一从零实现-mini-gpt" id="toc-项目一从零实现-mini-gpt" class="nav-link" data-scroll-target="#项目一从零实现-mini-gpt">10.1 项目一：从零实现 Mini-GPT</a>
+  <ul class="collapse">
+  <li><a href="#项目目标与交付物" id="toc-项目目标与交付物" class="nav-link" data-scroll-target="#项目目标与交付物">项目目标与交付物</a></li>
+  <li><a href="#实现清单与接口" id="toc-实现清单与接口" class="nav-link" data-scroll-target="#实现清单与接口">实现清单与接口</a></li>
+  <li><a href="#数据训练与生成协议" id="toc-数据训练与生成协议" class="nav-link" data-scroll-target="#数据训练与生成协议">数据、训练与生成协议</a></li>
+  <li><a href="#cpu字符夹具已运行" id="toc-cpu字符夹具已运行" class="nav-link" data-scroll-target="#cpu字符夹具已运行">CPU字符夹具：已运行</a></li>
+  <li><a href="#验收矩阵与扩展路线" id="toc-验收矩阵与扩展路线" class="nav-link" data-scroll-target="#验收矩阵与扩展路线">验收矩阵与扩展路线</a></li>
+  </ul></li>
+  <li><a href="#项目二llm-计算量和显存分析器" id="toc-项目二llm-计算量和显存分析器" class="nav-link" data-scroll-target="#项目二llm-计算量和显存分析器">10.2 项目二：LLM 计算量和显存分析器</a>
+  <ul class="collapse">
+  <li><a href="#目标输入schema与证据分层" id="toc-目标输入schema与证据分层" class="nav-link" data-scroll-target="#目标输入schema与证据分层">目标、输入Schema与证据分层</a></li>
+  <li><a href="#四类输出如何复用全书公式" id="toc-四类输出如何复用全书公式" class="nav-link" data-scroll-target="#四类输出如何复用全书公式">四类输出如何复用全书公式</a></li>
+  <li><a href="#验证矩阵" id="toc-验证矩阵" class="nav-link" data-scroll-target="#验证矩阵">验证矩阵</a></li>
+  <li><a href="#已运行结果" id="toc-已运行结果" class="nav-link" data-scroll-target="#已运行结果">已运行结果</a></li>
+  <li><a href="#交付与停止条件" id="toc-交付与停止条件" class="nav-link" data-scroll-target="#交付与停止条件">交付与停止条件</a></li>
+  </ul></li>
+  <li><a href="#项目三分布式训练性能分析" id="toc-项目三分布式训练性能分析" class="nav-link" data-scroll-target="#项目三分布式训练性能分析">10.3 项目三：分布式训练性能分析</a>
+  <ul class="collapse">
+  <li><a href="#项目目标两层证据与公平比较" id="toc-项目目标两层证据与公平比较" class="nav-link" data-scroll-target="#项目目标两层证据与公平比较">项目目标、两层证据与公平比较</a></li>
+  <li><a href="#四本账与重叠边界" id="toc-四本账与重叠边界" class="nav-link" data-scroll-target="#四本账与重叠边界">四本账与重叠边界</a></li>
+  <li><a href="#gpu实现测量协议与调试边界" id="toc-gpu实现测量协议与调试边界" class="nav-link" data-scroll-target="#gpu实现测量协议与调试边界">GPU实现、测量协议与调试边界</a></li>
+  <li><a href="#本机已运行的解析策略账本" id="toc-本机已运行的解析策略账本" class="nav-link" data-scroll-target="#本机已运行的解析策略账本">本机已运行的解析策略账本</a></li>
+  </ul></li>
+  <li><a href="#项目四attention-kernel-性能优化" id="toc-项目四attention-kernel-性能优化" class="nav-link" data-scroll-target="#项目四attention-kernel-性能优化">10.4 项目四：Attention Kernel 性能优化</a>
+  <ul class="collapse">
+  <li><a href="#目标输入与三层证据" id="toc-目标输入与三层证据" class="nav-link" data-scroll-target="#目标输入与三层证据">目标、输入与三层证据</a></li>
+  <li><a href="#三种实现与正确性门槛" id="toc-三种实现与正确性门槛" class="nav-link" data-scroll-target="#三种实现与正确性门槛">三种实现与正确性门槛</a></li>
+  <li><a href="#runtimepeak-memory与profiler协议" id="toc-runtimepeak-memory与profiler协议" class="nav-link" data-scroll-target="#runtimepeak-memory与profiler协议">Runtime、Peak Memory与Profiler协议</a></li>
+  <li><a href="#本机低资源结果与图" id="toc-本机低资源结果与图" class="nav-link" data-scroll-target="#本机低资源结果与图">本机低资源结果与图</a></li>
+  <li><a href="#报告验收与适用边界" id="toc-报告验收与适用边界" class="nav-link" data-scroll-target="#报告验收与适用边界">报告、验收与适用边界</a></li>
+  </ul></li>
+  <li><a href="#项目五llm-推理系统-benchmark" id="toc-项目五llm-推理系统-benchmark" class="nav-link" data-scroll-target="#项目五llm-推理系统-benchmark">10.5 项目五：LLM 推理系统 Benchmark</a>
+  <ul class="collapse">
+  <li><a href="#目标真实部署与公平基线" id="toc-目标真实部署与公平基线" class="nav-link" data-scroll-target="#目标真实部署与公平基线">目标、真实部署与公平基线</a></li>
+  <li><a href="#工作负载矩阵与指标口径" id="toc-工作负载矩阵与指标口径" class="nav-link" data-scroll-target="#工作负载矩阵与指标口径">工作负载矩阵与指标口径</a></li>
+  <li><a href="#三组优化ab" id="toc-三组优化ab" class="nav-link" data-scroll-target="#三组优化ab">三组优化A/B</a></li>
+  <li><a href="#本机低资源指标管线已运行" id="toc-本机低资源指标管线已运行" class="nav-link" data-scroll-target="#本机低资源指标管线已运行">本机低资源指标管线：已运行</a></li>
+  <li><a href="#最终报告与停止条件" id="toc-最终报告与停止条件" class="nav-link" data-scroll-target="#最终报告与停止条件">最终报告与停止条件</a></li>
+  </ul></li>
+  <li><a href="#最终课程项目端到端-llm-系统分析" id="toc-最终课程项目端到端-llm-系统分析" class="nav-link" data-scroll-target="#最终课程项目端到端-llm-系统分析">10.6 最终课程项目：端到端 LLM 系统分析</a>
+  <ul class="collapse">
+  <li><a href="#项目目标选型与证据链" id="toc-项目目标选型与证据链" class="nav-link" data-scroll-target="#项目目标选型与证据链">项目目标、选型与证据链</a></li>
+  <li><a href="#阶段一模型结构分析" id="toc-阶段一模型结构分析" class="nav-link" data-scroll-target="#阶段一模型结构分析">阶段一：模型结构分析</a></li>
+  <li><a href="#阶段二资源分析" id="toc-阶段二资源分析" class="nav-link" data-scroll-target="#阶段二资源分析">阶段二：资源分析</a></li>
+  <li><a href="#阶段三训练与并行设计" id="toc-阶段三训练与并行设计" class="nav-link" data-scroll-target="#阶段三训练与并行设计">阶段三：训练与并行设计</a></li>
+  <li><a href="#阶段四推理部署与优化" id="toc-阶段四推理部署与优化" class="nav-link" data-scroll-target="#阶段四推理部署与优化">阶段四：推理部署与优化</a></li>
+  <li><a href="#综合报告图表与验收矩阵" id="toc-综合报告图表与验收矩阵" class="nav-link" data-scroll-target="#综合报告图表与验收矩阵">综合报告、图表与验收矩阵</a></li>
+  <li><a href="#本仓库提供的低资源起点" id="toc-本仓库提供的低资源起点" class="nav-link" data-scroll-target="#本仓库提供的低资源起点">本仓库提供的低资源起点</a></li>
+  </ul></li>
+  <li><a href="#本章实验" id="toc-本章实验" class="nav-link" data-scroll-target="#本章实验">本章实验</a></li>
+  <li><a href="#本章小结与习题" id="toc-本章小结与习题" class="nav-link" data-scroll-target="#本章小结与习题">本章小结与习题</a></li>
+  <li><a href="#参考资料" id="toc-参考资料" class="nav-link" data-scroll-target="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/10-projects.html">综合实践</a></li><li class="breadcrumb-item"><a href="../chapters/10-projects.html"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">第 10 章 综合实践与课程项目</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="../index.html">总目录</a> · 上一章：<a href="../chapters/09-frontiers.html">第 9 章</a> · 正文末章；之后按需查阅<a href="../appendices/prerequisites.html">前置知识附录</a></p>
+<p>学期末，你已经能运行 MiniGPT、复算参数与显存、列出并行候选、比较 Attention 实现，还能从请求 trace 计算延迟与 SLO。现在真正困难的问题出现了：这些结果来自不同夹具，某个脚本的 PASS 能否和另一个脚本的 PASS 合起来，证明“一个 LLM 系统已经完成”？答案是否定的。你需要冻结同一个模型与 manifest，让结构、资源、训练设计和部署测量沿同一条证据链首尾相接。</p>
+<p>本章先把这条长任务拆成五个能力项目，再在 10.6 重新汇流。<a href="#fig-ch10-project-roadmap" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch10-project-roadmap</span></a> 给出建议路线：10.1 和 10.2 是低资源起点；10.3–10.5 分别训练并行、Kernel 与服务测量能力；只有 10.6 要求它们回到同一个模型。</p>
+<div id="fig-ch10-project-roadmap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="项目一产出可训练MiniGPT，项目二产出参数、FLOPs、状态和KV账本；两者共同支持项目三分布式训练、项目四Attention Kernel和项目五推理服务。三个系统项目最终汇入项目六，用同一模型与manifest完成结构、资源、训练并行、部署优化四个Gate。底部虚线表示解析、CPU夹具和合成trace的低资源路线，实线表示目标GPU、分布式runtime和真实服务测量路线。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch10-project-roadmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch10/project-roadmap.svg" class="img-fluid figure-img" alt="项目一产出可训练MiniGPT，项目二产出参数、FLOPs、状态和KV账本；两者共同支持项目三分布式训练、项目四Attention Kernel和项目五推理服务。三个系统项目最终汇入项目六，用同一模型与manifest完成结构、资源、训练并行、部署优化四个Gate。底部虚线表示解析、CPU夹具和合成trace的低资源路线，实线表示目标GPU、分布式runtime和真实服务测量路线。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch10-project-roadmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;11.1: 第十章六个项目的能力依赖与低资源、目标硬件两条建议路线。
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>完成后你会拥有</th>
+<th>当前仓库提供的起点</th>
+<th>不能越过的证据边界</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10.1 Mini-GPT</td>
+<td>一个可训练、可生成、可保存检查点的最小模型</td>
+<td>CPU 字符夹具与失败/成功记录</td>
+<td>拟合字符模式不等于自然语言泛化</td>
+</tr>
+<tr class="even">
+<td>10.2 资源分析</td>
+<td>参数、FLOPs、状态与 KV 的机器可复算账本</td>
+<td>贯穿模型与 MiniGPT 对照</td>
+<td>逻辑字节不等于 GPU 物理峰值</td>
+</tr>
+<tr class="odd">
+<td>10.3 分布式训练</td>
+<td>约束闭合的布局候选与测量协议</td>
+<td>单进程解析策略账本</td>
+<td>假想带宽时间不等于多卡实测</td>
+</tr>
+<tr class="even">
+<td>10.4 Attention Kernel</td>
+<td>正确性—时间—内存—Profiler 矩阵</td>
+<td>CPU 显式/SDPA 代理</td>
+<td>CPU SDPA 不等于 FlashAttention</td>
+</tr>
+<tr class="odd">
+<td>10.5 推理服务</td>
+<td>开放环/闭环 trace 与联合 SLO 报告</td>
+<td>合成事件指标管线</td>
+<td>合成 trace 不等于模型服务</td>
+</tr>
+<tr class="even">
+<td>10.6 最终项目</td>
+<td>同一模型贯穿四个 Gate 的证据包</td>
+<td>manifest 与报告骨架</td>
+<td>不同夹具的 PASS 不能相加成端到端 PASS</td>
+</tr>
+</tbody>
+</table>
+<p><a id="learning"></a></p>
+<section id="学习目标与前置知识" class="level2">
+<h2 class="anchored" data-anchor-id="学习目标与前置知识">学习目标与前置知识</h2>
+<p>学完本章后，读者应能：</p>
+<ol type="1">
+<li>实现并验证一个可训练、可逐Token生成、可保存检查点的Mini-GPT，而非只提交模型类骨架；</li>
+<li>为明确结构复算参数、FLOPs、训练状态与KV Cache，并区分逻辑账本和物理峰值；</li>
+<li>在固定global batch下比较分布式候选的计算、通信、空泡和显存，不从解析估算宣布实测最优；</li>
+<li>设计Attention Kernel正确性、同步计时、峰值与Profiler矩阵，识别CPU替代与FlashAttention证据的边界；</li>
+<li>设计开放环/闭环推理Benchmark，用TTFT、TPOT、吞吐、SLO goodput和GPU内存解释系统瓶颈；</li>
+<li>用同一开源模型manifest把结构、资源、训练设计和部署实验串成可复现报告。</li>
+</ol>
+<p>前置知识为<a href="../chapters/02-transformer.html">第2章模型结构</a>、<a href="../chapters/03-compute-and-gpu.html">第3章资源账本</a>、<a href="../chapters/04-pretraining.html">第4章训练</a>、<a href="../chapters/05-distributed-training.html">第5章并行</a>、<a href="../chapters/06-efficient-attention.html">第6章Attention Kernel</a>和<a href="../chapters/07-inference-serving.html">第7章推理服务</a>；涉及SFT/LoRA或质量评估时再读<a href="../chapters/08-post-training-evaluation.html">第8章</a>。10.1与10.2是低资源核心实践；10.3–10.5均给出CPU/解析替代，但性能结论必须在目标GPU或真实服务上复测；10.6是综合项目任务书。</p>
+<section id="遇到失败时先定位哪一层" class="level3">
+<h3 class="anchored" data-anchor-id="遇到失败时先定位哪一层">遇到失败时，先定位哪一层</h3>
+<p>严格门槛的目的不是给项目贴标签，而是把调试范围缩小。先保留失败记录，再按症状回到最早可能出错的层：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>症状</th>
+<th>常见原因</th>
+<th>第一项检查</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>loss 非有限或不下降</td>
+<td>mask/目标错位、学习率、数据或数值范围</td>
+<td>固定一个 batch，手算有效 Token NLL并检查梯度有限性</td>
+</tr>
+<tr class="even">
+<td>参数、FLOPs 或字节对不上</td>
+<td>结构假设、权重绑定、bias、单位或完整/因果口径不同</td>
+<td>按模块逐项列式，与配置和 <code>sum(numel)</code> 对照</td>
+</tr>
+<tr class="odd">
+<td>多卡结果与单卡不等价</td>
+<td>global batch、归一化、初始化、通信组或更新语义不同</td>
+<td>先做两 rank 小张量/单步参数更新对照</td>
+</tr>
+<tr class="even">
+<td>峰值下降但运行变慢</td>
+<td>fallback、occupancy、launch 开销或未计通信</td>
+<td>先确认实际 Kernel，再分开看时间、内存与 Profiler</td>
+</tr>
+<tr class="odd">
+<td>吞吐上升但队列恶化</td>
+<td>offered load 超过稳定容量或尾延迟被平均值掩盖</td>
+<td>同时报到达/完成率、P99、超时和联合 SLO goodput</td>
+</tr>
+<tr class="even">
+<td>低资源路线 PASS、目标路线无结果</td>
+<td>只验证了解析或管线，没有目标硬件/服务证据</td>
+<td>将目标字段保留为 <code>not_run/null</code>，不要填 0 或外推</td>
+</tr>
+</tbody>
+</table>
+<p><a id="sec-10-1"></a></p>
+</section>
+</section>
+<section id="项目一从零实现-mini-gpt" class="level2">
+<h2 class="anchored" data-anchor-id="项目一从零实现-mini-gpt">10.1 项目一：从零实现 Mini-GPT</h2>
+<p>完成后，你会拥有一个从 Token 输入到训练更新、逐 Token 生成和 checkpoint round-trip 都可检查的最小模型，而不只是一个模型类骨架。</p>
+<section id="项目目标与交付物" class="level3">
+<h3 class="anchored" data-anchor-id="项目目标与交付物">项目目标与交付物</h3>
+<p>实现一个能执行Next-token Prediction并逐Token生成文本的decoder-only Transformer，把<a href="../chapters/02-transformer.html#sec-2-1">第2章前向定义</a>和<a href="../chapters/04-pretraining.html#sec-4-2">第4章训练循环</a>连接成一个可运行程序。最低交付物包括：源代码、不可变配置、Tokenizer/语料说明、训练与验证loss、逐步生成记录、shape/因果检查、checkpoint schema、环境与完整命令、原始JSON及限制说明。只提交类定义或空函数骨架不合格。</p>
+<p>本项目复用<a href="../examples/ch02_transformer_shapes.py">第2章配套实现</a>，而不是复制另一套公式方向。结构固定为Token Embedding、Pre-RMSNorm、GQA形式的Causal Attention、Q/K RoPE、SwiGLU、顺序Residual Connection、final RMSNorm和绑定Embedding/LM Head。代码中PyTorch权重存为<code>[out,in]</code>，数学仍按全书行向量<span class="math inline">\(\mathbf Y=\mathbf X\mathbf W\)</span>、<span class="math inline">\(\mathbf W\)</span>为<code>[in,out]</code>解释。</p>
+</section>
+<section id="实现清单与接口" class="level3">
+<h3 class="anchored" data-anchor-id="实现清单与接口">实现清单与接口</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>模块</th>
+<th>输入→输出</th>
+<th>必须检查</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Embedding</td>
+<td>token ID <code>[B,T]</code> → <code>[B,T,d]</code></td>
+<td>ID范围、绑定LM Head</td>
+</tr>
+<tr class="even">
+<td>GQA Attention</td>
+<td><code>[B,T,d]</code> → Q <code>[B,H,T,d_h]</code>、K/V <code>[B,H_{kv},T,d_h]</code> → <code>[B,T,d]</code></td>
+<td><span class="math inline">\(H/H_{kv}\)</span>可整除、因果未来概率为0</td>
+</tr>
+<tr class="odd">
+<td>RoPE</td>
+<td>Q/K形状不变</td>
+<td>位置0恒等、旋转前后范数容限</td>
+</tr>
+<tr class="even">
+<td>RMSNorm + Residual</td>
+<td><code>[B,T,d]</code> → <code>[B,T,d]</code></td>
+<td>Pre-Norm位置与两次顺序相加</td>
+</tr>
+<tr class="odd">
+<td>SwiGLU</td>
+<td><code>[B,T,d]</code> → Gate/Up <code>[B,T,d_{ff}]</code> → <code>[B,T,d]</code></td>
+<td>gate/up/down三矩阵与显式复算</td>
+</tr>
+<tr class="even">
+<td>LM Head</td>
+<td><code>[B,T,d]</code> → <code>[B,T,V]</code></td>
+<td>与Embedding共享同一参数对象</td>
+</tr>
+</tbody>
+</table>
+<p>前向先通过shape与数值不变量，再进入训练。训练样本<span class="math inline">\(\mathbf x=(x_0,\ldots,x_{T-1})\)</span>的输入为<span class="math inline">\(x_{0:T-1}\)</span>、目标为<span class="math inline">\(x_{1:T}\)</span>，损失复用<a href="../chapters/01-foundations.html#eq-01-loss">式（01-Loss）</a>；padding或角色mask存在时，必须按有效目标Token总数归一。每次成功更新遵循<code>zero_grad → forward/NLL → backward → unscale（如有）→ clip → optimizer.step → scheduler.step（如有）→ log/checkpoint</code>，非有限值时不得推进成功步。</p>
+</section>
+<section id="数据训练与生成协议" class="level3">
+<h3 class="anchored" data-anchor-id="数据训练与生成协议">数据、训练与生成协议</h3>
+<p>真实课程路线应选择许可明确的小语料，冻结train/dev/test划分和字符/BPE/Unigram Tokenizer revision，报告重复、污染与未知Token策略。训练前保存随机初始化的dev/test基线；用train更新、dev选学习率/停止点，配方冻结后才查看test。小语料loss下降主要证明管线能拟合，不能当作开放域语言能力。</p>
+<p>生成必须是显式自回归循环：给定prompt，在第<span class="math inline">\(t\)</span>步只把已有Token送入模型，从最后位置logits按冻结的greedy/temperature/top-k/top-p协议选择<span class="math inline">\(x_{t+1}\)</span>，追加后再继续；遇EOS或<code>max_new_tokens</code>停止。测试应逐步保存context长度、所选Token ID和停止原因，并验证改变未来输入不会影响已生成前缀。当前参考实现为教学简洁而每步重算裁剪后的完整前缀，没有实现KV Cache，不能用于推理性能结论。</p>
+<p>Checkpoint至少保存模型、optimizer、成功更新数、配置、Tokenizer映射和seed；精确续跑还应按<a href="../chapters/04-pretraining.html#sec-4-7">4.7</a>保存scheduler/loss-scaler、各随机源、数据sampler与游标。只验证<code>state_dict</code>重新加载后的logits一致，不能冒充中断后训练轨迹等价或崩溃安全原子提交。</p>
+</section>
+<section id="cpu字符夹具已运行" class="level3">
+<h3 class="anchored" data-anchor-id="cpu字符夹具已运行">CPU字符夹具：已运行</h3>
+<p><a href="../examples/ch10_minigpt_project.py">项目脚本</a>使用内置重复字符夹具<code>to be or not to be.\n</code>，配置为<span class="math inline">\(L=2,d=32,H=4,H_{kv}=2,d_h=8,d_{ff}=64,V=9,B=8,T=24\)</span>。它复用第2章模型，在CPU FP32上执行320次AdamW更新、两段学习率衰减、贪心生成、shape/因果检查和内存checkpoint round-trip。实际命令为：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> doc/examples/ch10_minigpt_project.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p>最终<a href="../experiments/ch10_minigpt_project.json">原始JSON</a>记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU两线程、CUDA不可用。主要结果为：</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>检查</th>
+<th style="text-align: right;">观测</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>固定验证loss</td>
+<td style="text-align: right;">27.86807 → 0.04277</td>
+<td><code>&lt;0.05</code>，PASS</td>
+</tr>
+<tr class="even">
+<td>训练日志loss</td>
+<td style="text-align: right;">全部有限</td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>因果前缀最大绝对差</td>
+<td style="text-align: right;">0</td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>Q/K/V shape</td>
+<td style="text-align: right;"><code>[2,4,24,8]</code> / <code>[2,2,24,8]</code> / <code>[2,2,24,8]</code></td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>48步greedy生成</td>
+<td style="text-align: right;">含<code>to be or not to be</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>checkpoint重载logits最大差</td>
+<td style="text-align: right;">0</td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>checkpoint字段</td>
+<td style="text-align: right;">model/optimizer/update/config/symbols/seed</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<p>第一次180步运行的验证loss为0.08873，未达到预注册门槛，状态为FAIL并保存在<a href="../experiments/ch10_minigpt_project_failed_attempt_01.json">失败记录</a>；没有通过降低门槛改成成功。随后把更新数增至320并在第121/241次更新降低学习率，完整确定性重跑后才得到上述PASS。</p>
+<p><strong>证据边界。</strong> 这是<code>cpu_character_minigpt_pipeline_check</code>：重复字符夹具证明实现可训练、可按argmax逐步生成、shape/因果与内存重载正确，也展示记忆训练模式；它不是独立自然语言test，不证明泛化、事实性或大模型质量。没有运行GPU、混合精度、KV Cache、吞吐/显存Benchmark、原子磁盘checkpoint或中断续跑等价。</p>
+</section>
+<section id="验收矩阵与扩展路线" class="level3">
+<h3 class="anchored" data-anchor-id="验收矩阵与扩展路线">验收矩阵与扩展路线</h3>
+<p>最低PASS要求：代码语法通过；所有记录loss有限且固定验证loss低于预先声明门槛；shape与未来不可见性通过；生成每步确由当步最后logits选择；checkpoint重载在dtype容限内一致；原始输出含环境、seed、配置、数据、命令、失败记录和未运行项。真实语料扩展还须用独立test报告NLL/PPL与样本生成，防止只展示挑选文本。</p>
+<p>无GPU可运行当前CPU夹具；无PyTorch可完成shape/参数/可见对纸面账本，但必须标为<code>not_run</code>。有GPU时另建独立配置，使用同步计时与allocated/reserved峰值；有KV Cache时逐Token比较缓存与重算logits，并验证RoPE绝对位置。任何速度、显存或质量结论都要来自对应路线的实际输出，不能从本次PASS外推。</p>
+<p><a id="sec-10-2"></a></p>
+</section>
+</section>
+<section id="项目二llm-计算量和显存分析器" class="level2">
+<h2 class="anchored" data-anchor-id="项目二llm-计算量和显存分析器">10.2 项目二：LLM 计算量和显存分析器</h2>
+<p>完成后，你会拥有一个能对明确结构输出参数、FLOPs、训练状态和 KV Cache 四本账的分析器，并知道哪些字段必须留给真实框架测量。</p>
+<section id="目标输入schema与证据分层" class="level3">
+<h3 class="anchored" data-anchor-id="目标输入schema与证据分层">目标、输入Schema与证据分层</h3>
+<p>为指定的无偏置decoder-only Transformer构建可机器复算的资源分析器，分别输出参数量、完整序列前向/训练主项FLOPs、参数相关训练状态和推理KV Cache。工具回答“在明确结构与dtype假设下的逻辑账本”，不能把解析字节写成框架<code>allocated/reserved</code>峰值，也不能把FLOPs写成秒。</p>
+<p>最低输入Schema包含：层数<span class="math inline">\(L\)</span>、隐藏宽度<span class="math inline">\(d\)</span>、Query头<span class="math inline">\(H\)</span>、KV头<span class="math inline">\(H_{kv}\)</span>、头维<span class="math inline">\(d_h\)</span>、SwiGLU中间宽度<span class="math inline">\(d_{ff}\)</span>、词表<span class="math inline">\(V\)</span>、序列长度<span class="math inline">\(T\)</span>、batch <span class="math inline">\(B\)</span>，以及权重/梯度/主权重/optimizer/KV各自dtype字节。先校验<span class="math inline">\(d=Hd_h\)</span>、<span class="math inline">\(H\)</span>能被<span class="math inline">\(H_{kv}\)</span>整除、所有维度为正；是否绑定Embedding、是否有bias、Norm参数数目、Attention是完整方阵还是有效因果三角也必须是显式选项，不能隐藏在模型名中。</p>
+<p><a href="../examples/ch10_resource_analyzer.py">参考脚本</a>当前固定本书结构：Pre-RMSNorm、GQA、SwiGLU、绑定Embedding/LM Head、无bias；采用2 FLOPs/MAC、完整<span class="math inline">\(T\times T\)</span> Attention与全位置LM Head。它提供<code>book_reference</code>和<code>minigpt</code>两个配置，输出JSON中的假设字段是结果的一部分。</p>
+</section>
+<section id="四类输出如何复用全书公式" class="level3">
+<h3 class="anchored" data-anchor-id="四类输出如何复用全书公式">四类输出如何复用全书公式</h3>
+<ol type="1">
+<li><strong>参数量。</strong> 复用<a href="../chapters/03-compute-and-gpu.html#eq-03-param">式（03-Param）</a>，逐项输出绑定Embedding、Q/O、K/V、Gate/Up/Down、每层两个RMSNorm及final RMSNorm，再求总数。解除绑定、加入bias或改成MHA时必须改项。</li>
+<li><strong>FLOPs。</strong> 复用<a href="../chapters/03-compute-and-gpu.html#eq-03-block-flops">式（03-Block-FLOPs）</a>，分开报告单Block、全模型前向与“三倍前向”的训练主项。后者只是在输入/权重梯度均需计算时的近似，不含重计算、Norm、RoPE、Softmax及逐元素算子。</li>
+<li><strong>训练状态。</strong> 复用<a href="../chapters/03-compute-and-gpu.html#eq-03-state-memory">式（03-State-Memory）</a>，当前报告BF16权重+BF16梯度+FP32 Adam两状态的<span class="math inline">\(12P\)</span>，以及再含FP32主权重的<span class="math inline">\(16P\)</span>。激活、临时量、workspace、通信buffer和allocator均另列未知，不能相加成伪精确峰值。</li>
+<li><strong>KV Cache。</strong> 复用<a href="../chapters/07-inference-serving.html#eq-07-kv-cache-memory">式（07-KV-Cache-Memory）</a>，当前取BF16 K/V、等长batch、所有层且不含分页元数据、对齐、碎片、复制和量化元数据。</li>
+</ol>
+<p>输出单位同时保留整数bytes/FLOPs和人类可读GiB/TFLOPs时，换算规则必须写明：GiB用<span class="math inline">\(2^{30}\)</span>，TFLOPs数量用十进制<span class="math inline">\(10^{12}\)</span>；不能把GiB与GB、FLOPs与FLOP/s混用。</p>
+</section>
+<section id="验证矩阵" class="level3">
+<h3 class="anchored" data-anchor-id="验证矩阵">验证矩阵</h3>
+<p>分析器先通过第3章的最小解析例，再验证贯穿配置精确整数；对能实际构造的小模型，还要比较公式总参数与<code>sum(parameter.numel())</code>。物理显存比较必须另外运行模型，固定框架/硬件/dtype/shape，在独立进程重置峰值后记录<code>max_memory_allocated</code>与<code>max_memory_reserved</code>；解析状态只应作为解释基线，二者不要求相等。</p>
+<p>当前机器无CUDA，故GPU物理峰值字段明确为<code>not_run_no_cuda</code>、数值为<code>null</code>。这不是“实测为0”，也不能用CPU RSS替代GPU张量峰值。未来补测时还要记录失败/OOM配置、预热、同步、迭代时间点和峰值发生阶段。</p>
+</section>
+<section id="已运行结果" class="level3">
+<h3 class="anchored" data-anchor-id="已运行结果">已运行结果</h3>
+<p>实际命令为：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> doc/examples/ch10_resource_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="../experiments/ch10_resource_analyzer.json">PASS JSON</a>记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU、CUDA不可用。主要账本如下：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 40%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>配置/项目</th>
+<th style="text-align: right;">解析结果</th>
+<th>验证</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>贯穿模型总参数</td>
+<td style="text-align: right;">5,802,037,248</td>
+<td>与03-Param精确一致</td>
+</tr>
+<tr class="even">
+<td>贯穿模型完整序列前向主项</td>
+<td style="text-align: right;">56,324,201,119,744 FLOPs</td>
+<td>与第3章精确整数一致</td>
+</tr>
+<tr class="odd">
+<td>贯穿模型三倍训练主项</td>
+<td style="text-align: right;">168,972,603,359,232 FLOPs</td>
+<td>解析近似</td>
+</tr>
+<tr class="even">
+<td>贯穿模型<span class="math inline">\(12P/16P\)</span>状态</td>
+<td style="text-align: right;">69,624,446,976 / 92,832,595,968 bytes</td>
+<td>逻辑payload</td>
+</tr>
+<tr class="odd">
+<td>贯穿模型BF16 KV，<span class="math inline">\(B=1,T=4096\)</span></td>
+<td style="text-align: right;">536,870,912 bytes = 512 MiB</td>
+<td>与07-KV一致</td>
+</tr>
+<tr class="even">
+<td>MiniGPT解析/实际参数</td>
+<td style="text-align: right;">20,640 / 20,640</td>
+<td><code>sum(numel)</code>一致</td>
+</tr>
+<tr class="odd">
+<td>MiniGPT BF16 KV，<span class="math inline">\(B=2,T=24\)</span></td>
+<td style="text-align: right;">6,144 bytes</td>
+<td>解析账本</td>
+</tr>
+</tbody>
+</table>
+<p>首次运行把精确前向预期常数写少32,768 FLOPs，其他四项检查通过但整体返回FAIL；记录保存在<a href="../experiments/ch10_resource_analyzer_failed_attempt_01.json">首次失败JSON</a>。核对第3章的精确整数后只修正预期常数，公式与输出不变，完整重跑才得到PASS。教材正文的56.324201 TFLOPs是显示舍入，不能倒推成精确整数。</p>
+</section>
+<section id="交付与停止条件" class="level3">
+<h3 class="anchored" data-anchor-id="交付与停止条件">交付与停止条件</h3>
+<p>最终成果至少包含可导入的<code>analyze(config)</code>、输入校验、逐项JSON、两个测试配置、实际参数对照、失败记录和证据类型。出现shape不闭合、单位不明、解析/实际参数不等、非正结果、把未测物理峰值填成0或把Profiler覆盖当完整FLOPs时应FAIL。</p>
+<p>低资源路线可只运行CPU参数对照与解析算术；无PyTorch时保留纯公式单元测试并将实际模型/GPU字段标为未运行。有CUDA后再补物理峰值和Profiler，但Profiler仅覆盖受支持算子，时间还须单独同步Benchmark。当前PASS只证明公式实现与小模型参数对照，不证明容量可装卡、训练能运行或达到任何吞吐。</p>
+<p><a id="sec-10-3"></a></p>
+</section>
+</section>
+<section id="项目三分布式训练性能分析" class="level2">
+<h2 class="anchored" data-anchor-id="项目三分布式训练性能分析">10.3 项目三：分布式训练性能分析</h2>
+<p>完成后，你会拥有至少两个约束闭合的并行候选、计算/通信/空泡/显存四本账，以及一份能在目标 GPU 上执行的公平测量协议。</p>
+<section id="项目目标两层证据与公平比较" class="level3">
+<h3 class="anchored" data-anchor-id="项目目标两层证据与公平比较">项目目标、两层证据与公平比较</h3>
+<p>本项目比较单GPU、Distributed Data Parallel（DDP）与Fully Sharded Data Parallel（FSDP），并在硬件允许时增加Tensor Parallelism（TP）和Pipeline Parallelism（PP）。目标不是证明“卡越多越快”，而是把计算、通信、流水线空泡、逻辑状态与物理峰值分别记账，再用同一global batch、有效Token、模型、精度和成功更新数判断方案是否可比。</p>
+<p>交付物分成两层。<strong>目标GPU路线</strong>必须实际训练同一小模型并报告Step Time、Peak GPU Memory、有效Tokens/s和通信时间；<strong>本机低资源路线</strong>只运行解析模型和CPU代数正确性检查，所有由假想带宽、时延或算力得到的秒数均标为estimate。没有多GPU结果时，实测字段必须为<code>null/not_run</code>，不能把解析值搬进“实测”列。</p>
+<p>实验前冻结以下输入：设备数<span class="math inline">\(N\)</span>及节点映射，<span class="math inline">\(p_{\mathrm{DP}},p_{\mathrm{TP}},p_{\mathrm{PP}}\)</span>与ZeRO stage，<span class="math inline">\(b_{\mathrm{micro}}\)</span>、累积micro-batch数<span class="math inline">\(m\)</span>、序列长度<span class="math inline">\(T\)</span>、dtype，设备有效计算吞吐<span class="math inline">\(\rho\)</span>，链路有效带宽<span class="math inline">\(\mathcal B\)</span>、每轮时延<span class="math inline">\(\alpha\)</span>和DP bucket大小。先验证</p>
+<p><span class="math display">\[
+N=p_{\mathrm{DP}}p_{\mathrm{TP}}p_{\mathrm{PP}},
+\qquad
+B_{\mathrm{global}}=b_{\mathrm{micro}}m p_{\mathrm{DP}},
+\]</span></p>
+<p>并检查<span class="math inline">\(d,H,H_{\mathrm{KV}},d_{\mathrm{ff}}\)</span>对TP切法及<span class="math inline">\(L\)</span>对PP的整除性。TP/PP只切一个模型副本，不进入global batch；padding或变长样本还须另报有效目标Token。</p>
+</section>
+<section id="四本账与重叠边界" class="level3">
+<h3 class="anchored" data-anchor-id="四本账与重叠边界">四本账与重叠边界</h3>
+<ol type="1">
+<li><strong>计算账。</strong> 复用<a href="#sec-10-2">10.2的训练主项</a>，先按TP×PP理想均分每rank算术量，再除以显式的<span class="math inline">\(\rho\)</span>。<span class="math inline">\(\rho\)</span>若由峰值FLOP/s乘假设MFU得到，输出只是模型时间，不是测量。</li>
+<li><strong>通信账。</strong> DP梯度bucket复用<a href="../chapters/05-distributed-training.html#eq-05-ring-allreduce">Ring All-Reduce成本式</a>，分别保留逻辑payload、轮数、<span class="math inline">\(\alpha\)</span>项和带宽项。TP账必须声明每层有多少次、每次多大；PP账必须声明前向激活与反向梯度经过哪些stage边界。FSDP还会发生参数All-Gather、梯度Reduce-Scatter和临时物化，不能拿“DDP梯度ring”冒充其完整通信。</li>
+<li><strong>空闲账。</strong> 对完全平衡、同步非交错pipeline，复用<a href="../chapters/05-distributed-training.html#eq-05-pipeline-bubble">式（05-Pipeline-Bubble）</a>：bubble比例为<span class="math inline">\((p_{\mathrm{PP}}-1)/(m+p_{\mathrm{PP}}-1)\)</span>。真实stage不均、数据等待和链路争用另计。</li>
+<li><strong>显存账。</strong> 无分片时每rank参数相关逻辑状态为<span class="math inline">\(12P/(p_{\mathrm{TP}}p_{\mathrm{PP}})\)</span>；ZeRO-1与ZeRO-3的理想均匀分片按<a href="../chapters/05-distributed-training.html#eq-05-zero-state-memory">式（05-ZeRO-State-Memory）</a>复算。激活、临时参数聚合、communication buffer、workspace、CUDA上下文、allocator reserved和碎片不能省略后再称为Peak GPU Memory。</li>
+</ol>
+<p>最后用<a href="../chapters/05-distributed-training.html#eq-05-distributed-step-time">分布式步时间账本</a>合并：当输入等待暂取0、bubble单列为<span class="math inline">\(t_{\mathrm{idle}}\)</span>时，完全重叠下界是<span class="math inline">\(\max(t_{\mathrm{comp}},t_{\mathrm{comm}})+t_{\mathrm{idle}}\)</span>，完全不重叠上界是<span class="math inline">\(t_{\mathrm{comp}}+t_{\mathrm{comm}}+t_{\mathrm{idle}}\)</span>。实际<span class="math inline">\(t_{\mathrm{overlap}}\)</span>必须由Profiler时间线或等价事件测量；不能默认通信全部隐藏，也不能把各Kernel用时无条件相加。</p>
+</section>
+<section id="gpu实现测量协议与调试边界" class="level3">
+<h3 class="anchored" data-anchor-id="gpu实现测量协议与调试边界">GPU实现、测量协议与调试边界</h3>
+<p><a href="../examples/ch05_gpu_parallel_demo.py">第5章GPU示例</a>已经用相同初始化和rank局部batch执行DDP、FSDP一步更新，并用手工Row/Column Parallel验证TP布局。先运行这个正确性门槛，再把<a href="../examples/ch10_minigpt_project.py">MiniGPT项目</a>的模型与数据接入独立性能驱动；不要用<span class="math inline">\(4\times2\)</span>线性层的耗时代表LLM。2卡正确性命令为：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">torchrun</span> <span class="at">--standalone</span> <span class="at">--nproc_per_node</span><span class="op">=</span>2 <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch05_gpu_parallel_demo.py <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch05_gpu_parallel.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p>性能实验对single/DDP/FSDP使用相同模型、dtype、global batch、有效Token和optimizer语义；若单卡放不下，应报告OOM并改用一个三者都能运行的小配置，而不是悄悄改变模型。每方案独立进程启动，固定seed与数据顺序，至少5次warmup、20次稳态成功更新；每次计时前后同步设备，保存原始分布并报告中位数和P95。Tokens/s以成功更新的有效目标Token除以端到端时间；Peak Memory同时报告<code>max_memory_allocated</code>与<code>max_memory_reserved</code>，并说明峰值重置点。通信时间由Profiler/NCCL trace或显式事件区间取得，并注明与计算重叠，因此不要求分项之和等于Step Time。</p>
+<p>正确性FAIL包括：DDP/FSDP完整参数更新超出预设容限，global batch或Token归一化不一致，任一rank失败，shape不可整除，loss非有限或结果文件缺失。性能FAIL包括：无同步计时、把warmup混入稳态、只报最好一次、OOM样本被静默删除、Peak Memory口径缺失，或把解析秒数标成实测。硬件允许时增加TP，但必须先过Dense等价检查，并把TP组放置和链路写入报告。</p>
+</section>
+<section id="本机已运行的解析策略账本" class="level3">
+<h3 class="anchored" data-anchor-id="本机已运行的解析策略账本">本机已运行的解析策略账本</h3>
+<p><a href="../examples/ch10_distributed_strategy_analyzer.py">策略分析器</a>以贯穿模型<span class="math inline">\(P=5{,}802{,}037{,}248\)</span>、<span class="math inline">\(L=32,d=4096,H=32,H_{\mathrm{KV}}=8,d_{\mathrm{ff}}=11008,T=4096\)</span>为输入。假想设备输入为300 TFLOP/s峰值、无通信时MFU 0.40、节点内/节点间有效带宽300/50 GB/s、时延5/20 <span class="math inline">\(\mu\)</span>s；它们只是可修改参数，不对应本机产品。实际运行命令为：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch10_distributed_strategy_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="../experiments/ch10_distributed_strategy_analysis.json">原始JSON</a>状态为PASS。固定global batch为16时，单卡、8路DDP、8路理想ZeRO-3/FSDP的参数相关逻辑状态分别为64.842819、64.842819、8.105352 GiB/rank；后者不含临时参数物化。单卡解析计算时间为22.5297 s，DDP的部分模型区间为2.8162–3.2467 s；FSDP虽然显示相同的已建模基线，但其参数All-Gather/Reduce-Scatter尚未建模，<code>performance_comparison_eligible=false</code>，不得据此断言与DDP同速。</p>
+<p>128卡扩展复算如下。两方案均取<span class="math inline">\(p_{\mathrm{DP}}=8,b_{\mathrm{micro}}=1,m=16\)</span>，故global batch为128、每更新输入Token为524,288；每rank参数状态理想下界均为4.052676 GiB。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>候选</th>
+<th>TP×PP×DP</th>
+<th>整除结果（<span class="math inline">\(d/H/H_{kv}/d_{ff}/L\)</span>局部）</th>
+<th style="text-align: right;">bubble</th>
+<th style="text-align: right;">TP简化通信/rank/update</th>
+<th style="text-align: right;">重叠下界—不重叠上界</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>4×4×8</td>
+<td>1024/8/2/2752/8</td>
+<td style="text-align: right;">15.789%</td>
+<td style="text-align: right;">36.0 GiB</td>
+<td style="text-align: right;">1.6721–1.8631 s（解析）</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>8×2×8</td>
+<td>512/4/1/1376/16</td>
+<td style="text-align: right;">5.882%</td>
+<td style="text-align: right;">84.0 GiB</td>
+<td style="text-align: right;">1.4961–1.9347 s（解析）</td>
+</tr>
+</tbody>
+</table>
+<p>TP通信采用“每层Attention/MLP各一次隐藏状态大小ring、训练主项乘3”的教学近似；PP取关键stage相邻边的激活/梯度P2P。B以更小bubble和PP payload换来更宽、更频繁的TP collective。两个时间区间重叠，所以当前账本只能把A/B保留为候选，不能宣布B最优；改变节点内带宽、collective实现或Kernel效率可能翻转结论。</p>
+<p><strong>实际证据边界。</strong> 本机本次只运行了单进程CPU解析器；未运行GPU、多进程、DDP/FSDP封装、NCCL、Profiler或128卡训练，JSON中Step Time、Peak allocated/reserved、Tokens/s和实测通信时间均为<code>null/not_run_no_multi_gpu</code>。<a href="../experiments/ch05_distributed_correctness.json">第5章CPU代数JSON</a>另已验证两rank梯度平均与Row/Column分解，但也不是distributed runtime或性能证据。最终分布式训练性能报告必须并列给出配置、正确性、原始测量、解析预测、差异解释、失败/OOM记录和复现命令。</p>
+<p><strong>理解检查。</strong> 为什么FSDP的理想状态字节可以是DDP的<span class="math inline">\(1/8\)</span>，却不能从当前解析结果推断它的Step Time也与DDP相同？A的时间上界更小而B的时间下界更小，现有证据能否给出唯一排名？</p>
+<p><a id="sec-10-4"></a></p>
+</section>
+</section>
+<section id="项目四attention-kernel-性能优化" class="level2">
+<h2 class="anchored" data-anchor-id="项目四attention-kernel-性能优化">10.4 项目四：Attention Kernel 性能优化</h2>
+<p>完成后，你会拥有一张把数值正确性、稳态时间、物理峰值和 Profiler 证据并排的矩阵，能够说明某个 Kernel 在什么 shape 与硬件条件下获益或失效。</p>
+<section id="目标输入与三层证据" class="level3">
+<h3 class="anchored" data-anchor-id="目标输入与三层证据">目标、输入与三层证据</h3>
+<p>本项目比较显式标准Attention、PyTorch Scaled Dot Product Attention（SDPA）以及选修Triton Kernel，目标是解释完整<span class="math inline">\(T\times T\)</span> score/probability中间量与HBM数据搬运为何值得优化。数学问题始终是<a href="../chapters/02-transformer.html#eq-02-attention">式（02-Attention）</a>；FlashAttention改变分块、驻留和重算策略，不把标准稠密Attention的<span class="math inline">\(O(T^2d_h)\)</span>算术复杂度改成线性，也不是近似Attention。</p>
+<p>交付必须区分三层证据：解析账本计算逻辑中间量；CPU替代路线检查显式实现与SDPA的数值和计时管线；目标GPU路线才允许比较Flash后端的Runtime、Peak GPU Memory和HBM Traffic。CPU SDPA不能标成FlashAttention，逻辑score字节不能标成物理峰值，Profiler结果也不能冒充无Profiler稳态时间。</p>
+<p>每个样本使用<code>[B,H,T,d_h]</code>的Q/K/V并冻结seed、因果mask、dropout、梯度范围和输出dtype。基础矩阵至少改变Batch Size、Sequence Length、Head Dimension与数据精度；推荐<span class="math inline">\(B\in\{1,2,4\}\)</span>、<span class="math inline">\(T\in\{128,512,2048,8192\}\)</span>、<span class="math inline">\(d_h\in\{64,128\}\)</span>、FP16/BF16，并按显存保留共同可运行子集。MHA与GQA不能混在同一行；GQA还要固定<span class="math inline">\(H/H_{\mathrm{KV}}\)</span>及实际后端支持。</p>
+</section>
+<section id="三种实现与正确性门槛" class="level3">
+<h3 class="anchored" data-anchor-id="三种实现与正确性门槛">三种实现与正确性门槛</h3>
+<ol type="1">
+<li><strong>显式基线：</strong> 计算<code>Q @ K.transpose(-1,-2) / sqrt(d_h)</code>，用绝对位置构造因果mask，沿key维做Softmax，再乘V。只含一个score矩阵时，其逻辑容量为<span class="math inline">\(BHT^2s\)</span> bytes；实际实现还可能物化mask、概率、梯度与workspace。</li>
+<li><strong>PyTorch SDPA：</strong> 使用<code>scaled_dot_product_attention(..., dropout_p=0, is_causal=True)</code>。CPU运行只证明该环境所选CPU实现；GPU实验必须强制并记录<code>MATH</code>与<code>FLASH_ATTENTION</code>后端，fallback行不得标为Flash。</li>
+<li><strong>选修Triton：</strong> 按<a href="../chapters/06-efficient-attention.html#eq-06-online-softmax-merge">Online Softmax合并式</a>维护行最大值、指数和与未归一化输出。先通过非整除Tile、因果边界、全mask处理及输出/梯度测试，再谈性能；教学Kernel未实现或后端不支持时写<code>not_run</code>。</li>
+</ol>
+<p>参考输出<span class="math inline">\(y\)</span>与候选<span class="math inline">\(\hat y\)</span>采用<a href="../chapters/06-efficient-attention.html#eq-06-attn-bench-metrics">6.5的统一指标</a>：最大绝对误差、相对L2误差和<span class="math inline">\(t_{\mathrm{baseline}}/t_{\mathrm{candidate}}\)</span>。容限必须在运行前按dtype声明；非有限值、fallback、OOM或误差越界保留为FAIL记录，不能从图中删除。训练扩展还要分别比较<span class="math inline">\(\nabla Q,\nabla K,\nabla V\)</span>。</p>
+</section>
+<section id="runtimepeak-memory与profiler协议" class="level3">
+<h3 class="anchored" data-anchor-id="runtimepeak-memory与profiler协议">Runtime、Peak Memory与Profiler协议</h3>
+<p>每个GPU配置在独立进程中创建相同输入，预热至少20次，再以CUDA Event或前后同步测至少100次，保留原始分布并报告median/P10/P90。峰值测量在输入就绪后同步并重置统计，分别报告执行前基线、<code>max_memory_allocated</code>与<code>max_memory_reserved</code>的绝对值和增量；不同后端须使用相同的缓存清理策略。Runtime与Peak Memory必须分列，不能从较少的逻辑字节直接推导更短时间。</p>
+<p>无Profiler运行负责最终计时；另选已通过正确性的代表shape，用PyTorch Profiler确认实际Kernel，并用硬件计数器记录DRAM read/write、Kernel duration、Compute/Tensor pipe、occupancy、寄存器/Shared Memory和spill。只有实际后端、误差、峰值与同步时间均有效的行才能进入FlashAttention性能对比图；横轴标<span class="math inline">\(T\)</span>，按<span class="math inline">\(B,d_h,dtype,causal\)</span>分面，纵轴同时保留原始毫秒，不能只画加速比。</p>
+<p><a href="../examples/ch06_sdpa_gpu_benchmark.py">第6章GPU驱动</a>已经实现强制math/Flash后端、同步计时、allocated/reserved与误差记录。目标GPU路线对矩阵逐行运行，例如：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> doc/examples/ch06_sdpa_gpu_benchmark.py <span class="at">--allow-run</span> <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--batch</span> 1 <span class="at">--heads</span> 32 <span class="at">--length</span> 2048 <span class="at">--head-dim</span> 128 <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dtype</span> bfloat16 <span class="at">--causal</span> <span class="at">--warmup</span> 20 <span class="at">--repeats</span> 100 <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch10_attention_gpu_B1_T2048_D128_bf16.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="本机低资源结果与图" class="level3">
+<h3 class="anchored" data-anchor-id="本机低资源结果与图">本机低资源结果与图</h3>
+<p><a href="../examples/ch10_attention_cpu_baseline.py">CPU基线脚本</a>已在Python 3.10.14、PyTorch 2.9.1+cu128、CPU单线程且CUDA不可用的环境实际运行。矩阵为<span class="math inline">\(B\in\{1,2\}\)</span>、<span class="math inline">\(H=2\)</span>、<span class="math inline">\(T\in\{64,128\}\)</span>、<span class="math inline">\(d_h\in\{32,64\}\)</span>、FP32/FP64，共16行；每行预热3次、计时15次。<a href="../experiments/ch10_attention_cpu_baseline.json">原始JSON</a>状态PASS，全部误差通过预注册容限，最大绝对误差为<span class="math inline">\(4.7684\times10^{-7}\)</span>。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>CPU实际配置</th>
+<th style="text-align: right;">显式score逻辑量</th>
+<th style="text-align: right;">显式median</th>
+<th style="text-align: right;">CPU SDPA median</th>
+<th style="text-align: right;">最大绝对误差</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(B=1,T=64,d_h=64\)</span>, FP32</td>
+<td style="text-align: right;">32,768 bytes</td>
+<td style="text-align: right;">0.085668 ms</td>
+<td style="text-align: right;">0.035519 ms</td>
+<td style="text-align: right;"><span class="math inline">\(3.5763\times10^{-7}\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(B=1,T=128,d_h=64\)</span>, FP32</td>
+<td style="text-align: right;">131,072 bytes</td>
+<td style="text-align: right;">0.198279 ms</td>
+<td style="text-align: right;">0.093056 ms</td>
+<td style="text-align: right;"><span class="math inline">\(4.7684\times10^{-7}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>长度翻倍时单个显式score矩阵的逻辑量恰为4倍，验证了<span class="math inline">\(T^2\)</span>账本。当前机器没有可用CUDA allocator，物理Peak Memory为<code>not_available</code>而非0；Flash后端、GPU计时、Profiler、HBM计数器和Triton均为<code>not_run_no_cuda/not_run_optional</code>。因此下图只是CPU显式实现与CPU SDPA的低资源代理图，标题明确写明“not FlashAttention”，不能作为最终GPU加速图。</p>
+<div id="fig-ch10-attention-cpu-baseline" class="quarto-float quarto-figure quarto-figure-center anchored" alt="两组 CPU 配置分别比较显式因果 Attention 与 PyTorch CPU SDPA 的中位时间，并标注 not FlashAttention；该图只说明本机 CPU 代理结果，不包含 GPU 显存、Kernel 或加速结论。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch10-attention-cpu-baseline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../experiments/ch10_attention_cpu_baseline.svg" class="img-fluid figure-img" alt="两组 CPU 配置分别比较显式因果 Attention 与 PyTorch CPU SDPA 的中位时间，并标注 not FlashAttention；该图只说明本机 CPU 代理结果，不包含 GPU 显存、Kernel 或加速结论。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch10-attention-cpu-baseline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;11.2: CPU 因果 Attention 低资源基线；不是 FlashAttention 性能图。
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-ch10-attention-cpu-baseline" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch10-attention-cpu-baseline</span></a> 只把两行代表配置变成可读入口；完整 16 行、原始重复时间与误差仍以链接的 JSON 为准。</p>
+</section>
+<section id="报告验收与适用边界" class="level3">
+<h3 class="anchored" data-anchor-id="报告验收与适用边界">报告、验收与适用边界</h3>
+<p>最终瓶颈分析报告至少包含环境指纹、完整矩阵、失败/OOM行、实际后端、误差、原始时间分布、allocated/reserved、Profiler/HBM证据、图生成脚本和复现命令。解释每个拐点时应同时检查：显式<span class="math inline">\(T^2\)</span>中间量是否消失、是否仍为fallback、任务规模能否摊薄launch开销、occupancy与寄存器压力是否恶化，以及非Attention层是否已成为端到端瓶颈。</p>
+<p>FlashAttention更可能在长序列、命中融合Kernel且显式基线受HBM往返限制时获益；短序列、小batch、不受支持的mask/dtype/head dimension、边界Tile、低occupancy或大量spill都可能限制收益。选修Triton实现还要承担autotuning、数值稳定性和多硬件维护成本，不能因“代码可运行”就声称优于生产Kernel。</p>
+<p><strong>理解检查。</strong> 若某配置的逻辑score容量下降、Peak allocated也下降，但median变慢，且Profiler显示DRAM bytes减少而occupancy显著降低，应如何限定结论？为什么当前CPU图既不能回答这个问题，也不能替代最终FlashAttention对比图？</p>
+<p><a id="sec-10-5"></a></p>
+</section>
+</section>
+<section id="项目五llm-推理系统-benchmark" class="level2">
+<h2 class="anchored" data-anchor-id="项目五llm-推理系统-benchmark">10.5 项目五：LLM 推理系统 Benchmark</h2>
+<p>完成后，你会拥有一套能保留到达、排队、首 Token、逐 Token、完成与失败事件的服务 Benchmark，并能用尾延迟和 SLO goodput 判断系统是否稳定。</p>
+<section id="目标真实部署与公平基线" class="level3">
+<h3 class="anchored" data-anchor-id="目标真实部署与公平基线">目标、真实部署与公平基线</h3>
+<p>本项目使用现成推理框架部署一个许可证清楚、能够流式返回的小型开源decoder-only模型，在固定质量、资源预算和请求分布下分析延迟与吞吐。最终结论应回答系统何时开始排队、多少请求满足SLO、显存被权重还是KV占用，以及Batching、KV Cache或Quantization究竟改变了哪项瓶颈；只报一个最大tokens/s不合格。</p>
+<p>先冻结模型权重与revision、Tokenizer/聊天模板、框架与commit、GPU/驱动/CUDA、权重和KV dtype、量化格式、TP/PP、最大上下文、采样/停止规则、客户端与网络。基线使用同一模型质量和请求trace；若某配置改变Token ID、停止原因或质量，应先说明质量—性能折衷，不能直接称为优化。</p>
+<p>目标环境可选择vLLM、SGLang或TensorRT-LLM之一，先以该固定版本的<code>--help</code>核对参数，再保存服务启动命令、日志和环境manifest。以下仅是vLLM接口示意，不是本机已执行命令：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> vllm.entrypoints.openai.api_server <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model</span> <span class="op">&lt;</span>LOCAL_MODEL_REVISION<span class="op">&gt;</span> --dtype bfloat16 <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--max-model-len</span> 1024 <span class="at">--max-num-seqs</span> 4</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p>服务启动后先用固定Prompt做有限值、流式事件、usage Token数与停止原因检查，再进入预热和正式窗口。当前机器没有CUDA，且未安装上述服务框架，也没有下载模型；因此真实部署状态为<code>not_run</code>，后续合成trace结果不能写成“模型服务实测”。</p>
+</section>
+<section id="工作负载矩阵与指标口径" class="level3">
+<h3 class="anchored" data-anchor-id="工作负载矩阵与指标口径">工作负载矩阵与指标口径</h3>
+<p>基础矩阵覆盖Prompt Length <span class="math inline">\({32,128,512}\)</span> Token、Output Length <span class="math inline">\({16,64}\)</span> Token、Server Batch上限<span class="math inline">\({1,4,16}\)</span>，以及开放环Request Rate <span class="math inline">\({0.5,1,2,4}\)</span> requests/s；按设备能力缩放但要保留饱和前后两侧。另以闭环并发<span class="math inline">\({1,4,16}\)</span>检查固定Concurrency，不能把Concurrency当Request Rate。先固定<code>Prompt=128, Output=64, Batch=4</code>建立基线，再一次改变一个主变量；实际EOS提前停止时保存实际长度分布。</p>
+<p>客户端以同一单调时钟记录arrival、first-token、每Token或last-token、completion、status与input/output Token数。每个配置预热至少20条，正式测量至少120 s或完成500条，以较大者为准；停止注入后排空并另报drain，所有在途、超时、拒绝和取消都必须保留。复用<a href="../chapters/07-inference-serving.html#eq-07-serving-benchmark">式（07-Serving-Benchmark）</a>计算offered load、completed requests/s、output tokens/s和联合SLO goodput；复用<a href="../chapters/07-inference-serving.html#eq-07-inference-latency">7.1延迟定义</a>计算每请求TTFT、TPOT与E2E，再报告P50/P95/P99、样本数和百分位算法。</p>
+<p>GPU Memory Usage至少分列模型加载后基线、执行峰值<code>allocated/reserved</code>、KV逻辑/物理块、前缀缓存、临时workspace和OOM点。用<code>nvidia-smi</code>进程占用不能替代Tensor峰值；output tokens/s也不能与total tokens/s或单请求生成速率混用。开放环若到达率持续高于完成率，必须报告队列增长，不能用短窗口的完成吞吐掩盖不稳定。</p>
+</section>
+<section id="三组优化ab" class="level3">
+<h3 class="anchored" data-anchor-id="三组优化ab">三组优化A/B</h3>
+<ol type="1">
+<li><strong>Batching。</strong> 固定开放环trace，扫描最大request/Token预算与continuous batching；比较吞吐、TTFT/TPOT尾部、队列和KV峰值。更大Batch可能提高权重摊薄，也可能增加排队和容量压力。</li>
+<li><strong>KV Cache。</strong> 固定两组请求顺序，比较关闭/开启prefix caching或不同块配置；分别报告冷/热Cache、共享前缀Token、hit/eviction、TTFT和物理KV。无共享前缀时不能预设收益，跨租户共享还要检查隔离边界。</li>
+<li><strong>Quantization。</strong> 固定模型revision与trace，记录权重/KV的位宽、格式、group size、实际低精度Kernel与fallback；先过固定提示和代表性质量门槛，再比较内存、TTFT/TPOT与吞吐。模型文件更小但质量越界或Kernel回退不算成功。</li>
+</ol>
+<p>每组至少重复3轮，并保存每轮原始分布。Profiler只用于代表窗口定位Prefill/Decode Kernel、HBM、主机空洞和通信，不把受扰动的Profiler时间混入无Profiler基准。瓶颈应由队列、Kernel、带宽、内存与网络证据共同判断，而不是仅看GPU utilization。</p>
+</section>
+<section id="本机低资源指标管线已运行" class="level3">
+<h3 class="anchored" data-anchor-id="本机低资源指标管线已运行">本机低资源指标管线：已运行</h3>
+<p><a href="../examples/ch07_serving_trace_analysis.py">第7章trace分析器</a>已复用到本项目；输入为<a href="../examples/ch07_synthetic_serving_trace.jsonl">6条合成事件</a>，其中5条完成、1条timeout。实际命令为：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch07_serving_trace_analysis.py <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> doc/examples/ch07_synthetic_serving_trace.jsonl <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch10_serving_trace_metrics.json <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--window-start</span> 0 <span class="at">--window-end</span> 10 <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ttft-slo</span> 1.5 <span class="at">--tpot-slo</span> 0.4 <span class="at">--e2e-slo</span> 4</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="../experiments/ch10_serving_trace_metrics.json">实际JSON</a>在Python 3.10.14上状态PASS。10 s构造窗口的offered load为0.6 requests/s、完成吞吐0.5 requests/s、output throughput 1.4 tokens/s、联合SLO goodput 0.3 requests/s；TTFT P50/P95/P99为0.8/2.0/2.0 s，TPOT为0.3/0.5/0.5 s，E2E为1.3/3.0/3.0 s。1条timeout保留在状态计数中，3/5条完成请求满足联合SLO。</p>
+<p>该PASS只验证schema、时间戳因果性、TPOT分母、nearest-rank百分位、窗口吞吐与联合SLO算术。JSON明确写明它不是模型、GPU、框架、网络或服务性能测量；真实服务、prefix cache和quantization字段均为<code>not_run</code>。合成点不得与将来的真实A/B点画在同一性能曲线上。</p>
+</section>
+<section id="最终报告与停止条件" class="level3">
+<h3 class="anchored" data-anchor-id="最终报告与停止条件">最终报告与停止条件</h3>
+<p>最终推理性能报告逐配置给出环境/启动命令、工作负载分布、到达/完成/拒绝/超时/取消、input/output/total tokens/s、TTFT/TPOT/ITL/E2E P50/P95/P99、联合SLO goodput、allocated/reserved与KV峰值、cache hit/eviction、实际Kernel/fallback、质量结果及原始日志路径。正文用“配置变化→资源变化→指标变化→瓶颈证据→代价”解释优化效果。</p>
+<p>usage与事件Token数不一致、非有限输出、时钟错误、客户端先饱和、队列持续增长、OOM/fallback、质量越界、样本不足或失败请求被删除时，配置必须标为FAIL/受限。只有真实服务完成预热、重复、drain、质量与逐请求日志检查后，才能写“实测延迟/吞吐”；本机当前交付是可执行任务书与合成指标管线，不是部署完成证明。</p>
+<p><strong>理解检查。</strong> 两个配置的output tokens/s分别为220和250，但后者TTFT P99翻倍、队列持续增长且10%的请求超时。为什么不能仅据250宣布优化成功？还需比较哪些SLO goodput、长度、内存和质量字段？</p>
+<p><a id="sec-10-6"></a></p>
+</section>
+</section>
+<section id="最终课程项目端到端-llm-系统分析" class="level2">
+<h2 class="anchored" data-anchor-id="最终课程项目端到端-llm-系统分析">10.6 最终课程项目：端到端 LLM 系统分析</h2>
+<p>完成后，你会拥有一个以同一开源模型和不可变 manifest 为主键的证据包：每个结构、资源、并行与服务结论都能回到配置、命令、原始记录和适用边界。</p>
+<section id="项目目标选型与证据链" class="level3">
+<h3 class="anchored" data-anchor-id="项目目标选型与证据链">项目目标、选型与证据链</h3>
+<p>选择一个许可证允许课程实验、配置与权重revision可冻结、且目标硬件能够部署的小型开源decoder-only LLM，完成“源码结构→资源账本→训练设计→推理部署→瓶颈优化”的完整技术实验。最终交付不是五份互不相干的作业，而是一条可追溯证据链：同一模型配置进入参数/FLOPs/KV公式、并行约束和服务manifest；每张性能图能回到原始记录、命令和环境。</p>
+<p>选型报告先列许可证、模型卡、权重/Tokenizer revision、参数量级、上下文长度、架构字段、量化可用性、磁盘与目标GPU预算。必须从配置与实际权重shape核对架构，不能只凭模型名称推断。若完整权重不能在本地取得，低资源路线可以选择可下载的更小模型，或只完成已明确标为“解析/未部署”的结构与资源阶段；不得用本章字符MiniGPT夹具冒充所选开源模型。</p>
+<p>建立一个不可变manifest，至少包含：模型与Tokenizer哈希、聊天模板、<span class="math inline">\(L,d,H,H_{\mathrm{KV}},d_h,d_{\mathrm{ff}},V\)</span>、位置编码与Norm类型、权重/KV dtype、并行度、硬件/软件、随机种子、数据或请求trace、采样/停止规则、每阶段命令与产物路径。后续变更必须生成新配置ID，不覆盖原始失败记录。</p>
+<p><a href="#fig-ch10-project-gates" class="quarto-xref">图&nbsp;<span class="quarto-unresolved-ref">fig-ch10-project-gates</span></a> 把四个阶段画成连续 Gate。前一个 Gate 的产物是后一个 Gate 的输入；后两个 Gate 若因缺少目标硬件保持 <code>not_run</code>，并不会抹掉前两个 Gate 的成果，但也不能把项目写成端到端完成。</p>
+<div id="fig-ch10-project-gates" class="quarto-float quarto-figure quarto-figure-center anchored" alt="冻结的模型、Tokenizer、配置、数据或请求trace和硬件软件manifest先进入Gate 1，用源码、配置和权重shape验证结构；再进入Gate 2，产生参数、FLOPs、状态和KV账本；Gate 3需要训练与并行正确性及目标集群测量；Gate 4需要真实服务的固定trace、质量、SLO、内存和Kernel证据。缺少目标硬件时后两个Gate保持not_run，不能把前两个Gate的通过写成端到端完成。">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ch10-project-gates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/ch10/project-gates.svg" class="img-fluid figure-img" alt="冻结的模型、Tokenizer、配置、数据或请求trace和硬件软件manifest先进入Gate 1，用源码、配置和权重shape验证结构；再进入Gate 2，产生参数、FLOPs、状态和KV账本；Gate 3需要训练与并行正确性及目标集群测量；Gate 4需要真实服务的固定trace、质量、SLO、内存和Kernel证据。缺少目标硬件时后两个Gate保持not_run，不能把前两个Gate的通过写成端到端完成。">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ch10-project-gates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;11.3: 同一模型manifest依次穿过结构、资源、训练并行和部署优化四个Gate。
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="阶段一模型结构分析" class="level3">
+<h3 class="anchored" data-anchor-id="阶段一模型结构分析">阶段一：模型结构分析</h3>
+<p>沿一次完整Block前向解释四类实现，并附源码文件、类/函数或权重键证据：</p>
+<ul>
+<li><strong>Attention：</strong> Q/K/V/O投影shape、MHA/GQA/MQA分组、因果mask和缓存时的绝对位置；对照<a href="../chapters/02-transformer.html#sec-2-2">第2章定义</a>。</li>
+<li><strong>Position Encoding：</strong> RoPE/绝对/相对方案的坐标、作用于哪些通道、缩放或长上下文配置；不能把配置名当成推导。</li>
+<li><strong>Normalization：</strong> LayerNorm或RMSNorm、Pre/Post-Norm、epsilon、可训练参数以及两次Residual的顺序。</li>
+<li><strong>MLP：</strong> 激活/门控类型、Gate/Up/Down矩阵shape、中间宽度与bias；PyTorch存储<code>[out,in]</code>时转回全书数学方向<code>[in,out]</code>。</li>
+</ul>
+<p>以一个最小真实输入运行shape hook或打印权重键，并选一层手工复算关键shape。Gate 1的PASS条件是：配置、源码与权重shape一致；<span class="math inline">\(d=Hd_h\)</span>、GQA整除及残差shape闭合；未识别的自定义模块明确列为待查，不能硬套贯穿模型。</p>
+</section>
+<section id="阶段二资源分析" class="level3">
+<h3 class="anchored" data-anchor-id="阶段二资源分析">阶段二：资源分析</h3>
+<p>从模型真实结构逐项计算绑定/非绑定Embedding、Attention、MLP与Norm参数，并与<code>sum(numel)</code>核对；不能直接套用不匹配的<a href="../chapters/03-compute-and-gpu.html#eq-03-param">贯穿模型参数式</a>。按2 FLOPs/MAC分别给出单Block、完整前向与训练主项，声明Attention取完整方阵还是有效因果三角，逐元素/采样/重计算是否计入。训练显存至少分列权重、梯度、optimizer/主权重、保存激活、重计算、通信buffer与workspace；推理按<a href="../chapters/07-inference-serving.html#eq-07-kv-cache-memory">KV式</a>区分逻辑payload和分页/allocator物理峰值。</p>
+<p><a href="#sec-10-2">10.2分析器</a>可作为结构相同模型的起点，但若目标模型有bias、非SwiGLU、局部Attention、MoE或未绑定LM Head，必须修改账本和测试，而不是只改模型名。Gate 2要求参数数目与框架精确一致，核心整数可独立复算，GiB/GB与FLOPs/FLOP/s不混用；容量结论另留安全余量，并以实际加载/OOM验证。</p>
+</section>
+<section id="阶段三训练与并行设计" class="level3">
+<h3 class="anchored" data-anchor-id="阶段三训练与并行设计">阶段三：训练与并行设计</h3>
+<p>给定GPU型号、每节点卡数、显存、节点内/节点间互连、目标序列长度和global batch，至少比较两种可行布局。每个候选列<span class="math inline">\(p_{\mathrm{DP}},p_{\mathrm{TP}},p_{\mathrm{PP}},p_{\mathrm{CP}}\)</span>、ZeRO/FSDP stage、micro-batch与累积数，验证设备乘积、global batch以及层数/头数/KV头/宽度整除。复用<a href="#sec-10-3">10.3四本账</a>估算计算、通信、空泡与显存，并给出重叠上下界；训练状态放不下时再选择分片、激活重计算、混合精度或offload，逐项说明新增通信/算术/主机流量。</p>
+<p>Gate 3不是“预测最快”，而是候选约束闭合、关键payload可复算、未建模项与风险可见。有目标集群时先运行单卡loss/梯度基线，再做2卡等价和短程Profiler；没有GPU时只提交解析设计，时间字段写estimate，Step Time、Tokens/s和物理Peak Memory保持<code>not_run/null</code>。</p>
+</section>
+<section id="阶段四推理部署与优化" class="level3">
+<h3 class="anchored" data-anchor-id="阶段四推理部署与优化">阶段四：推理部署与优化</h3>
+<p>按<a href="#sec-10-5">10.5</a>部署同一权重revision，先验证固定Prompt的Token数、停止原因与有限输出，再扫描Prompt/Output长度、Batch预算、开放环Request Rate和闭环Concurrency。基线同时报告TTFT、TPOT/ITL、E2E、output tokens/s、SLO goodput、拒绝/超时、allocated/reserved与KV；用客户端事件、服务trace与Profiler定位Prefill计算、Decode带宽、KV容量、调度/主机或网络瓶颈。</p>
+<p>只选择证据支持的一到两项优化做单变量A/B，例如continuous batching、prefix cache、FlashAttention、权重/KV量化或PD分离。每项都回答：原始瓶颈是什么；改变了计算、通信、显存还是数据搬运；代价和无收益条件是什么。Gate 4要求相同请求trace、资源预算与质量门槛，至少3轮原始数据；fallback、OOM、质量越界与失败请求必须保留。</p>
+</section>
+<section id="综合报告图表与验收矩阵" class="level3">
+<h3 class="anchored" data-anchor-id="综合报告图表与验收矩阵">综合报告、图表与验收矩阵</h3>
+<p>报告建议按以下结构提交：</p>
+<ol type="1">
+<li>研究问题、模型/许可证、硬件与不可变manifest；</li>
+<li>结构图、前向shape表与源码证据；</li>
+<li>参数/FLOPs/训练状态/KV账本及公式假设；</li>
+<li>两个训练并行候选、约束、通信/显存/空泡与风险；</li>
+<li>推理工作负载、基线、瓶颈证据、优化A/B与质量门槛；</li>
+<li>失败/OOM/fallback、未运行项、可复现命令和原始数据索引；</li>
+<li>结论：在哪个工作负载和资源范围内成立，以及改变条件后为何可能翻转。</li>
+</ol>
+<p>每张图保留绝对轴、单位、样本数/误差条、配置ID与数据路径；解析估算、论文报告和本机实测使用不同图例。至少提供一张结构/shape图、一张资源账本图和一张真实性能/尾延迟图；若真实部署未运行，第三张改为“待测矩阵/合成管线验证”，标题不得出现实测加速。总验收要求四个Gate均有状态，结构与资源阶段可复算，训练与推理结论不越过证据，仓库从manifest中的命令可重建所有已声明结果。</p>
+</section>
+<section id="本仓库提供的低资源起点" class="level3">
+<h3 class="anchored" data-anchor-id="本仓库提供的低资源起点">本仓库提供的低资源起点</h3>
+<p>10.1–10.5已经提供MiniGPT管线、资源分析器、分布式策略账本、Attention CPU代理和服务trace分析器及各自JSON。这些产物能检查方法与报告格式，但来自不同教学夹具，<strong>不是同一开源模型的端到端运行</strong>。当前作者环境没有完成开源模型下载、GPU训练、分布式runtime或真实服务部署，因此本项目仅提供可执行任务书，目标实验仍未运行。学生或后续执行者必须以选定模型的新manifest和原始数据完成四个Gate，不能把已有PASS简单相加成最终项目PASS。</p>
+<p><strong>理解检查。</strong> 若资源分析器按目标配置算得参数与KV正确，分布式解析显示候选可行，合成服务trace也PASS，但没有加载目标权重或启动服务，最终项目哪些Gate可以通过、哪些只能保持<code>not_run</code>？为什么？</p>
+<p><a id="experiment"></a></p>
+</section>
+</section>
+<section id="本章实验" class="level2">
+<h2 class="anchored" data-anchor-id="本章实验">本章实验</h2>
+<p>本章不另造第七套实验；10.1–10.6各节就是逐级任务书。当前仓库的运行状态如下：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>本机已运行证据</th>
+<th>仍未运行/不能声称</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10.1 Mini-GPT</td>
+<td>CPU字符夹具训练、生成、因果与checkpoint，PASS</td>
+<td>真实自然语言泛化、GPU、KV Cache、精确续跑</td>
+</tr>
+<tr class="even">
+<td>10.2 资源分析器</td>
+<td>贯穿模型解析账本与MiniGPT实际参数对照，PASS</td>
+<td>GPU物理峰值与容量装卡</td>
+</tr>
+<tr class="odd">
+<td>10.3 分布式分析</td>
+<td>CPU解析候选与128卡约束，PASS</td>
+<td>多进程/GPU/NCCL/FSDP/128卡实测</td>
+</tr>
+<tr class="even">
+<td>10.4 Attention Kernel</td>
+<td>16行CPU显式/SDPA误差与时间代理，PASS</td>
+<td>CUDA Flash、Peak GPU Memory、Profiler、Triton</td>
+</tr>
+<tr class="odd">
+<td>10.5 推理Benchmark</td>
+<td>6条合成trace指标管线，PASS</td>
+<td>开源模型服务、GPU、Prefix Cache、量化A/B</td>
+</tr>
+<tr class="even">
+<td>10.6 最终项目</td>
+<td>四Gate任务书已提供</td>
+<td>同一开源模型的目标端到端实验</td>
+</tr>
+</tbody>
+</table>
+<p>所有实际命令、输入、JSON、失败记录和判定标准均链接在对应项目节。复现时先使用原环境和小配置通过正确性，再扩大资源；缺硬件时提交解析/CPU路线并把目标字段保持<code>not_run/null</code>，不能用既有不同夹具的PASS拼成端到端PASS。</p>
+<p><a id="exercises"></a></p>
+</section>
+<section id="本章小结与习题" class="level2">
+<h2 class="anchored" data-anchor-id="本章小结与习题">本章小结与习题</h2>
+<p>六个项目共享一条主线：<strong>配置冻结 → 正确性门槛 → 资源/性能测量 → 失败保留 → 结论限界</strong>。模型能前向不等于训练正确，解析显存不等于物理峰值，CPU SDPA不等于FlashAttention，合成trace也不等于真实服务。最终报告必须让读者从每个结论追到配置、公式、原始数据与复现命令。</p>
+<ul>
+<li><strong>你现在应该知道：</strong> 六个项目各自改变或测量什么对象，为什么不同教学夹具的 PASS 不能拼成同一模型的端到端证据。</li>
+<li><strong>你现在应该能算：</strong> 参数、FLOPs、状态、KV、global batch、pipeline bubble、通信近似、服务吞吐与 SLO goodput，并给出单位和遗漏项。</li>
+<li><strong>你现在应该能判断：</strong> 一个结果属于解析账本、论文报告还是本机实测；目标硬件或真实服务未运行时，哪些 Gate 可以通过，哪些必须保持 <code>not_run</code>。</li>
+</ul>
+<ol type="1">
+<li>某无偏置、绑定Embedding的贯穿结构缩小为<span class="math inline">\(L=4,d=256,H=8,H_{\mathrm{KV}}=2,d_h=32,d_{\mathrm{ff}}=768,V=8192\)</span>。用全书参数式求参数总数；BF16 KV在<span class="math inline">\(B=2,T=1024\)</span>时是多少MiB？列出公式不覆盖的两类物理显存。</li>
+<li>10.4某行解析得到显式score为128 MiB，CPU进程RSS峰值多110 MiB，GPU脚本未运行。哪些是解析、哪些是本机观测？可以写出哪些结论，不能画什么图？</li>
+<li>一个120 s开放环服务测试到达720条、完成660条、输出79,200 Token，其中594条满足联合SLO。求offered load、完成吞吐、output throughput和SLO goodput；还需报告哪些状态才能判断队列是否稳定？</li>
+<li>最终项目已核对目标模型配置/权重shape，参数公式与<code>sum(numel)</code>一致，并完成两个并行候选的解析账本；但没有目标GPU，也没有启动服务。判断Gate 1–4分别可以是什么状态，并说明最终报告能否标为“端到端实验完成”。</li>
+</ol>
+<p><a href="../appendices/exercise-solutions.html#solutions-10">答案与提示</a></p>
+<p>正文学习到这里完成。遇到 shape、概率、优化、Python、单位或证据标签困难时，使用<a href="../appendices/prerequisites.html">必要前置知识</a>做五分钟回顾；查全书统一变量与口径时转到<a href="../appendices/notation.html">符号表</a>。这些附录是按需工具，不要求在开始项目之前从头背诵。</p>
+<p><a id="references"></a></p>
+</section>
+<section id="参考资料" class="level2">
+<h2 class="anchored" data-anchor-id="参考资料">参考资料</h2>
+<p>本章以项目任务为主，模型公式与实现来源复用第 1–8 章使用的原始论文和官方文档。Attention 项目复用 REF-090、REF-098–101；推理 Benchmark 复用 REF-102–103、REF-121–123；具体版本、访问日期、所支持论点及未运行边界见来源台账，按章节与主题的入口见<a href="../appendices/references.html">参考资料附录</a>。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "切换深色模式");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "切换深色模式");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "已复制");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "已复制");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"可滚动的代码","output":"可滚动的输出"};
+  </script>
+<nav class="page-navigation" aria-label="页面">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/09-frontiers.html" class="pagination-link" aria-label="第 9 章 前沿模型技术专题（选修）">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../appendices/prerequisites.html" class="pagination-link" aria-label="必要前置知识">
+        <span class="nav-page-text"><span class="chapter-title">必要前置知识</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

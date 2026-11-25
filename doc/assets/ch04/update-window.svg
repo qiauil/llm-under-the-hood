@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">成功更新窗口的时序</title>
+  <desc id="desc">多个micro-batch依次前向、计算loss和反向，窗口末统一同步、反缩放、检查、裁剪与唯一更新，失败不推进成功步。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker><style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 15px system-ui,sans-serif;fill:#172033}.b{font:12px system-ui,sans-serif;fill:#334155}.s{font:10px system-ui,sans-serif;fill:#475569}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="960" height="470" rx="18" fill="#f8fafc"/>
+  <text x="480" y="35" text-anchor="middle" class="t">一个窗口，多次反向，只推进一次状态</text>
+  <line x1="45" y1="205" x2="920" y2="205" stroke="#64748b" stroke-width="2"/>
+  <g>
+    <rect x="50" y="85" width="110" height="88" rx="10" fill="#eff6ff" stroke="#2563eb"/><text x="105" y="112" text-anchor="middle" class="h">micro 1</text><text x="105" y="135" text-anchor="middle" class="s">forward → S₁,N₁</text><text x="105" y="156" text-anchor="middle" class="s">scaled backward</text>
+    <rect x="180" y="85" width="110" height="88" rx="10" fill="#eff6ff" stroke="#2563eb"/><text x="235" y="112" text-anchor="middle" class="h">micro 2</text><text x="235" y="135" text-anchor="middle" class="s">forward → S₂,N₂</text><text x="235" y="156" text-anchor="middle" class="s">scaled backward</text>
+    <rect x="310" y="85" width="110" height="88" rx="10" fill="#eff6ff" stroke="#2563eb"/><text x="365" y="112" text-anchor="middle" class="h">micro K</text><text x="365" y="135" text-anchor="middle" class="s">forward → Sₖ,Nₖ</text><text x="365" y="156" text-anchor="middle" class="s">scaled backward</text>
+  </g>
+  <g fill="#ecfdf5" stroke="#059669"><rect x="455" y="105" width="82" height="55" rx="9"/><rect x="555" y="105" width="82" height="55" rx="9"/><rect x="655" y="105" width="82" height="55" rx="9"/><rect x="755" y="105" width="82" height="55" rx="9"/></g>
+  <g text-anchor="middle" class="b"><text x="496" y="138">同步</text><text x="596" y="138">unscale</text><text x="696" y="130">finite</text><text x="696" y="146">check</text><text x="796" y="138">clip</text></g>
+  <path d="M420 132H453M537 132H553M637 132H653M737 132H753M837 132H885" class="arr"/>
+  <rect x="855" y="85" width="75" height="88" rx="10" fill="#d1fae5" stroke="#059669" stroke-width="2"/><text x="892" y="116" text-anchor="middle" class="h">step</text><text x="892" y="138" text-anchor="middle" class="s">optimizer</text><text x="892" y="156" text-anchor="middle" class="s">scheduler</text>
+  <g class="s" text-anchor="middle"><text x="105" y="228">梯度 +=</text><text x="235" y="228">梯度 +=</text><text x="365" y="228">梯度 +=</text><text x="696" y="228">窗口边界</text><text x="892" y="228">成功步 +1</text></g>
+  <path d="M105 173V200M235 173V200M365 173V200" stroke="#2563eb" stroke-width="2"/>
+  <rect x="50" y="270" width="370" height="105" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="235" y="299" text-anchor="middle" class="h">窗口内共享</text>
+  <text x="235" y="326" text-anchor="middle" class="b">同一个全局 Token 分母 · 同一个 loss scale</text>
+  <text x="235" y="351" text-anchor="middle" class="b">同一个梯度缓冲 · zero_grad 不进循环</text>
+  <path d="M696 160V285H530" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="470" y="285" width="420" height="92" rx="14" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="680" y="314" text-anchor="middle" class="h">任一梯度非有限：整个窗口失败</text>
+  <text x="680" y="340" text-anchor="middle" class="b">丢弃累计梯度 · 不执行 optimizer / scheduler</text>
+  <text x="680" y="362" text-anchor="middle" class="s">记录 batch、首个非有限位置、scale 与状态摘要</text>
+  <text x="480" y="430" text-anchor="middle" class="b">读取 K 个 micro-batch ≠ 完成 K 次更新；成功计数只在最右端推进</text>
+</svg>

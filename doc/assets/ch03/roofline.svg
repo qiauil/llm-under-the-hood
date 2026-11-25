@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">假想设备的 Roofline 三点图</title>
+  <desc id="desc">100 TFLOP每秒计算屋顶与2 TB每秒带宽斜线在50 FLOPs每字节相交，标出强度0.5、16和80的三个情景。</desc>
+  <defs><style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 15px system-ui,sans-serif;fill:#172033}.b{font:13px system-ui,sans-serif;fill:#334155}.s{font:11px system-ui,sans-serif;fill:#475569}.grid{stroke:#cbd5e1;stroke-width:1;stroke-dasharray:4 5}.axis{stroke:#334155;stroke-width:2}</style></defs>
+  <rect width="960" height="520" rx="18" fill="#f8fafc"/>
+  <text x="480" y="35" text-anchor="middle" class="t">Roofline：先定位上界，再用 Profiler 解释差距</text>
+  <rect x="115" y="65" width="730" height="360" fill="#fff" stroke="#cbd5e1"/>
+  <g class="grid"><line x1="115" y1="365" x2="845" y2="365"/><line x1="115" y1="285" x2="845" y2="285"/><line x1="115" y1="205" x2="845" y2="205"/><line x1="115" y1="125" x2="845" y2="125"/><line x1="245" y1="65" x2="245" y2="425"/><line x1="405" y1="65" x2="405" y2="425"/><line x1="565" y1="65" x2="565" y2="425"/><line x1="725" y1="65" x2="725" y2="425"/></g>
+  <line x1="115" y1="425" x2="845" y2="425" class="axis"/><line x1="115" y1="425" x2="115" y2="65" class="axis"/>
+  <path d="M115 410L675 105H845" fill="none" stroke="#2563eb" stroke-width="5"/>
+  <text x="300" y="315" transform="rotate(-28 300 315)" class="h" fill="#2563eb">带宽屋顶：βI，β = 2 TB/s</text>
+  <text x="730" y="91" class="h" fill="#2563eb">计算屋顶：100 TFLOP/s</text>
+  <line x1="675" y1="105" x2="675" y2="425" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="655" y="92" text-anchor="end" class="h" fill="#dc2626">拐点 I = 50</text>
+  <circle cx="190" cy="370" r="8" fill="#ea580c" stroke="#fff" stroke-width="2"/>
+  <text x="205" y="362" class="h">I = 0.5</text><text x="205" y="381" class="s">上界 1 TFLOP/s</text>
+  <circle cx="515" cy="250" r="8" fill="#ea580c" stroke="#fff" stroke-width="2"/>
+  <text x="530" y="241" class="h">I = 16</text><text x="530" y="260" class="s">上界 32 TFLOP/s</text>
+  <circle cx="755" cy="105" r="8" fill="#7c3aed" stroke="#fff" stroke-width="2"/>
+  <text x="780" y="155" text-anchor="middle" class="h">I = 80</text><text x="780" y="174" text-anchor="middle" class="s">上界 100 TFLOP/s</text>
+  <text x="480" y="474" text-anchor="middle" class="h">算术强度 I = FLOPs / DRAM bytes（对数示意）</text>
+  <text x="38" y="250" transform="rotate(-90 38 250)" text-anchor="middle" class="h">吞吐上界（TFLOP/s，对数示意）</text>
+  <text x="480" y="505" text-anchor="middle" class="b">三点与设备规格均为教学假设，不是本机或产品实测</text>
+</svg>

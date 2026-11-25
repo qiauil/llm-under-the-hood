@@ -1,0 +1,49 @@
+/*-- scss:defaults --*/
+$font-family-sans-serif: "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+$font-family-monospace: "JetBrains Mono", "Noto Sans Mono CJK SC", "SFMono-Regular", Consolas, monospace;
+$headings-font-weight: 650;
+$line-height-base: 1.75;
+
+/*-- scss:rules --*/
+.content {
+  font-size: 1.03rem;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.015em;
+}
+
+.sidebar-title {
+  line-height: 1.35;
+}
+
+table {
+  font-size: 0.94rem;
+}
+
+pre,
+code {
+  font-variant-ligatures: none;
+}
+
+.callout {
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .content {
+    font-size: 1rem;
+  }
+
+  table {
+    font-size: 0.88rem;
+  }
+}
+

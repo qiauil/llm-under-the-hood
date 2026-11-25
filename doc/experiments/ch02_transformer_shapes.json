@@ -1,0 +1,153 @@
+{
+  "task": "E-2",
+  "status": "PASS",
+  "seed": 20261102,
+  "environment": {
+    "python": "3.11.5",
+    "torch": "2.5.1+cu124",
+    "device": "cpu",
+    "dtype": "torch.float32"
+  },
+  "config": {
+    "L": 2,
+    "d": 32,
+    "H": 4,
+    "H_KV": 2,
+    "d_h": 8,
+    "d_ff": 64,
+    "V": 64,
+    "B": 2,
+    "T": 6
+  },
+  "shape_trace": {
+    "tokens": [
+      2,
+      6
+    ],
+    "embedding": [
+      2,
+      6,
+      32
+    ],
+    "q": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "k": [
+      2,
+      2,
+      6,
+      8
+    ],
+    "v": [
+      2,
+      2,
+      6,
+      8
+    ],
+    "q_rope": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "k_rope": [
+      2,
+      2,
+      6,
+      8
+    ],
+    "score": [
+      2,
+      4,
+      6,
+      6
+    ],
+    "probability": [
+      2,
+      4,
+      6,
+      6
+    ],
+    "attention_merged": [
+      2,
+      6,
+      32
+    ],
+    "attention_output": [
+      2,
+      6,
+      32
+    ],
+    "max_future_probability": 0.0,
+    "gate": [
+      2,
+      6,
+      64
+    ],
+    "up": [
+      2,
+      6,
+      64
+    ],
+    "swiglu_product": [
+      2,
+      6,
+      64
+    ],
+    "mlp_output": [
+      2,
+      6,
+      32
+    ],
+    "attention_input": [
+      2,
+      6,
+      32
+    ],
+    "after_attention_residual": [
+      2,
+      6,
+      32
+    ],
+    "mlp_input": [
+      2,
+      6,
+      32
+    ],
+    "block_output": [
+      2,
+      6,
+      32
+    ],
+    "final_norm": [
+      2,
+      6,
+      32
+    ],
+    "logits": [
+      2,
+      6,
+      64
+    ]
+  },
+  "numeric": {
+    "causal_prefix_max_abs_diff": 0.0,
+    "rope_position_zero_max_abs_diff": 0.0,
+    "rope_norm_max_abs_diff": 2.384185791015625e-07,
+    "swiglu_max_abs_diff": 0.0
+  },
+  "checks": {
+    "shape_ledger": true,
+    "causal_prefix": true,
+    "rope_position_zero": true,
+    "rope_norm": true,
+    "swiglu_explicit": true
+  },
+  "notes": [
+    "PyTorch Linear stores [out,in]; F.linear applies its transpose to row-vector inputs.",
+    "CPU correctness run only; no GPU timing or performance conclusion."
+  ]
+}

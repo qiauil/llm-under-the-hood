@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620" role="img" aria-labelledby="title desc">
+  <title id="title">RoPE 的二维旋转与相对角差</title><desc id="desc">q 和 k 按各自绝对位置旋转，长度保持不变，旋转后点积中的位置项由相对角差决定。</desc>
+  <defs><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#172033}.h{font-size:27px;font-weight:700}.t{font-size:20px}.s{font-size:17px}.axis{stroke:#94a3b8;stroke-width:2}.q{stroke:#2563eb;stroke-width:4;fill:none;marker-end:url(#ab)}.k{stroke:#16a34a;stroke-width:4;fill:none;marker-end:url(#ag)}.old{stroke-dasharray:8 7;opacity:.55}.arc{stroke:#d97706;stroke-width:3;fill:none}</style></defs>
+  <rect width="1000" height="620" rx="22" fill="#f8fafc"/><text x="500" y="44" text-anchor="middle" class="h">绝对坐标决定旋转，相对坐标决定点积中的角差</text>
+  <line x1="120" y1="470" x2="880" y2="470" class="axis"/><line x1="500" y1="550" x2="500" y2="100" class="axis"/><text x="890" y="478" class="s">第 1 维</text><text x="512" y="108" class="s">第 2 维</text>
+  <path d="M500 470L760 470" class="q old"/><text x="770" y="458" class="t">q</text><path d="M500 470L650 245" class="k old"/><text x="658" y="235" class="t">k</text>
+  <path d="M500 470L720 330" class="q"/><text x="730" y="322" class="t">q̃ᵤ</text><path d="M500 470L535 205" class="k"/><text x="545" y="198" class="t">k̃ᵥ</text>
+  <path d="M590 470A90 90 0 0 0 576 422" class="arc"/><text x="607" y="426" class="s">uω</text><path d="M568 368A125 125 0 0 0 516 346" class="arc"/><text x="526" y="324" class="s">vω</text>
+  <path d="M610 400A130 130 0 0 0 517 341" class="arc" stroke-dasharray="7 6"/><text x="646" y="365" class="t">相对角差 ∝ (u−v)ω</text>
+  <rect x="190" y="515" width="620" height="70" rx="14" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/><text x="500" y="545" text-anchor="middle" class="t">旋转前后长度不变：‖q̃ᵤ‖ = ‖q‖，‖k̃ᵥ‖ = ‖k‖</text><text x="500" y="572" text-anchor="middle" class="s">这里只画一个频率对；完整头由多个二维对组成。</text>
+</svg>

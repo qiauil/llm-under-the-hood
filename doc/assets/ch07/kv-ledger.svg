@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">KV Cache逻辑容量账本</title>
+  <desc id="desc">图中把KV Cache写为L乘2乘B乘H KV乘T乘d h的逻辑形状，展示贯穿GQA配置每新增一个Token需要128 KiB，并列出2048、4096、32768 Token对应256 MiB、512 MiB和4 GiB；底部提醒物理峰值还包含分页、元数据、工作区和分配器。</desc>
+  <defs><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.box{stroke:#334155;stroke-width:2}</style></defs>
+  <rect width="1200" height="700" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">从逻辑 shape 到每 Token 容量</text>
+  <g text-anchor="middle">
+    <rect x="55" y="95" width="1090" height="105" rx="20" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="600" y="138" class="h">[ L, 2, B, Hₖᵥ, T, dₕ ] × s bytes</text>
+    <text x="600" y="176" class="t">层 × Key/Value × 请求 × KV 头 × 已缓存位置 × 头维度</text>
+  </g>
+  <text x="60" y="255" class="h">贯穿 GQA 配置：每请求每新增 1 Token</text>
+  <g text-anchor="middle">
+    <rect x="70" y="290" width="145" height="92" rx="14" fill="#dbeafe" class="box"/><text x="142" y="326" class="t">2</text><text x="142" y="356" class="s">K + V</text>
+    <text x="235" y="346" class="h">×</text>
+    <rect x="270" y="290" width="145" height="92" rx="14" fill="#dbeafe" class="box"/><text x="342" y="326" class="t">32</text><text x="342" y="356" class="s">层</text>
+    <text x="435" y="346" class="h">×</text>
+    <rect x="470" y="290" width="145" height="92" rx="14" fill="#dbeafe" class="box"/><text x="542" y="326" class="t">8</text><text x="542" y="356" class="s">KV 头</text>
+    <text x="635" y="346" class="h">×</text>
+    <rect x="670" y="290" width="145" height="92" rx="14" fill="#dbeafe" class="box"/><text x="742" y="326" class="t">128</text><text x="742" y="356" class="s">头维度</text>
+    <text x="835" y="346" class="h">×</text>
+    <rect x="870" y="290" width="145" height="92" rx="14" fill="#dbeafe" class="box"/><text x="942" y="326" class="t">2 bytes</text><text x="942" y="356" class="s">BF16</text>
+    <text x="1060" y="334" class="h" fill="#15803d">= 128 KiB</text>
+  </g>
+  <text x="60" y="445" class="h">长度与并发：按已用 Token 数线性增长</text>
+  <g text-anchor="middle">
+    <rect x="65" y="485" width="300" height="90" rx="16" fill="#dcfce7" class="box"/><text x="215" y="522" class="t">T = 2,048</text><text x="215" y="555" class="h">256 MiB</text>
+    <rect x="450" y="485" width="300" height="90" rx="16" fill="#dcfce7" class="box"/><text x="600" y="522" class="t">T = 4,096</text><text x="600" y="555" class="h">512 MiB</text>
+    <rect x="835" y="485" width="300" height="90" rx="16" fill="#dcfce7" class="box"/><text x="985" y="522" class="t">T = 32,768</text><text x="985" y="555" class="h">4 GiB</text>
+  </g>
+  <rect x="100" y="615" width="1000" height="58" rx="14" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="600" y="651" text-anchor="middle" class="t" fill="#b91c1c">逻辑 KV ≠ 物理峰值：另加页尾浪费、元数据、工作区、复制与 allocator reserved</text>
+</svg>

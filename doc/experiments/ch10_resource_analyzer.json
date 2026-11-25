@@ -1,0 +1,107 @@
+{
+  "task": "W-10.2",
+  "status": "PASS",
+  "evidence_type": "analytic_resource_ledger_with_cpu_parameter_validation",
+  "environment": {
+    "python": "3.10.14",
+    "torch": "2.9.1+cu128",
+    "device": "cpu",
+    "cuda_available": false
+  },
+  "assumptions": {
+    "architecture": "bias-free GQA SwiGLU Pre-RMSNorm tied embedding",
+    "flop_convention": "2 FLOPs per MAC; full-square causal implementation; all-position LM head",
+    "state_memory": "logical payload only; no activation/temp/workspace/allocator/communication",
+    "kv_memory": "BF16 K and V, all layers, equal lengths; no paging/metadata/fragmentation"
+  },
+  "configs": {
+    "book_reference": {
+      "L": 32,
+      "d": 4096,
+      "H": 32,
+      "H_KV": 8,
+      "d_h": 128,
+      "d_ff": 11008,
+      "V": 32000,
+      "B": 1,
+      "T": 4096
+    },
+    "minigpt": {
+      "L": 2,
+      "d": 32,
+      "H": 4,
+      "H_KV": 2,
+      "d_h": 8,
+      "d_ff": 64,
+      "V": 64,
+      "B": 2,
+      "T": 24
+    }
+  },
+  "reports": {
+    "book_reference": {
+      "parameter_breakdown": {
+        "tied_embedding": 131072000,
+        "per_layer_q_o": 33554432,
+        "per_layer_k_v": 8388608,
+        "per_layer_swiglu": 135266304,
+        "per_layer_norms": 8192,
+        "per_layer_total": 177217536,
+        "final_norm": 4096,
+        "total": 5802037248
+      },
+      "flops": {
+        "per_block_full_square_forward_main": 1726576852992,
+        "model_full_sequence_forward_main": 56324201119744,
+        "training_forward_backward_3x_main": 168972603359232
+      },
+      "logical_memory_bytes": {
+        "bf16_weights_grad_fp32_adam_no_master_12B_per_param": 69624446976,
+        "bf16_weights_grad_fp32_master_adam_16B_per_param": 92832595968,
+        "bf16_kv_cache": 536870912
+      }
+    },
+    "minigpt": {
+      "parameter_breakdown": {
+        "tied_embedding": 2048,
+        "per_layer_q_o": 2048,
+        "per_layer_k_v": 1024,
+        "per_layer_swiglu": 6144,
+        "per_layer_norms": 64,
+        "per_layer_total": 9280,
+        "final_norm": 32,
+        "total": 20640
+      },
+      "flops": {
+        "per_block_full_square_forward_main": 1032192,
+        "model_full_sequence_forward_main": 2260992,
+        "training_forward_backward_3x_main": 6782976
+      },
+      "logical_memory_bytes": {
+        "bf16_weights_grad_fp32_adam_no_master_12B_per_param": 247680,
+        "bf16_weights_grad_fp32_master_adam_16B_per_param": 330240,
+        "bf16_kv_cache": 6144
+      }
+    }
+  },
+  "actual_validation": {
+    "minigpt_sum_parameter_numel": 20640
+  },
+  "checks": {
+    "reference_parameter_total": true,
+    "reference_forward_flops": true,
+    "reference_kv_bytes": true,
+    "minigpt_actual_parameter_match": true,
+    "all_positive": true
+  },
+  "physical_gpu_peak": {
+    "status": "not_run_no_cuda",
+    "allocated": null,
+    "reserved": null
+  },
+  "limitations": [
+    "Analytic FLOPs are not profiler coverage or wall-clock performance.",
+    "Logical bytes are not physical allocated/reserved peak memory.",
+    "The 3x training FLOPs factor omits recomputation and lower-order operations."
+  ]
+}

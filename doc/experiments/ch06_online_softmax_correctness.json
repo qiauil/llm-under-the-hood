@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "scope": "single-process CPU float64 algebra/autograd check of a pedagogical blockwise Online Softmax attention implementation plus PyTorch CPU SDPA math; no CUDA, FlashAttention fused kernel, GPU memory, timing, profiler, Nsight, or Triton claim",
+  "seed": 20261105,
+  "shape_b_h_t_dh": [
+    2,
+    3,
+    17,
+    8
+  ],
+  "dtype": "torch.float64",
+  "tolerance": 1e-12,
+  "environment": {
+    "python": "3.11.5",
+    "torch": "2.5.1+cu124",
+    "cuda_available": false,
+    "cuda_device_count": 0
+  },
+  "cases": [
+    {
+      "causal": false,
+      "block_q": 4,
+      "block_k": 5,
+      "blockwise_output_max_abs_error": 4.440892098500626e-16,
+      "blockwise_gradient_max_abs_errors": {
+        "q": 1.2212453270876722e-15,
+        "k": 8.881784197001252e-16,
+        "v": 4.440892098500626e-16
+      },
+      "cpu_sdpa_output_max_abs_error": 4.440892098500626e-16,
+      "cpu_sdpa_gradient_max_abs_errors": {
+        "q": 6.661338147750939e-16,
+        "k": 1.1102230246251565e-15,
+        "v": 4.996003610813204e-16
+      },
+      "pass": true
+    },
+    {
+      "causal": true,
+      "block_q": 4,
+      "block_k": 5,
+      "blockwise_output_max_abs_error": 6.661338147750939e-16,
+      "blockwise_gradient_max_abs_errors": {
+        "q": 6.661338147750939e-16,
+        "k": 6.661338147750939e-16,
+        "v": 8.881784197001252e-16
+      },
+      "cpu_sdpa_output_max_abs_error": 6.661338147750939e-16,
+      "cpu_sdpa_gradient_max_abs_errors": {
+        "q": 6.661338147750939e-16,
+        "k": 1.0547118733938987e-15,
+        "v": 6.661338147750939e-16
+      },
+      "pass": true
+    }
+  ],
+  "gpu_status": "not run: CUDA unavailable",
+  "triton_status": "not run: optional challenge only"
+}

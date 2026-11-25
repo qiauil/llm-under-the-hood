@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">从Base Model到Assistant候选的后训练分支谱系</title>
+  <desc id="desc">Base Model可选做领域继续预训练，随后可做SFT。SFT之后可以直接进入评测，也可选择DPO偏好对路线、Reward Model加在线RL路线，或面向可验证任务的RLVR路线。所有分支最终都必须通过质量与回归、安全与可靠性、系统性能三类发布评测。</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker>
+    <style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.box{stroke:#334155;stroke-width:2}.flow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#a)}.dash{fill:none;stroke:#64748b;stroke-width:3;stroke-dasharray:10 8;marker-end:url(#a)}</style>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">后训练是分支谱系，不是唯一流水线</text>
+  <rect x="55" y="105" width="230" height="90" rx="18" fill="#dbeafe" class="box"/>
+  <text x="170" y="145" text-anchor="middle" class="h">Base Model</text><text x="170" y="177" text-anchor="middle" class="s">下一 Token 预训练</text>
+  <path d="M285 150H365" class="flow"/>
+  <rect x="370" y="105" width="250" height="90" rx="18" fill="#e2e8f0" class="box"/>
+  <text x="495" y="143" text-anchor="middle" class="t">领域继续预训练</text><text x="495" y="175" text-anchor="middle" class="s">可选：领域文本信号</text>
+  <path d="M620 150H700" class="flow"/>
+  <path d="M285 170C350 250 630 250 700 170" class="dash"/>
+  <rect x="705" y="105" width="220" height="90" rx="18" fill="#dcfce7" class="box"/>
+  <text x="815" y="143" text-anchor="middle" class="h">SFT</text><text x="815" y="175" text-anchor="middle" class="s">示范 + 回答 Token loss</text>
+  <path d="M815 195V260" class="flow"/>
+  <rect x="385" y="265" width="860" height="1" fill="#94a3b8"/>
+  <text x="55" y="280" class="t">按数据、风险和预算选择下一步</text>
+  <path d="M815 260H190V330" class="flow"/>
+  <path d="M815 260H505V330" class="flow"/>
+  <path d="M815 260V330" class="flow"/>
+  <path d="M815 260H1090V330" class="flow"/>
+  <rect x="55" y="335" width="270" height="125" rx="18" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+  <text x="190" y="374" text-anchor="middle" class="h">直接评测</text><text x="190" y="410" text-anchor="middle" class="t">仅 SFT 也可以是配方</text><text x="190" y="441" text-anchor="middle" class="s">不强制继续偏好优化</text>
+  <rect x="370" y="335" width="270" height="125" rx="18" fill="#fae8ff" stroke="#a21caf" stroke-width="3"/>
+  <text x="505" y="374" text-anchor="middle" class="h">DPO</text><text x="505" y="410" text-anchor="middle" class="t">离线 chosen / rejected</text><text x="505" y="441" text-anchor="middle" class="s">Policy + Reference</text>
+  <rect x="680" y="335" width="270" height="125" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+  <text x="815" y="374" text-anchor="middle" class="h">RM + 在线 RL</text><text x="815" y="410" text-anchor="middle" class="t">偏好 → Reward</text><text x="815" y="441" text-anchor="middle" class="s">Rollout → Update 闭环</text>
+  <rect x="975" y="335" width="170" height="125" rx="18" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+  <text x="1060" y="374" text-anchor="middle" class="h">RLVR</text><text x="1060" y="410" text-anchor="middle" class="t">可验证任务</text><text x="1060" y="441" text-anchor="middle" class="s">Checker 有边界</text>
+  <path d="M190 460V535H600" class="flow"/><path d="M505 460V535H600" class="flow"/><path d="M815 460V535H600" class="flow"/><path d="M1060 460V535H600" class="flow"/>
+  <rect x="250" y="540" width="700" height="125" rx="20" fill="#ecfccb" stroke="#65a30d" stroke-width="3"/>
+  <text x="600" y="578" text-anchor="middle" class="h">共同发布门：独立评测</text>
+  <text x="600" y="616" text-anchor="middle" class="t">质量与 Base 回归　│　安全与可靠性　│　系统性能与成本</text>
+  <text x="600" y="648" text-anchor="middle" class="s">每阶段保存输入 revision、数据 manifest、配置、checkpoint 与同一评测矩阵</text>
+</svg>

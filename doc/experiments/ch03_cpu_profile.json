@@ -1,0 +1,114 @@
+{
+  "status": "measured_cpu",
+  "seed": 20261031,
+  "environment": {
+    "python": "3.11.5",
+    "torch": "2.5.1+cu124",
+    "device": "cpu",
+    "dtype": "torch.float32",
+    "cuda_available": false
+  },
+  "config": {
+    "L": 2,
+    "d": 128,
+    "H": 4,
+    "H_KV": 2,
+    "d_h": 32,
+    "d_ff": 352,
+    "V": 256,
+    "T_max": 128,
+    "B": 2,
+    "T": 32,
+    "warmup": 3,
+    "profiled_steps": 3
+  },
+  "theory": {
+    "parameters": 402048,
+    "forward_main_flops": 53477376,
+    "train_three_x_main_flops": 160432128,
+    "teaching_bf16_adam_state_bytes": 4824576,
+    "cpu_fp32_adam_state_bytes": 6432768,
+    "memory_note": "parameter-related logical state only; excludes activations, temporaries and runtime"
+  },
+  "actual": {
+    "parameters": 402048,
+    "loss_after_profiled_step": 86.905517578125,
+    "profiler_reported_flops_partial_total": 483314880,
+    "profiler_reported_flops_partial_per_step": 161104960.0,
+    "note": "with_flops covers only supported operators; it is not the complete textbook FLOPs count"
+  },
+  "top_cpu_ops": [
+    {
+      "name": "aten::mm",
+      "self_cpu_time_us": 4606.109999999978,
+      "cpu_memory_bytes": 8699904,
+      "flops": 462422016
+    },
+    {
+      "name": "Optimizer.step#AdamW.step",
+      "self_cpu_time_us": 2476.517999999978,
+      "cpu_memory_bytes": 0,
+      "flops": 0
+    },
+    {
+      "name": "aten::mul",
+      "self_cpu_time_us": 2372.745000000017,
+      "cpu_memory_bytes": 6766080,
+      "flops": 1685760
+    },
+    {
+      "name": "aten::div",
+      "self_cpu_time_us": 1786.4179999999733,
+      "cpu_memory_bytes": 5710080,
+      "flops": 0
+    },
+    {
+      "name": "aten::_to_copy",
+      "self_cpu_time_us": 1081.6939999999445,
+      "cpu_memory_bytes": 1644,
+      "flops": 0
+    },
+    {
+      "name": "aten::sqrt",
+      "self_cpu_time_us": 982.1240000000016,
+      "cpu_memory_bytes": 4824576,
+      "flops": 0
+    },
+    {
+      "name": "aten::copy_",
+      "self_cpu_time_us": 980.2920000000049,
+      "cpu_memory_bytes": 0,
+      "flops": 0
+    },
+    {
+      "name": "aten::addcdiv_",
+      "self_cpu_time_us": 930.3969999999772,
+      "cpu_memory_bytes": 0,
+      "flops": 0
+    },
+    {
+      "name": "aten::mul_",
+      "self_cpu_time_us": 913.1290000000463,
+      "cpu_memory_bytes": 12,
+      "flops": 0
+    },
+    {
+      "name": "aten::lerp_",
+      "self_cpu_time_us": 844.8989999999994,
+      "cpu_memory_bytes": 0,
+      "flops": 0
+    },
+    {
+      "name": "aten::add_",
+      "self_cpu_time_us": 723.7109999999448,
+      "cpu_memory_bytes": 4,
+      "flops": 0
+    },
+    {
+      "name": "aten::transpose",
+      "self_cpu_time_us": 635.9139999999582,
+      "cpu_memory_bytes": 0,
+      "flops": 0
+    }
+  ]
+}

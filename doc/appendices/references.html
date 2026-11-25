@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>附录 D — 参考资料 – 拆开大模型</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../appendices/exercise-solutions.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-e9b880ddb15872a1c17b20ebf15c20bb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2877e7bc5a54c41a68e0305aabc5471d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9ce463b964bd3338f1a703a30fb1d110.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-766d196e8d24843208486ddc6860e50d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">跳至主要内容</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="工具栏">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../appendices/prerequisites.html">附录</a></li><li class="breadcrumb-item"><a href="../appendices/references.html"><span class="chapter-title">参考资料</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="搜索" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="网站">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">拆开大模型</a> 
+        <div class="sidebar-tools-main">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式" aria-label="切换深色模式"><i class="bi"></i></button>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="切换阅读器模式">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">读者导览</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">模型基础与结构</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-foundations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 1 章 大语言模型基础</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-transformer.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 2 章 Transformer 模型结构</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-compute-and-gpu.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 3 章 模型计算复杂度与 GPU 计算基础</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">训练与并行系统</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-pretraining.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 4 章 大语言模型的预训练原理与训练流程</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-distributed-training.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 5 章 大规模分布式训练</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-efficient-attention.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 6 章 高性能 Attention 与 GPU Kernel 优化</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">推理、后训练与前沿</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-inference-serving.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 7 章 大语言模型推理与高性能服务系统</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08-post-training-evaluation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 8 章 大语言模型微调、对齐与评测</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09-frontiers.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 9 章 前沿模型技术专题（选修）</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">综合实践</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10-projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第 10 章 综合实践与课程项目</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">附录</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/prerequisites.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">必要前置知识</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">统一符号与贯穿配置</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/exercise-solutions.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">习题答案与提示</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/references.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">参考资料</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#按章节与主题查找" id="toc-按章节与主题查找" class="nav-link active" data-scroll-target="#按章节与主题查找">按章节与主题查找</a></li>
+  <li><a href="#大语言模型概述" id="toc-大语言模型概述" class="nav-link" data-scroll-target="#大语言模型概述">1.1 大语言模型概述</a></li>
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">1.2 Tokenization</a></li>
+  <li><a href="#自回归建模attention-与位置编码" id="toc-自回归建模attention-与位置编码" class="nav-link" data-scroll-target="#自回归建模attention-与位置编码">自回归建模、Attention 与位置编码</a></li>
+  <li><a href="#归一化门控与资源账本" id="toc-归一化门控与资源账本" class="nav-link" data-scroll-target="#归一化门控与资源账本">归一化、门控与资源账本</a>
+  <ul class="collapse">
+  <li><a href="#第-3-章资源账本gpu-与性能上界" id="toc-第-3-章资源账本gpu-与性能上界" class="nav-link" data-scroll-target="#第-3-章资源账本gpu-与性能上界">第 3 章：资源账本、GPU 与性能上界</a></li>
+  <li><a href="#第-4-章数据优化与可恢复训练" id="toc-第-4-章数据优化与可恢复训练" class="nav-link" data-scroll-target="#第-4-章数据优化与可恢复训练">第 4 章：数据、优化与可恢复训练</a></li>
+  <li><a href="#第-5-章collective-与分布式布局" id="toc-第-5-章collective-与分布式布局" class="nav-link" data-scroll-target="#第-5-章collective-与分布式布局">第 5 章：Collective 与分布式布局</a></li>
+  <li><a href="#第-6-章高性能-attention-与测量" id="toc-第-6-章高性能-attention-与测量" class="nav-link" data-scroll-target="#第-6-章高性能-attention-与测量">第 6 章：高性能 Attention 与测量</a></li>
+  <li><a href="#第-7-章推理与服务系统" id="toc-第-7-章推理与服务系统" class="nav-link" data-scroll-target="#第-7-章推理与服务系统">第 7 章：推理与服务系统</a></li>
+  <li><a href="#第-8-章后训练评测与安全" id="toc-第-8-章后训练评测与安全" class="nav-link" data-scroll-target="#第-8-章后训练评测与安全">第 8 章：后训练、评测与安全</a></li>
+  <li><a href="#第-9-章长上下文多模态与新架构" id="toc-第-9-章长上下文多模态与新架构" class="nav-link" data-scroll-target="#第-9-章长上下文多模态与新架构">第 9 章：长上下文、多模态与新架构</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="路径"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../appendices/prerequisites.html">附录</a></li><li class="breadcrumb-item"><a href="../appendices/references.html"><span class="chapter-title">参考资料</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">附录 D — 参考资料</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>本页收录正文实际使用并核验的原论文、官方文档与官方实现。每条保留版本或访问入口、重点阅读范围及“不作本机结果”等证据边界；更细的核验位置与使用边界以来源台账为准。</p>
+<p><a href="../index.html">总目录</a> · <a href="../appendices/notation.html">符号表</a> · <a href="../appendices/exercise-solutions.html">习题答案</a></p>
+<section id="按章节与主题查找" class="level2">
+<h2 class="anchored" data-anchor-id="按章节与主题查找">按章节与主题查找</h2>
+<p>主题标签只用于导航；同一资料可能支持多个章节。第 10 章以项目复用前述结构、训练、Kernel 和服务资料，不另造一套来源。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>章节</th>
+<th>REF 区间</th>
+<th>主题标签</th>
+<th>入口</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 1 章</td>
+<td>REF-001–015</td>
+<td>模型范式 · Tokenization · 自回归 · 采样</td>
+<td><a href="#refs-1-1">概述</a> · <a href="#refs-1-2">分词</a> · <a href="#refs-p1-batch">自回归</a></td>
+</tr>
+<tr class="even">
+<td>第 2 章</td>
+<td>REF-002、016–028</td>
+<td>Attention · GQA/MQA · RoPE · 归一化 · 门控</td>
+<td><a href="#refs-p1-batch">Attention 与位置</a> · <a href="#refs-norm-compute">归一化与门控</a></td>
+</tr>
+<tr class="odd">
+<td>第 3 章</td>
+<td>REF-029–041</td>
+<td>参数/FLOPs · GPU · 存储层级 · Roofline · Profiler</td>
+<td><a href="#refs-ch3">资源与 GPU</a></td>
+</tr>
+<tr class="even">
+<td>第 4 章</td>
+<td>REF-042–060</td>
+<td>数据 · 优化器 · 混合精度 · 训练预算 · Checkpoint</td>
+<td><a href="#refs-ch4">预训练流程</a></td>
+</tr>
+<tr class="odd">
+<td>第 5 章</td>
+<td>REF-061–089</td>
+<td>Collective · DP/ZeRO/FSDP · TP/PP/SP/CP/EP · 重计算</td>
+<td><a href="#refs-ch5">分布式训练</a></td>
+</tr>
+<tr class="even">
+<td>第 6 章</td>
+<td>REF-090–101</td>
+<td>FlashAttention · CUDA · SDPA · 计时/显存</td>
+<td><a href="#refs-ch6">高性能 Attention</a></td>
+</tr>
+<tr class="odd">
+<td>第 7 章</td>
+<td>REF-102–123</td>
+<td>服务指标 · KV/PagedAttention · 调度 · PD分离 · 推测/量化</td>
+<td><a href="#refs-ch7">推理服务</a></td>
+</tr>
+<tr class="even">
+<td>第 8 章</td>
+<td>REF-124–153</td>
+<td>SFT/LoRA · 偏好优化 · 评测 · 安全/可靠性</td>
+<td><a href="#refs-ch8">后训练与评测</a></td>
+</tr>
+<tr class="odd">
+<td>第 9 章</td>
+<td>REF-154–171</td>
+<td>长上下文 · 多模态 · 测试时计算 · RAG/Agent · SSM</td>
+<td><a href="#refs-ch9">前沿专题</a></td>
+</tr>
+<tr class="even">
+<td>第 10 章</td>
+<td>复用 REF-001–153</td>
+<td>项目证据 · 复现协议 · 系统验收</td>
+<td>按项目主题返回第 1–8 章入口</td>
+</tr>
+</tbody>
+</table>
+<p><a id="refs-1-1"></a></p>
+</section>
+<section id="大语言模型概述" class="level2">
+<h2 class="anchored" data-anchor-id="大语言模型概述">1.1 大语言模型概述</h2>
+<ul>
+<li><strong>REF-001</strong>：Mikolov, T., Karafiát, M., Burget, L., Černocký, J., &amp; Khudanpur, S. (2010). <em>Recurrent neural network based language model</em>. Interspeech, 1045–1048。<a href="https://www.isca-archive.org/interspeech_2010/mikolov10_interspeech.pdf">会议原文 PDF</a>。阅读 §1–2，关注统计语言建模与递推状态。</li>
+<li><strong>REF-002</strong>：Vaswani, A., et al.&nbsp;(2017). <em>Attention Is All You Need</em>. NeurIPS。核验版本 arXiv:1706.03762v7。<a href="https://arxiv.org/html/1706.03762v7">论文全文</a>。阅读 §1、§3、§4 与表 1，关注信息路径、训练并行性和复杂度。</li>
+<li><strong>REF-003</strong>：Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2019). <em>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</em>. NAACL-HLT。核验版本 arXiv:1810.04805v2。<a href="https://arxiv.org/html/1810.04805v2">论文全文</a>。阅读 §3–3.1，关注双向编码器与遮蔽预测。</li>
+<li><strong>REF-004</strong>：Raffel, C., et al.&nbsp;(2020). <em>Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer</em>. JMLR, 21(140), 1–67。核验版本 arXiv:1910.10683v4。<a href="https://arxiv.org/html/1910.10683v4">论文全文</a>。阅读 §2.1、§3.2，关注三类信息流及有条件的架构比较。</li>
+<li><strong>REF-005</strong>：Brown, T. B., et al.&nbsp;(2020). <em>Language Models are Few-Shot Learners</em>. NeurIPS。核验版本 arXiv:2005.14165v4。<a href="https://arxiv.org/html/2005.14165v4">论文全文</a>。阅读 §2–2.1，关注自回归模型与不更新权重的上下文示例。</li>
+<li><strong>REF-006</strong>：Ouyang, L., et al.&nbsp;(2022). <em>Training language models to follow instructions with human feedback</em>. NeurIPS。核验版本 arXiv:2203.02155v1。<a href="https://arxiv.org/html/2203.02155v1">论文全文</a>。阅读摘要、§3.1 与“仍会犯错”的讨论，关注示范微调、比较数据与策略优化流程。</li>
+</ul>
+<p>以上材料访问日期均为 2026-10-31；核验针对本节使用的论点，不代表已逐页复现论文实验。</p>
+<p><a id="refs-1-2"></a></p>
+</section>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">1.2 Tokenization</h2>
+<ul>
+<li><strong>REF-007</strong>：Sennrich, R., Haddow, B., &amp; Birch, A. (2016). <em>Neural Machine Translation of Rare Words with Subword Units</em>. ACL, 1715–1725。<a href="https://aclanthology.org/P16-1162.pdf">正式论文 PDF</a>。阅读 §3.2 与算法 1，关注按词频加权的相邻符号合并及规则复用。</li>
+<li><strong>REF-008</strong>：Wu, Y., et al.&nbsp;(2016). <em>Google’s Neural Machine Translation System: Bridging the Gap between Human and Machine Translation</em>. arXiv:1609.08144v2。<a href="https://arxiv.org/html/1609.08144v2">论文全文</a>。阅读 §4.1，关注 WordPiece 词表学习依据及词边界标记。</li>
+<li><strong>REF-009</strong>：Google Research. <em>BERT: tokenization.py</em>。<a href="https://github.com/google-research/bert/blob/master/tokenization.py">官方源代码</a>。核验访问时 <code>master</code> 分支的 <code>WordpieceTokenizer.tokenize</code>，关注最长匹配、<code>##</code> 与未知项；未固定提交，不作为本节运行环境依赖。</li>
+<li><strong>REF-010</strong>：Kudo, T. (2018). <em>Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates</em>. ACL, 66–75。<a href="https://aclanthology.org/P18-1007.pdf">正式论文 PDF</a>。阅读 §3.1–3.3，关注 Unigram 概率、动态规划、EM 与候选裁剪。</li>
+<li><strong>REF-011</strong>：Kudo, T., &amp; Richardson, J. (2018). <em>SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing</em>. EMNLP System Demonstrations, 66–71。<a href="https://aclanthology.org/D18-2012.pdf">正式论文 PDF</a>。阅读 §2、§3.1–3.5，关注编码/解码、空白、规范化与特殊 ID。</li>
+<li><strong>REF-012</strong>：Hugging Face. <em>Chat templates</em>. Transformers <strong>4.57.1</strong> 官方文档。<a href="https://huggingface.co/docs/transformers/v4.57.1/en/chat_templating">固定版本入口</a>。阅读消息角色、控制标记及重复添加特殊 Token 的说明；本节未运行其中的 API 示例。</li>
+</ul>
+<p>本节材料访问日期均为 2026-10-31。BPE 训练语料、ID 数值、字节序列与成本比例由作者构造或计算，见小节正文，不冒充论文实测结果。</p>
+<p><a id="refs-p1-batch"></a></p>
+</section>
+<section id="自回归建模attention-与位置编码" class="level2">
+<h2 class="anchored" data-anchor-id="自回归建模attention-与位置编码">自回归建模、Attention 与位置编码</h2>
+<ul>
+<li><strong>REF-013</strong>：Bengio, S., Vinyals, O., Jaitly, N., &amp; Shazeer, N. (2015). Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. <a href="https://arxiv.org/html/1506.03099v3">arXiv:1506.03099v3</a>。阅读 §2.1–2.3。</li>
+<li><strong>REF-014</strong>：Hugging Face. Perplexity of fixed-length models. <a href="https://huggingface.co/docs/transformers/v4.57.1/en/perplexity">Transformers 4.57.1</a>。阅读 PPL 定义、分词影响与固定窗口评测。</li>
+<li><strong>REF-015</strong>：Holtzman, A., Buys, J., Du, L., Forbes, M., &amp; Choi, Y. (2020). The Curious Case of Neural Text Degeneration. <a href="https://arxiv.org/html/1904.09751v2">arXiv:1904.09751v2</a>。阅读 §3.1–3.3。</li>
+<li><strong>REF-016</strong>：Ainslie, J., et al.&nbsp;(2023). GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints. <a href="https://arxiv.org/html/2305.13245v3">arXiv:2305.13245v3</a>。阅读 §2.1–2.2。</li>
+<li><strong>REF-017</strong>：Shazeer, N. (2019). Fast Transformer Decoding: One Write-Head is All You Need. <a href="https://arxiv.org/html/1911.02150v1">arXiv:1911.02150v1</a>。阅读 §3、§3.1。</li>
+<li><strong>REF-018</strong>：Su, J., et al.&nbsp;(2021). RoFormer: Enhanced Transformer with Rotary Position Embedding. <a href="https://arxiv.org/html/2104.09864v5">arXiv:2104.09864v5</a>。阅读 §2、§3.1–3.2、§3.4.2。</li>
+<li><strong>REF-019</strong>：Chen, S., Wong, S., Chen, L., &amp; Tian, Y. (2023). Extending Context Window of Large Language Models via Positional Interpolation. <a href="https://arxiv.org/html/2306.15595v2">arXiv:2306.15595v2</a>。阅读 §2.3。</li>
+<li><strong>REF-020</strong>：PyTorch. torch.nn.Linear. <a href="https://docs.pytorch.org/docs/2.9/generated/torch.nn.Linear.html">PyTorch 2.9 文档</a>。阅读 形状、weight 与仿射映射说明。</li>
+</ul>
+<p>以上资料访问日期为 2026-10-31；Transformer 原论文 REF-002 在本轮复核 §3.1–3.5。只核验实际使用论点，未复现实验；CPU 玩具计算不支持 GPU 性能结论。</p>
+<p><a id="refs-norm-compute"></a></p>
+</section>
+<section id="归一化门控与资源账本" class="level2">
+<h2 class="anchored" data-anchor-id="归一化门控与资源账本">归一化、门控与资源账本</h2>
+<ul>
+<li><strong>REF-021</strong>：Ba, J. L., Kiros, J. R., &amp; Hinton, G. E. (2016). Layer Normalization. <a href="https://arxiv.org/html/1607.06450v1">arXiv:1607.06450v1</a>。阅读 §2–3。</li>
+<li><strong>REF-022</strong>：Zhang, B., &amp; Sennrich, R. (2019). Root Mean Square Layer Normalization. <a href="https://arxiv.org/html/1910.07467v1">arXiv:1910.07467v1</a>。阅读 §3–4.1。</li>
+<li><strong>REF-023</strong>：Xiong, R., et al.&nbsp;(2020). On Layer Normalization in the Transformer Architecture. <a href="https://arxiv.org/html/2002.04745v2">arXiv:2002.04745v2</a>。阅读 §3、表1。</li>
+<li><strong>REF-024</strong>：Shazeer, N. (2020). GLU Variants Improve Transformer. <a href="https://arxiv.org/html/2002.05202v1">arXiv:2002.05202v1</a>。阅读 §1–2、式1–6。</li>
+<li><strong>REF-025</strong>：He, K., Zhang, X., Ren, S., &amp; Sun, J. (2016). Deep Residual Learning for Image Recognition. <a href="https://arxiv.org/html/1512.03385v1">arXiv:1512.03385v1</a>。阅读 §3.1–3.2。</li>
+<li><strong>REF-026</strong>：Fedus, W., Zoph, B., &amp; Shazeer, N. (2022). Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity. <a href="https://arxiv.org/html/2101.03961v3">arXiv:2101.03961v3</a>。阅读 §2.1–2.3、辅助负载损失及附录F。</li>
+<li><strong>REF-027</strong>：Hendrycks, D., &amp; Gimpel, K. (2016). Gaussian Error Linear Units (GELUs). <a href="https://arxiv.org/html/1606.08415v5">arXiv:1606.08415v5</a>。阅读 §2。</li>
+<li><strong>REF-028</strong>：Ioffe, S., &amp; Szegedy, C. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. <a href="https://arxiv.org/html/1502.03167v3">arXiv:1502.03167v3</a>。阅读 §3–3.1、算法1。</li>
+</ul>
+<p><a id="refs-ch3"></a></p>
+<section id="第-3-章资源账本gpu-与性能上界" class="level3">
+<h3 class="anchored" data-anchor-id="第-3-章资源账本gpu-与性能上界">第 3 章：资源账本、GPU 与性能上界</h3>
+<ul>
+<li><strong>REF-029</strong>：Kaplan, J., et al.&nbsp;(2020). Scaling Laws for Neural Language Models. <a href="https://arxiv.org/html/2001.08361v1">arXiv:2001.08361v1</a>。阅读 §2.1、表1。</li>
+<li><strong>REF-030</strong>：Loshchilov, I., &amp; Hutter, F. (2019). Decoupled Weight Decay Regularization. <a href="https://openreview.net/pdf?id=Bkg6RiCqY7">ICLR 2019 原文</a>。阅读算法2，核对AdamW一/二阶状态与解耦权重衰减。</li>
+<li><strong>REF-031</strong>：PyTorch. Automatic Mixed Precision examples. <a href="https://docs.pytorch.org/docs/main/notes/amp_examples.html">main 文档，访问于2026-10-31</a>。核对autocast与GradScaler的职责；未运行示例。</li>
+<li><strong>REF-032</strong>：PyTorch. Autograd mechanics. <a href="https://docs.pytorch.org/docs/main/notes/autograd.html">main 文档，访问于2026-10-31</a>。阅读Saved tensors，支持反向所需中间量的生命周期说明。</li>
+<li><strong>REF-033</strong>：PyTorch. CUDA semantics—Memory management. <a href="https://docs.pytorch.org/docs/main/notes/cuda.html#memory-management">main 文档，访问于2026-10-31</a>。核对allocated、reserved及缓存分配器语义；未进行GPU测量。</li>
+<li><strong>REF-034</strong>：NVIDIA. CUDA Programming Guide, §1.1.2. <a href="https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/introduction.html#the-benefits-of-using-gpus">在线文档，访问于2026-10-31</a>。核对CPU低延迟与GPU高并发吞吐的设计目标和边界。</li>
+<li><strong>REF-035</strong>：NVIDIA. CUDA Programming Guide, Hardware Multithreading. <a href="https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/advanced-kernel-programming.html#hardware-multithreading">在线文档，访问于2026-10-31</a>。核对Block到SM、32线程Warp与调度语义。</li>
+<li><strong>REF-036</strong>：NVIDIA. Matrix Multiplication Background User’s Guide. <a href="https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/">在线文档，访问于2026-10-31</a>。阅读§2.1–2.3，核对GEMM分块、Tensor Core对齐与Tile并行度权衡；不引用其特定硬件速度作为本机结果。</li>
+<li><strong>REF-037</strong>：NVIDIA. CUDA Programming Guide, Programming Model §1.2.3. <a href="https://docs.nvidia.com/cuda/cuda-programming-guide/pdf/cuda-programming-guide.pdf">Release 13.2 PDF，访问于2026-10-31</a>。核对global memory、每SM寄存器/共享内存的作用域；具体容量依架构。</li>
+<li><strong>REF-038</strong>：NVIDIA. CUDA C++ Best Practices Guide, §10.2 Device Memory Spaces. <a href="https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#device-memory-spaces">13.4在线文档，访问于2026-10-31</a>。核对存储层级、global access合并及共享内存减少冗余读取；不引用V100实测表。</li>
+<li><strong>REF-039</strong>：Williams, S., Waterman, A., &amp; Patterson, D. (2009). <em>Roofline: An Insightful Visual Performance Model for Floating-Point Programs and Multicore Architectures</em>. <a href="https://digicoll.lib.berkeley.edu/record/136692/files/EECS-2008-134.pdf">UC Berkeley技术报告PDF</a>，对应CACM论文DOI 10.1145/1498765.1498785。阅读§3，核对DRAM Operational Intensity、计算/带宽屋顶与拐点。</li>
+<li><strong>REF-040</strong>：PyTorch. <code>torch.profiler</code>. <a href="https://docs.pytorch.org/docs/2.5/profiler.html">PyTorch 2.5文档</a>。核对activities、record_shapes、profile_memory与with_flops语义；with_flops仅覆盖受支持算子。本机实际版本为2.5.1+cu124。</li>
+<li><strong>REF-041</strong>：Hugging Face Transformers. <a href="https://huggingface.co/docs/transformers/v4.32.0/en/main_classes/tokenizer">Tokenizer</a> 与 <a href="https://huggingface.co/docs/transformers/v4.32.0/en/main_classes/text_generation">Text generation</a>，4.32.0文档（本机4.32.1）。核对对应实验的编码、Temperature、Top-p和采样API口径；本机缺文本checkpoint，未运行生成网格。</li>
+</ul>
+<p><a id="refs-ch4"></a></p>
+</section>
+<section id="第-4-章数据优化与可恢复训练" class="level3">
+<h3 class="anchored" data-anchor-id="第-4-章数据优化与可恢复训练">第 4 章：数据、优化与可恢复训练</h3>
+<ul>
+<li><strong>REF-042</strong>：Gao, L., et al.&nbsp;(2020). <em>The Pile: An 800GB Dataset of Diverse Text for Language Modeling</em>. <a href="https://arxiv.org/html/2101.00027v1">arXiv:2101.00027v1</a>。阅读§2–3与组件说明。</li>
+<li><strong>REF-043</strong>：Lee, K., et al.&nbsp;(2022). <em>Deduplicating Training Data Makes Language Models Better</em>. <a href="https://aclanthology.org/2022.acl-long.577/">ACL Anthology</a>。阅读§3–6；本书不引用其速度/质量数字作本地结果。</li>
+<li><strong>REF-044</strong>：Biderman, S., et al.&nbsp;(2022). <em>Datasheet for the Pile</em>. <a href="https://arxiv.org/html/2201.07311v1">arXiv:2201.07311v1</a>。阅读§3–9的动机、构成、采集、处理、使用与风险记录。</li>
+<li><strong>REF-045</strong>：Kingma, D. P., &amp; Ba, J. (2014). <em>Adam: A Method for Stochastic Optimization</em>. <a href="https://arxiv.org/abs/1412.6980">arXiv:1412.6980</a>。阅读算法1与§2，核对一/二阶矩及偏差校正。</li>
+<li><strong>REF-046</strong>：Loshchilov, I., &amp; Hutter, F. (2016). <em>SGDR: Stochastic Gradient Descent with Warm Restarts</em>. <a href="https://arxiv.org/abs/1608.03983">arXiv:1608.03983</a>。阅读§2与式2；本书4.3仅采用无restart的单段余弦衰减。</li>
+<li><strong>REF-047</strong>：Pascanu, R., Mikolov, T., &amp; Bengio, Y. (2013). <em>On the difficulty of training recurrent neural networks</em>. <a href="https://proceedings.mlr.press/v28/pascanu13.html">PMLR 28</a>。阅读§3.2.1的全局梯度范数裁剪。</li>
+<li><strong>REF-048</strong>：NVIDIA. <em>Train With Mixed Precision</em>. <a href="https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html">在线指南</a>。阅读FP16 format与训练数值范围说明；不把硬件收益写成本机结果。</li>
+<li><strong>REF-049</strong>：Arm. <em>BFloat16 floating-point format</em>. <a href="https://support.arm.com/documentation/ddi0487/mc/-Part-A-Arm-Architecture-Introduction-and-Overview/-Chapter-A1-Introduction-to-the-Arm-Architecture/-A1-4-Supported-data-types/-A1-4-6-BFloat16-floating-point-format">Architecture Reference Manual A1.4.6</a>。核对BF16字段、偏置和范围。</li>
+<li><strong>REF-050</strong>：Micikevicius, P., et al.&nbsp;(2022). <em>FP8 Formats for Deep Learning</em>. <a href="https://arxiv.org/abs/2209.05433">arXiv:2209.05433</a>。阅读§3与表1，区分E4M3和E5M2。</li>
+<li><strong>REF-051</strong>：Micikevicius, P., et al.&nbsp;(2017). <em>Mixed Precision Training</em>. <a href="https://arxiv.org/abs/1710.03740">arXiv:1710.03740</a>。阅读§2–3的FP16范围、FP32主权重与loss scaling动机。</li>
+<li><strong>REF-052</strong>：Goyal, P., et al.&nbsp;(2017). <em>Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour</em>. <a href="https://arxiv.org/abs/1706.02677">arXiv:1706.02677</a>。阅读§2.1–2.2；其学习率缩放与warmup是特定图像/SGD经验，不外推为LLM定律。</li>
+<li><strong>REF-053</strong>：McCandlish, S., et al.&nbsp;(2018). <em>An Empirical Model of Large-Batch Training</em>. <a href="https://arxiv.org/abs/1812.06162">arXiv:1812.06162</a>。阅读§2–3的大batch效率与梯度噪声经验模型。</li>
+<li><strong>REF-054</strong>：PyTorch. <code>DistributedDataParallel.no_sync</code>. <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html#torch.nn.parallel.DistributedDataParallel.no_sync">stable文档</a>。核对累积期间禁用同步及退出后的首次同步语义；未运行分布式训练。</li>
+<li><strong>REF-055</strong>：Chowdhery, A., et al.&nbsp;(2022). <em>PaLM: Scaling Language Modeling with Pathways</em>. <a href="https://arxiv.org/abs/2204.02311">arXiv:2204.02311</a>。阅读Appendix B的Model FLOPs Utilization定义；不引用其设备结果作本地性能。</li>
+<li><strong>REF-056</strong>：Hoffmann, J., et al.&nbsp;(2022). <em>Training Compute-Optimal Large Language Models</em>. <a href="https://arxiv.org/abs/2203.15556">arXiv:2203.15556</a>。阅读§3与Appendix A的固定计算预算拟合与compute-optimal思想。</li>
+<li><strong>REF-057</strong>：PyTorch. <em>Saving and Loading Models</em>. <a href="https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html#saving-loading-a-general-checkpoint-for-inference-and-or-resuming-training">官方教程</a>。核对通用训练checkpoint中的模型、optimizer与进度状态。</li>
+<li><strong>REF-058</strong>：PyTorch. <em>Reproducibility</em>. <a href="https://docs.pytorch.org/docs/stable/notes/randomness.html">stable文档</a>。核对随机源、非确定算法及跨版本/平台复现边界。</li>
+<li><strong>REF-059</strong>：PyTorch. <code>torch.use_deterministic_algorithms</code>. <a href="https://docs.pytorch.org/docs/stable/generated/torch.use_deterministic_algorithms.html">stable文档</a>。核对确定性算法选择、报错及“单一开关不足”的边界。</li>
+<li><strong>REF-060</strong>：PyTorch. <em>Automatic Mixed Precision package</em>. <a href="https://docs.pytorch.org/docs/stable/amp.html">stable文档</a>。核对CPU BF16 autocast与按算子选择dtype的语义；对应实验仅报告本机CPU结果。</li>
+</ul>
+<p><a id="refs-ch5"></a></p>
+</section>
+<section id="第-5-章collective-与分布式布局" class="level3">
+<h3 class="anchored" data-anchor-id="第-5-章collective-与分布式布局">第 5 章：Collective 与分布式布局</h3>
+<ul>
+<li><strong>REF-061</strong>：NVIDIA. <em>NCCL Documentation</em>. <a href="https://docs.nvidia.com/deeplearning/nccl/index.html">官方文档</a>。核对NCCL的多GPU collective与拓扑感知定位。</li>
+<li><strong>REF-062</strong>：NVIDIA. <em>NCCL GPU troubleshooting</em>. <a href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting/gpu_troubleshooting.html">官方文档</a>。核对NVLink/PCIe P2P与拓扑检查边界；不作为本机带宽结果。</li>
+<li><strong>REF-063</strong>：PyTorch. <code>torch.distributed.broadcast</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.html#torch.distributed.broadcast">stable文档</a>。核对源rank、通信组、就地张量和异步handle语义；未运行多进程通信。</li>
+<li><strong>REF-064</strong>：PyTorch. <code>torch.distributed.all_reduce</code>与<code>ReduceOp</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.html#torch.distributed.all_reduce">stable文档</a>。核对SUM/MAX/MIN、AVG后端限制、就地结果与异步handle。</li>
+<li><strong>REF-065</strong>：Patarasuk, P., &amp; Yuan, X. (2009). <em>Bandwidth optimal all-reduce algorithms for clusters of workstations</em>. <a href="https://doi.org/10.1016/j.jpdc.2008.09.002">DOI</a>。阅读ring reduce-scatter/all-gather成本及浮点归约顺序边界。</li>
+<li><strong>REF-066</strong>：PyTorch. <code>torch.distributed.reduce_scatter</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.html#torch.distributed.reduce_scatter_tensor">stable文档</a>。核对输入/输出大小、拼接或stack布局和异步handle。</li>
+<li><strong>REF-067</strong>：PyTorch. <code>torch.distributed.all_gather</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.html#torch.distributed.all_gather_into_tensor">stable文档</a>。核对等长分片拼接/stack、不等长列表接口与异步handle。</li>
+<li><strong>REF-068</strong>：PyTorch. <code>torch.distributed.all_to_all_single</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.html#torch.distributed.all_to_all_single">stable文档</a>。核对等长/不等长split sizes、源—目的交换与异步handle。</li>
+<li><strong>REF-069</strong>：Fedus, W., Zoph, B., &amp; Shazeer, N. (2022). <em>Switch Transformers</em>. <a href="https://arxiv.org/abs/2101.03961">arXiv:2101.03961v3</a>。阅读专家路由、容量、负载均衡与溢出Token处理；性能数字不作本机结果。</li>
+<li><strong>REF-070</strong>：PyTorch. <code>DistributedDataParallel</code>. <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html">stable官方文档</a>。核对梯度同步而非输入切分、参数顺序与初始同步、梯度平均、bucket及<code>no_sync</code>语义；本机版本2.5.1+cu124，未运行多进程。</li>
+<li><strong>REF-071</strong>：PyTorch. <em>Distributed Data Parallel design note</em>. <a href="https://docs.pytorch.org/docs/stable/notes/ddp.html">stable官方设计说明</a>。核对reducer、autograd hook、bucket All-Reduce与反向末尾等待；该文档自述基于较早实现，正文不固定易变内部细节。</li>
+<li><strong>REF-072</strong>：Rajbhandari, S., Rasley, J., Ruwase, O., &amp; He, Y. (2020). <em>ZeRO: Memory Optimizations Toward Training Trillion Parameter Models</em>. <a href="https://arxiv.org/abs/1910.02054">arXiv:1910.02054</a>。阅读§5、§7，核对三阶段分片、状态内存与通信量抽象；论文性能数字不作本机结果。</li>
+<li><strong>REF-073</strong>：DeepSpeed. <em>ZeRO documentation</em>. <a href="https://deepspeed.readthedocs.io/en/latest/zero3.html">0.19.9在线文档</a>。核对Stage 1/2/3定义及CPU/NVMe offload状态范围；未运行其API。</li>
+<li><strong>REF-074</strong>：DeepSpeed. <em>ZeRO-Offload tutorial</em>. <a href="https://www.deepspeed.ai/tutorials/zero-offload/">官方教程</a>。核对optimizer memory/compute迁移到host CPU及Stage 1/2配置边界；不采用教程硬件结果。</li>
+<li><strong>REF-075</strong>：PyTorch. <code>torch.distributed.fsdp.fully_shard</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.fsdp.fully_shard.html">stable 2.14官方文档</a>。核对FSDP2的<code>DTensor</code>参数、All-Gather、Reduce-Scatter、reshard、通信分组和state-dict语义；本机2.5.1未运行该在线版本API。</li>
+<li><strong>REF-076</strong>：PyTorch. <em>Getting Started with FSDP2</em>. <a href="https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html">官方教程</a>。核对FSDP2与DDP布局、自底向上按Block分组及预取机制；不采用教程性能数字。</li>
+<li><strong>REF-077</strong>：Shoeybi, M., et al.&nbsp;(2019). <em>Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism</em>. <a href="https://arxiv.org/abs/1909.08053">arXiv:1909.08053</a>。阅读§3，核对Transformer层内并行、MLP列切/行切组合及同步位置；性能与质量数字不作本机结果。</li>
+<li><strong>REF-078</strong>：PyTorch. <em>Tensor Parallelism—<code>torch.distributed.tensor.parallel</code></em>. <a href="https://docs.pytorch.org/docs/main/distributed/tensor.parallel.html">main官方文档</a>。核对DTensor上的Colwise/Rowwise/Sequence布局和<code>parallelize_module</code>；API标为experimental，本机2.5.1未运行。</li>
+<li><strong>REF-079</strong>：Huang, Y., et al.&nbsp;(2019). <em>GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism</em>. <a href="https://arxiv.org/abs/1811.06965">arXiv:1811.06965</a>。阅读§2与Figure 2，核对连续层分区、micro-batch、fill-drain、同步更新、rematerialization与bubble口径；性能数字不作本机结果。</li>
+<li><strong>REF-080</strong>：Narayanan, D., et al.&nbsp;(2021). <em>Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM</em>. <a href="https://arxiv.org/abs/2104.04473">arXiv:2104.04473</a>。阅读§2.2与Figure 4，核对同步flush、非交错1F1B、激活内存和异步权重陈旧边界；不采用论文吞吐数字。</li>
+<li><strong>REF-081</strong>：Korthikanti, V., et al.&nbsp;(2023). <em>Reducing Activation Recomputation in Large Transformer Models</em>. <a href="https://arxiv.org/abs/2205.05198">arXiv:2205.05198</a>。阅读Sequence Parallelism部分，核对TP组内序列分片、collective布局转换与激活复制动机；论文性能数字不作本机结果。</li>
+<li><strong>REF-082</strong>：PyTorch. <code>SequenceParallel</code>. <a href="https://docs.pytorch.org/docs/stable/distributed.tensor.parallel">stable 2.14官方文档</a>。核对LayerNorm、Dropout、RMSNorm Python等模块的sequence-sharded输入/输出和参数复制语义；本机2.5.1未运行在线API。</li>
+<li><strong>REF-083</strong>：Liu, H., Zaharia, M., &amp; Abbeel, P. (2024). <em>Ring Attention with Blockwise Transformers for Near-Infinite Context</em>. <a href="https://arxiv.org/abs/2310.01889">arXiv:2310.01889v4</a>。核对序列跨设备分块、K/V块环形传输与blockwise Attention；论文中的长度、重叠和性能结论不作本机结果。</li>
+<li><strong>REF-084</strong>：NVIDIA. <em>Megatron Core Context Parallel Overview</em>. <a href="https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html">latest官方开发者指南</a>。核对CP与SP差异、远端K/V依赖、ring P2P、反向K/V梯度归约及GQA/MQA通信边界；未运行实现。</li>
+<li><strong>REF-085</strong>：NVIDIA. <em>Megatron Core Mixture of Experts</em>. <a href="https://docs.nvidia.com/megatron-core/developer-guide/0.19.2/user-guide/features/moe.html">0.19.2官方开发者指南</a>。核对专家并行度、Router/top-k、dispatch-compute-combine、All-to-All dispatcher、负载策略及TP/EP组合边界；未运行实现或采用性能数字。</li>
+<li><strong>REF-086</strong>：NVIDIA. <em>Megatron Core Parallelism Strategies Guide</em>. <a href="https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html">latest官方开发者指南</a>。核对DP/TP/PP/CP/EP作用对象与组合入口；示例配置不作为目标集群最优布局。</li>
+<li><strong>REF-087</strong>：PyTorch. torch.utils.checkpoint. <a href="https://docs.pytorch.org/docs/main/utils/checkpoint.html">main官方文档</a>。核对保存边界、反向重放、RNG状态和非reentrant实现建议；在线API晚于本机2.5.1，未运行。</li>
+<li><strong>REF-088</strong>：Chen, T., Xu, B., Zhang, C., &amp; Guestrin, C. (2016). <em>Training Deep Nets with Sublinear Memory Cost</em>. <a href="https://arxiv.org/abs/1604.06174">arXiv:1604.06174v2</a>。核对以重计算换中间特征内存的基本机制；性能数字不作本机结果。</li>
+<li><strong>REF-089</strong>：NVIDIA. <em>Megatron Core TransformerConfig</em>. <a href="https://docs.nvidia.com/megatron-core/developer-guide/0.19.0/apidocs/core/core.transformer.transformer_config.html">0.19.0 API文档</a>。核对full/selective、uniform/block重计算配置术语；未运行实现。</li>
+</ul>
+<p><a id="refs-ch6"></a></p>
+</section>
+<section id="第-6-章高性能-attention-与测量" class="level3">
+<h3 class="anchored" data-anchor-id="第-6-章高性能-attention-与测量">第 6 章：高性能 Attention 与测量</h3>
+<ul>
+<li><strong>REF-090</strong>：Dao, T., Fu, D. Y., Ermon, S., Rudra, A., &amp; Ré, C. (2022). <em>FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</em>. <a href="https://arxiv.org/abs/2205.14135">arXiv:2205.14135</a>。阅读摘要与§2–3，核对标准Attention二次中间矩阵、HBM/SRAM IO-aware动机及精确分块方向；速度数字不作本机结果。</li>
+<li><strong>REF-091</strong>：NVIDIA. <em>CUDA Programming Guide—Writing SIMT Kernels</em>. <a href="https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html">官方指南</a>。核对Kernel线程执行、global memory合并访问与Shared Memory复用；具体事务和资源规则依目标架构，未运行CUDA。</li>
+<li><strong>REF-092</strong>：NVIDIA. <em>Nsight Compute Profiling Guide</em>. <a href="https://docs.nvidia.com/nsight-compute/ProfilingGuide/">官方指南</a>。核对duration、DRAM bytes/throughput、compute throughput、occupancy及Profiler扰动边界；未运行Nsight，不引用硬件实测值。</li>
+<li><strong>REF-093</strong>：PyTorch. <em>Profiling to understand torch.compile performance</em>. <a href="https://docs.pytorch.org/docs/stable/torch.compiler_profiling_torch_compile">stable官方文档</a>。核对算子、Kernel、launch事件与GPU时间线空隙的诊断；在线版本晚于本机2.5.1，未运行<code>torch.compile</code>或采用速度数字。</li>
+<li><strong>REF-094</strong>：Dao, T. (2023). <em>FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning</em>. <a href="https://arxiv.org/abs/2307.08691">arXiv:2307.08691</a>。阅读§3.1–3.3，核对非MatMul操作、序列并行和Warp work partitioning；性能数字不作本机结果。</li>
+<li><strong>REF-095</strong>：Dao-AILab. <em>flash-attention README</em>. <a href="https://github.com/Dao-AILab/flash-attention/blob/main/README.md">官方实现</a>。核对访问时的causal、变长、MQA/GQA接口及后端/版本边界；未安装或运行。</li>
+<li><strong>REF-096</strong>：Shah, J., et al.&nbsp;(2024). <em>FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision</em>. <a href="https://arxiv.org/abs/2407.08608">arXiv:2407.08608</a>。核对Hopper异步流水、Warp Specialization与FP8方向；性能数字不作本机结果。</li>
+<li><strong>REF-097</strong>：Shah, J., et al.&nbsp;(2026). <em>FlashAttention-4: Algorithm and Kernel Pipelining Co-Design for Asymmetric Hardware Scaling</em>. <a href="https://arxiv.org/abs/2603.05451">arXiv:2603.05451</a>。核对Blackwell异步MMA、指数/重缩放、Tensor Memory与2-CTA方向；性能数字不作本机结果。</li>
+<li><strong>REF-098</strong>：PyTorch. <code>torch.nn.functional.scaled_dot_product_attention</code>. <a href="https://docs.pytorch.org/docs/main/generated/torch.nn.functional.scaled_dot_product_attention.html">main官方文档</a>。核对SDPA后端选择、<code>sdpa_kernel</code>、GQA、dropout与数值边界；在线API晚于本机2.5.1，未运行强制后端。</li>
+<li><strong>REF-099</strong>：PyTorch. <em>CUDA semantics</em>. <a href="https://docs.pytorch.org/docs/stable/notes/cuda">stable官方文档</a>。核对异步执行、Event/同步计时及allocated/reserved边界；未运行CUDA。</li>
+<li><strong>REF-100</strong>：PyTorch. <code>torch.cuda.memory.max_memory_allocated</code>. <a href="https://docs.pytorch.org/docs/stable/generated/torch.cuda.memory.max_memory_allocated.html">stable官方文档</a>。核对重置峰值后Tensor allocated bytes的统计口径；未运行CUDA。</li>
+<li><strong>REF-101</strong>：PyTorch. <em>Profiler recipe</em>. <a href="https://docs.pytorch.org/tutorials/recipes/recipes/profiler_recipe">官方教程</a>。核对CPU/CUDA活动、shape与内存诊断；在线版本晚于本机2.5.1，未运行Profiler。</li>
+</ul>
+<p><a id="refs-ch7"></a></p>
+</section>
+<section id="第-7-章推理与服务系统" class="level3">
+<h3 class="anchored" data-anchor-id="第-7-章推理与服务系统">第 7 章：推理与服务系统</h3>
+<ul>
+<li><strong>REF-102</strong>：vLLM. <em>Benchmark CLI—Understanding the Latency Metrics</em>. <a href="https://docs.vllm.ai/en/latest/benchmarking/cli/">latest官方文档</a>。核对TTFT/ITL/TPOT的客户端测量点、公式与多Token chunk边界；未运行vLLM。</li>
+<li><strong>REF-103</strong>：NVIDIA. <em>GenAI-Perf metrics</em>. <a href="https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/perf_analyzer/genai-perf/README.html">官方文档</a>。核对TTFT、ITL、请求延迟及系统Token/请求吞吐的统计单位；未运行工具。</li>
+<li><strong>REF-104</strong>：Hugging Face Transformers. <em>Caching</em>. <a href="https://huggingface.co/docs/transformers/v5.6.0/cache_explanation">v5.6.0官方文档</a>。核对逐层历史K/V复用、当前K/V追加、past+current mask shape及仅推理边界；未运行API。</li>
+<li><strong>REF-105</strong>：Hugging Face Transformers. <em>Cache strategies</em>. <a href="https://huggingface.co/docs/transformers/en/kv_cache">官方文档</a>。核对低精度Cache内存/延迟权衡及Sliding/Chunked层的结构性封顶；实现支持随版本变化，未运行API。</li>
+<li><strong>REF-106</strong>：vLLM. <em>Automatic Prefix Caching</em>. <a href="https://docs.vllm.ai/en/latest/design/prefix_caching/">latest官方设计</a>。核对前缀Block hash、完整Block复用、额外配置与cache salt隔离；未运行vLLM。</li>
+<li><strong>REF-107</strong>：vLLM. <em>Scheduler configuration</em>. <a href="https://docs.vllm.ai/en/latest/api/vllm/config/scheduler/">latest官方API文档</a>。核对Prefill按单iteration剩余Token预算分块及多模态调度边界；实现随版本变化，未运行vLLM。</li>
+<li><strong>REF-108</strong>：NVIDIA Dynamo. <em>Disaggregated Serving</em>. <a href="https://docs.nvidia.com/dynamo/dev/knowledge-base/concepts/system-architecture/disaggregated-serving">dev官方文档</a>。核对mixed prefill/decode iteration中chunk大小对ITL干扰形状及Prefill饱和边界；未运行后端。</li>
+<li><strong>REF-109</strong>：Agrawal, A., et al.&nbsp;(2024). <em>Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve</em>. <a href="https://arxiv.org/abs/2403.02310">arXiv:2403.02310</a>。核对Prefill/Decode特征与chunked-prefill调度动机；不采用论文性能数字作本机结果。</li>
+<li><strong>REF-110</strong>：Yu, G.-I., et al.&nbsp;(2022). <em>ORCA: A Distributed Serving System for Transformer-Based Generative Models</em>. <a href="https://www.usenix.org/system/files/osdi22-yu.pdf">OSDI 2022论文</a>。核对iteration-level scheduling、轮间重组与selective batching边界；论文性能数字不作本机结果。</li>
+<li><strong>REF-111</strong>：vLLM. <em>V1 Scheduler source documentation</em>. <a href="https://docs.vllm.ai/en/stable/api/vllm/v1/core/sched/scheduler/">stable官方源码文档</a>。核对请求完成时立即或等待在途step后释放Block的实现语义；实现会演进，未运行vLLM。</li>
+<li><strong>REF-112</strong>：Kwon, W., et al.&nbsp;(2023). <em>Efficient Memory Management for Large Language Model Serving with PagedAttention</em>. <a href="https://arxiv.org/abs/2309.06180">arXiv:2309.06180</a>。阅读§3、§4.1–4.4及§7.1–7.2，核对固定大小逻辑/物理KV块、Block Table、按需增长、引用计数/Copy-on-Write与块大小代价；论文性能数字不作本机结果。</li>
+<li><strong>REF-113</strong>：Zhong, Y., et al.&nbsp;(2024). <em>DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</em>. <a href="https://www.usenix.org/system/files/osdi24-zhong-yinmin.pdf">OSDI 2024正式论文</a>。阅读§2.3、§3与§4，核对共置干扰、TTFT/TPOT目标、资源/并行策略耦合与按阶段配置；性能幅度不作本机结果。</li>
+<li><strong>REF-114</strong>：Patel, P., et al.&nbsp;(2024). <em>Splitwise: Efficient Generative LLM Inference Using Phase Splitting</em>. <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2023/12/Splitwise_ISCA24.pdf">ISCA 2024正式论文</a>。阅读§III–IV，核对Prompt/Token阶段的计算、内存、延迟与功耗差异，以及独立机器池和容量规划动机；特定GPU与性能结论不外推。</li>
+<li><strong>REF-115</strong>：Leviathan, Y., Kalman, M., &amp; Matias, Y. (2023). <em>Fast Inference from Transformers via Speculative Decoding</em>. <a href="https://proceedings.mlr.press/v202/leviathan23a.html">ICML 2023正式论文</a>。阅读§2–3、Algorithm 1与Appendix A，核对Draft/Target流程、接受/校正采样、分布保持与期望生成数；论文速度数字不作本机结果。</li>
+<li><strong>REF-116</strong>：Chen, C., et al.&nbsp;(2023). <em>Accelerating Large Language Model Decoding with Speculative Sampling</em>. <a href="https://arxiv.org/abs/2302.01318">arXiv:2302.01318</a>。阅读Algorithm 2及§4–6，核对修改拒绝采样、全接受额外Token、Draft选择和lookahead成本权衡；论文性能数字不作本机结果。</li>
+<li><strong>REF-117</strong>：Zhang, J., et al.&nbsp;(2023). <em>Draft &amp; Verify: Lossless Large Language Model Acceleration via Self-Speculative Decoding</em>. <a href="https://arxiv.org/abs/2309.08168">arXiv:2309.08168</a>。核对选择性跳层Draft与完整Target验证的Self-Speculative思路；论文速度数字不作本机结果。</li>
+<li><strong>REF-118</strong>：Xiao, G., et al.&nbsp;(2023). <em>SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models</em>. <a href="https://proceedings.mlr.press/v202/xiao23c.html">ICML 2023正式论文</a>。阅读摘要与§3，核对激活离群值、逐通道等价缩放及W8A8 PTQ机制；论文质量与性能数字不作本机结果。</li>
+<li><strong>REF-119</strong>：Lin, J., et al.&nbsp;(2024). <em>AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration</em>. <a href="https://proceedings.mlsys.org/paper_files/paper/2024/hash/42a452cbafa9dd64e9ba4aa95cc1ef21-Abstract-Conference.html">MLSys 2024正式论文</a>。阅读摘要与§3，核对weight-only PTQ、显著权重通道和激活感知缩放；论文质量与性能数字不作本机结果。</li>
+<li><strong>REF-120</strong>：Frantar, E., et al.&nbsp;(2023). <em>GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers</em>. <a href="https://arxiv.org/abs/2210.17323">arXiv:2210.17323</a>。阅读摘要与§2–3，核对基于近似二阶信息的逐层一次性权重量化；论文质量与性能数字不作本机结果。</li>
+<li><strong>REF-121</strong>：vLLM. <em>Architecture Overview</em>. <a href="https://docs.vllm.ai/en/latest/design/arch_overview/">latest官方文档</a>。核对Engine Core、Token预算Scheduler、waiting/running请求、KV不足时抢占与OpenAI兼容API边界；实现随版本变化，未运行vLLM。</li>
+<li><strong>REF-122</strong>：SGLang. <em>Runtime source documentation</em>. <a href="https://github.com/sgl-project/sglang/tree/main/python/sglang/srt">官方GitHub main</a>。核对API/Tokenizer、Scheduler/Worker、Detokenizer服务流水线及Radix Cache/cache-aware调度方向；实现随commit变化，未运行SGLang。</li>
+<li><strong>REF-123</strong>：NVIDIA. <em>TensorRT-LLM Architecture Overview</em>. <a href="https://nvidia.github.io/TensorRT-LLM/developer-guide/overview.html">官方开发者指南</a>。核对PyExecutor后台循环与Scheduler、KVCacheManager、ModelEngine、Sampler职责；实现随版本变化，未运行TensorRT-LLM。</li>
+</ul>
+<p><a id="refs-ch8"></a></p>
+</section>
+<section id="第-8-章后训练评测与安全" class="level3">
+<h3 class="anchored" data-anchor-id="第-8-章后训练评测与安全">第 8 章：后训练、评测与安全</h3>
+<ul>
+<li><strong>REF-124</strong>：Wei, J., et al.&nbsp;(2022). <em>Finetuned Language Models Are Zero-Shot Learners</em>. <a href="https://arxiv.org/abs/2109.01652">arXiv:2109.01652</a>。阅读摘要与§2–3，核对多任务自然语言指令微调和未见任务zero-shot评测；性能数字不作本机结果。</li>
+<li><strong>REF-125</strong>：Ouyang, L., et al.&nbsp;(2022). <em>Training language models to follow instructions with human feedback</em>. <a href="https://arxiv.org/abs/2203.02155">arXiv:2203.02155</a>。阅读摘要、§3与图2，核对人工示范SFT、输出排序、Reward Model和PPO流程；该配方不外推为所有模型固定流程。</li>
+<li><strong>REF-126</strong>：Lambert, N., et al.&nbsp;(2025). <em>Tülu 3: Pushing Frontiers in Open Language Model Post-Training</em>. <a href="https://arxiv.org/abs/2411.15124">arXiv:2411.15124</a>。核对SFT、DPO、RLVR及阶段化评测的开放配方；论文结果不作本机实测。</li>
+<li><strong>REF-127</strong>：Shao, Z., et al.&nbsp;(2024). <em>DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</em>. <a href="https://arxiv.org/abs/2402.03300">arXiv:2402.03300</a>。阅读摘要与§4，核对数学任务奖励和GRPO的具体研究语境；不外推到开放式任务。</li>
+<li><strong>REF-128</strong>：Hugging Face Transformers. <em>Chat templates</em>. <a href="https://huggingface.co/docs/transformers/main/chat_templating">main官方文档</a>。核对role/content序列化、控制Token、训练模板与generation prompt边界；API随版本变化，本机未运行在线版本。</li>
+<li><strong>REF-129</strong>：Zhou, C., et al.&nbsp;(2023). <em>LIMA: Less Is More for Alignment</em>. <a href="https://arxiv.org/abs/2305.11206">arXiv:2305.11206</a>。阅读摘要、§2与§5–6，核对少量精心筛选示范的具体研究；不外推固定样本数，论文结果不作本机实测。</li>
+<li><strong>REF-130</strong>：Shi, W., et al.&nbsp;(2024). <em>Instruction Fine-Tuning: Does Prompt Loss Matter?</em> <a href="https://arxiv.org/abs/2401.13586">arXiv:2401.13586</a>。核对prompt loss weight的研究问题与实验设置；用于说明mask策略需声明和评测，结果不作本机实测。</li>
+<li><strong>REF-131</strong>：Hu, E. J., et al.&nbsp;(2022). <em>LoRA: Low-Rank Adaptation of Large Language Models</em>. <a href="https://arxiv.org/abs/2106.09685">arXiv:2106.09685</a>。阅读§3–4与图1，核对冻结主权重、列向量BA低秩更新、alpha/r、初始化、目标模块与合并；性能数字不作本机结果。</li>
+<li><strong>REF-132</strong>：Microsoft. <em>loralib official implementation</em>. <a href="https://github.com/microsoft/LoRA">官方GitHub</a>。核对PyTorch存储方向、训练/评估merge切换及冻结非LoRA参数入口；实现随commit变化，本机未安装或运行。</li>
+<li><strong>REF-133</strong>：Dettmers, T., et al.&nbsp;(2023). <em>QLoRA: Efficient Finetuning of Quantized LLMs</em>. <a href="https://arxiv.org/abs/2305.14314">arXiv:2305.14314</a>。阅读§3–4与附录，核对冻结4-bit Base中反传到LoRA、NF4、double quantization和paged optimizer；论文结果不作本机实测。</li>
+<li><strong>REF-134</strong>：Dettmers, T., et al.&nbsp;<em>QLoRA official repository</em>. <a href="https://github.com/artidoro/qlora">官方GitHub</a>。核对NF4/FP4、compute dtype与paged optimizer配置入口；实现随commit变化，本机未安装或运行。</li>
+<li><strong>REF-135</strong>：Hugging Face. <em>bitsandbytes documentation</em>. <a href="https://huggingface.co/docs/bitsandbytes/index">官方文档</a>。核对4-bit量化Base与LoRA训练的当前库入口；API与硬件支持随版本变化，本机未运行。</li>
+<li><strong>REF-136</strong>：Bai, Y., et al.&nbsp;(2022). <em>Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback</em>. <a href="https://arxiv.org/abs/2204.05862">arXiv:2204.05862</a>。核对迭代偏好数据、校准、竞争目标与分布外检测的具体研究路线；结果不外推为普适结论。</li>
+<li><strong>REF-137</strong>：Gao, L., Schulman, J., &amp; Hilton, J. (2023). <em>Scaling Laws for Reward Model Overoptimization</em>. <a href="https://arxiv.org/abs/2210.10760">arXiv:2210.10760</a>。核对proxy Reward Model过优化与gold评价下降的受控机制证据；合成设定和结果不作本机实测。</li>
+<li><strong>REF-138</strong>：Rafailov, R., et al.&nbsp;(2023). <em>Direct Preference Optimization: Your Language Model is Secretly a Reward Model</em>. <a href="https://arxiv.org/abs/2305.18290">arXiv:2305.18290</a>。阅读§4、式(5)–(7)、§5与Appendix A，核对KL正则重参数化、Reference Policy和chosen/rejected log-ratio目标；论文质量与稳定性结果不作本机实测。</li>
+<li><strong>REF-139</strong>：Schulman, J., et al.&nbsp;(2017). <em>Proximal Policy Optimization Algorithms</em>. <a href="https://arxiv.org/abs/1707.06347">arXiv:1707.06347</a>。阅读§2–3与式(7)，核对Policy ratio与clipped surrogate；原论文实验不外推为LLM训练或本机稳定性保证。</li>
+<li><strong>REF-140</strong>：Hendrycks, D., et al.&nbsp;(2021). <em>Measuring Massive Multitask Language Understanding</em>. <a href="https://arxiv.org/abs/2009.03300">arXiv:2009.03300</a>。核对57学科多项选择任务及适用范围；论文分数不作当前模型或本机结果。</li>
+<li><strong>REF-141</strong>：Cobbe, K., et al.&nbsp;(2021). <em>Training Verifiers to Solve Math Word Problems</em>. <a href="https://arxiv.org/abs/2110.14168">arXiv:2110.14168</a>。核对GSM8K规模、任务和Verifier语境；论文结果不作本机实测。</li>
+<li><strong>REF-142</strong>：Chen, M., et al.&nbsp;(2021). <em>Evaluating Large Language Models Trained on Code</em>. <a href="https://arxiv.org/abs/2107.03374">arXiv:2107.03374</a>。阅读§3、式(1)–(2)与Appendix，核对HumanEval、功能正确性及pass@k估计；论文模型分数不作本机实测。</li>
+<li><strong>REF-143</strong>：Zheng, L., et al.&nbsp;(2023). <em>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</em>. <a href="https://arxiv.org/abs/2306.05685">arXiv:2306.05685</a>。核对Judge设置及位置、冗长、自增强和推理偏差；论文一致率不外推为本书Judge质量。</li>
+<li><strong>REF-144</strong>：Liang, P., et al.&nbsp;(2023). <em>Holistic Evaluation of Language Models</em>. <a href="https://arxiv.org/abs/2211.09110">arXiv:2211.09110</a>。核对场景—指标矩阵与多指标报告思想；不宣称覆盖所有部署风险。</li>
+<li><strong>REF-145</strong>：Cao, B., et al.&nbsp;(2024). <em>On the Worst Prompt Performance of Large Language Models</em>. <a href="https://papers.nips.cc/paper_files/paper/2024/hash/7fa5a377b7ffabcce43cd00231bb3f9c-Abstract-Conference.html">NeurIPS论文页</a>。核对case-level语义改写、prompt敏感性与最差表现视角；论文差值不作本机结论。</li>
+<li><strong>REF-146</strong>：Li, Y., et al.&nbsp;(2024). <em>An Open-Source Data Contamination Report for Large Language Models</em>. <a href="https://aclanthology.org/2024.findings-emnlp.30/">ACL Anthology</a>。核对公开污染审计与检测透明性；论文污染率和影响不外推为本书模型结果。</li>
+<li><strong>REF-147</strong>：Lin, S., Hilton, J., &amp; Evans, O. (2022). <em>TruthfulQA: Measuring How Models Mimic Human Falsehoods</em>. <a href="https://arxiv.org/abs/2109.07958">arXiv:2109.07958</a>。核对真实性评测任务与范围；论文结果不外推所有事实任务。</li>
+<li><strong>REF-148</strong>：Greshake, K., et al.&nbsp;(2023). <em>Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection</em>. <a href="https://arxiv.org/abs/2302.12173">arXiv:2302.12173</a>。核对不可信检索数据、间接注入与工具/API风险；演示不外推所有系统攻击率。</li>
+<li><strong>REF-149</strong>：Zou, A., et al.&nbsp;(2023). <em>Universal and Transferable Adversarial Attacks on Aligned Language Models</em>. <a href="https://arxiv.org/abs/2307.15043">arXiv:2307.15043</a>。核对对抗后缀绕过的机制证据；不复制攻击载荷，成功率不外推当前系统。</li>
+<li><strong>REF-150</strong>：Carlini, N., et al.&nbsp;(2021). <em>Extracting Training Data from Large Language Models</em>. <a href="https://arxiv.org/abs/2012.07805">arXiv:2012.07805</a>。核对特定GPT-2设置下的可抽取记忆与隐私风险；样本数不外推其他模型。</li>
+<li><strong>REF-151</strong>：Mazeika, M., et al.&nbsp;(2024). <em>HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal</em>. <a href="https://arxiv.org/abs/2402.04249">arXiv:2402.04249</a>。核对自动红队和鲁棒拒答评测框架；不宣称覆盖未知攻击。</li>
+<li><strong>REF-152</strong>：Kadavath, S., et al.&nbsp;(2022). <em>Language Models (Mostly) Know What They Know</em>. <a href="https://arxiv.org/abs/2207.05221">arXiv:2207.05221</a>。核对P(True)/P(IK)与跨任务校准限制；口头置信不作概率保证。</li>
+<li><strong>REF-153</strong>：NIST (2024). <em>Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile</em>. <a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf">NIST AI 600-1</a>。核对生成式AI多类风险与治理行动；不是产品认证或零风险保证。</li>
+</ul>
+<p><a id="refs-ch9"></a></p>
+</section>
+<section id="第-9-章长上下文多模态与新架构" class="level3">
+<h3 class="anchored" data-anchor-id="第-9-章长上下文多模态与新架构">第 9 章：长上下文、多模态与新架构</h3>
+<ul>
+<li><strong>REF-154</strong>：Beltagy, I., Peters, M. E., &amp; Cohan, A. (2020). <em>Longformer: The Long-Document Transformer</em>. <a href="https://arxiv.org/abs/2004.05150">arXiv:2004.05150</a>。核对局部窗口与任务相关全局注意力；性能数字不作本机结果。</li>
+<li><strong>REF-155</strong>：Zaheer, M., et al.&nbsp;(2020). <em>Big Bird: Transformers for Longer Sequences</em>. <a href="https://arxiv.org/abs/2007.14062">arXiv:2007.14062</a>。核对局部、随机和全局连接组合的稀疏Attention；不外推为任意稀疏模式等价Full Attention。</li>
+<li><strong>REF-156</strong>：Hsieh, C.-P., et al.&nbsp;(2024). <em>RULER: What’s the Real Context Size of Your Long-Context Language Models?</em> <a href="https://arxiv.org/abs/2404.06654">arXiv:2404.06654</a>。核对检索、multi-hop tracing、aggregation与QA组成的长上下文评测；论文结果不作本机实测。</li>
+<li><strong>REF-157</strong>：Liu, N. F., et al.&nbsp;(2024). <em>Lost in the Middle: How Language Models Use Long Contexts</em>. <a href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a>。核对多文档问答/键值检索中的证据位置敏感性；现象不外推为所有模型的必然规律。</li>
+<li><strong>REF-158</strong>：Dosovitskiy, A., et al.&nbsp;(2021). <em>An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale</em>. <a href="https://arxiv.org/abs/2010.11929">arXiv:2010.11929</a>。核对图像Patch、线性嵌入和位置表示；论文结果不作本机实测。</li>
+<li><strong>REF-159</strong>：Alayrac, J.-B., et al.&nbsp;(2022). <em>Flamingo: a Visual Language Model for Few-Shot Learning</em>. <a href="https://arxiv.org/abs/2204.14198">arXiv:2204.14198</a>。核对视觉编码器、Perceiver Resampler、门控Cross-Attention和图文交错接口；性能数字不作本机结果。</li>
+<li><strong>REF-160</strong>：Liu, H., Li, C., Wu, Q., &amp; Lee, Y. J. (2023). <em>Visual Instruction Tuning</em>. <a href="https://arxiv.org/abs/2304.08485">arXiv:2304.08485</a>。核对视觉编码器—LLM连接、投影接口和视觉指令微调；论文分数不作本机结果。</li>
+<li><strong>REF-161</strong>：Wei, J., et al.&nbsp;(2022). <em>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</em>. <a href="https://arxiv.org/abs/2201.11903">arXiv:2201.11903</a>。核对以中间步骤示例引导CoT的机制；论文收益不外推到所有模型或任务。</li>
+<li><strong>REF-162</strong>：Wang, X., et al.&nbsp;(2023). <em>Self-Consistency Improves Chain of Thought Reasoning in Language Models</em>. <a href="https://arxiv.org/abs/2203.11171">arXiv:2203.11171</a>。核对多路径采样与答案边缘化/投票；提升幅度不作本机结果。</li>
+<li><strong>REF-163</strong>：Lightman, H., et al.&nbsp;(2024). <em>Let’s Verify Step by Step</em>. <a href="https://arxiv.org/abs/2305.20050">arXiv:2305.20050</a>。核对Outcome与Process监督及其特定实验语境；结果不外推为普遍规律。</li>
+<li><strong>REF-164</strong>：Snell, C., Lee, J., Xu, K., &amp; Kumar, A. (2024). <em>Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters</em>. <a href="https://arxiv.org/abs/2408.03314">arXiv:2408.03314</a>。核对测试时计算策略与按题目难度分配预算的研究；论文倍率不作本机结果。</li>
+<li><strong>REF-165</strong>：Lewis, P., et al.&nbsp;(2020). <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em>. <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a>。核对参数化生成器与显式非参数memory结合的RAG定义；任务结果不作本机实测。</li>
+<li><strong>REF-166</strong>：Karpukhin, V., et al.&nbsp;(2020). <em>Dense Passage Retrieval for Open-Domain Question Answering</em>. <a href="https://arxiv.org/abs/2004.04906">arXiv:2004.04906</a>。核对query/passage双编码器与Dense Retrieval；相对BM25结果不外推。</li>
+<li><strong>REF-167</strong>：Schick, T., et al.&nbsp;(2023). <em>Toolformer: Language Models Can Teach Themselves to Use Tools</em>. <a href="https://arxiv.org/abs/2302.04761">arXiv:2302.04761</a>。核对工具选择、参数与结果利用的训练路线；不替代运行时权限控制。</li>
+<li><strong>REF-168</strong>：Yao, S., et al.&nbsp;(2023). <em>ReAct: Synergizing Reasoning and Acting in Language Models</em>. <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>。核对交错推理、动作与Observation的研究范式；论文结果不作生产Agent保证。</li>
+<li><strong>REF-169</strong>：Gu, A., Goel, K., &amp; Ré, C. (2022). <em>Efficiently Modeling Long Sequences with Structured State Spaces</em>. <a href="https://arxiv.org/abs/2111.00396">arXiv:2111.00396</a>。核对状态空间递推、结构化参数与长序列计算路线；论文结果不作本机实测。</li>
+<li><strong>REF-170</strong>：Gu, A., &amp; Dao, T. (2024). <em>Mamba: Linear-Time Sequence Modeling with Selective State Spaces</em>. <a href="https://arxiv.org/abs/2312.00752">arXiv:2312.00752</a>。核对输入依赖选择性与硬件感知Selective Scan；吞吐和长度结论不外推。</li>
+<li><strong>REF-171</strong>：Lieber, O., et al.&nbsp;(2024). <em>Jamba: A Hybrid Transformer-Mamba Language Model</em>. <a href="https://arxiv.org/abs/2403.19887">arXiv:2403.19887</a>。核对Transformer、Mamba与MoE交错的混合实例；特定配置不作通用最优或本机结果。</li>
+</ul>
+<p>REF-001–044访问日期沿用各条记录，REF-045–056访问日期为2026-11-02，REF-057–084访问日期为2026-11-03，REF-085–106访问日期为2026-11-05，REF-107–109访问日期为2026-11-06，REF-110–111为2026-11-08，REF-112–137为2026-11-09，REF-138–171为2026-11-11；核验范围与限制见来源台账。计算账本的数值按本书行向量/GQA/SwiGLU/绑定嵌入口径独立相加，不能直接套用文献中的其他结构参数量。</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "切换深色模式");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "切换深色模式");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "已复制");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "已复制");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"可滚动的代码","output":"可滚动的输出"};
+  </script>
+<nav class="page-navigation" aria-label="页面">
+  <div class="nav-page nav-page-previous">
+      <a href="../appendices/exercise-solutions.html" class="pagination-link" aria-label="习题答案与提示">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">习题答案与提示</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

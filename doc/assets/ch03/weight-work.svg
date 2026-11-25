@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="title desc">
+  <title id="title">同一权重形状的参数账与运算账</title>
+  <desc id="desc">左侧按矩阵元素数统计参数，右侧按Token数和位置对数统计主要运算。</desc>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker>
+    <style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 17px system-ui,sans-serif;fill:#172033}.b{font:14px system-ui,sans-serif;fill:#334155}.m{font:13px ui-monospace,monospace;fill:#1e293b}.ms{font:11px ui-monospace,monospace;fill:#1e293b}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}</style>
+  </defs>
+  <rect width="960" height="440" rx="18" fill="#f8fafc"/>
+  <text x="480" y="35" text-anchor="middle" class="t">权重存一次，工作按负载重复</text>
+  <rect x="35" y="62" width="390" height="320" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="230" y="92" text-anchor="middle" class="h">参数账：只看权重形状</text>
+  <rect x="65" y="115" width="330" height="48" rx="9" fill="#fff" stroke="#93c5fd"/>
+  <text x="85" y="138" class="b">Q / O</text><text x="220" y="138" class="m">[d,d] × 2</text><text x="365" y="138" text-anchor="end" class="m">2d²</text>
+  <rect x="65" y="175" width="330" height="48" rx="9" fill="#fff" stroke="#93c5fd"/>
+  <text x="85" y="198" class="b">K / V</text><text x="175" y="198" class="ms">[d,H_KV d_h] × 2</text><text x="375" y="198" text-anchor="end" class="ms">2dH_KVd_h</text>
+  <rect x="65" y="235" width="330" height="48" rx="9" fill="#fff" stroke="#93c5fd"/>
+  <text x="85" y="258" class="b">Gate / Up / Down</text><text x="365" y="258" text-anchor="end" class="m">3dd_ff</text>
+  <rect x="65" y="305" width="330" height="48" rx="9" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="230" y="334" text-anchor="middle" class="h">与当前 B、T 无关</text>
+  <path d="M425 221H514" class="arr"/>
+  <text x="470" y="201" text-anchor="middle" class="b">同一批</text><text x="470" y="219" text-anchor="middle" class="b">矩阵</text>
+  <rect x="535" y="62" width="390" height="320" rx="16" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="730" y="92" text-anchor="middle" class="h">运算账：再乘调用次数</text>
+  <rect x="565" y="115" width="330" height="60" rx="9" fill="#fff" stroke="#6ee7b7"/>
+  <text x="585" y="139" class="b">Q/K/V/O 与 SwiGLU</text><text x="585" y="160" class="m">矩阵主项 × B × T</text>
+  <rect x="565" y="188" width="330" height="60" rx="9" fill="#fff" stroke="#6ee7b7"/>
+  <text x="585" y="212" class="b">QKᵀ 与 Probability × V</text><text x="585" y="233" class="m">4 B T² d</text>
+  <rect x="565" y="261" width="330" height="48" rx="9" fill="#fff" stroke="#6ee7b7"/>
+  <text x="585" y="290" class="b">LM Head</text><text x="865" y="290" text-anchor="end" class="m">2 B T d V</text>
+  <rect x="565" y="322" width="330" height="31" rx="9" fill="#d1fae5" stroke="#059669"/>
+  <text x="730" y="343" text-anchor="middle" class="h">B、T 改变工作量</text>
+  <text x="480" y="415" text-anchor="middle" class="b">绑定权重减少参数副本，但不免除输出层矩阵乘法</text>
+</svg>

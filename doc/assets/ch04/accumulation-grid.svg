@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">数据并行与梯度累积的有效Token网格</title>
+  <desc id="desc">三个DP rank和四个累积步形成十二个micro-batch，各自有效Token数不同，分子分母全局求和后只更新一次。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker><style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 15px system-ui,sans-serif;fill:#172033}.b{font:12px system-ui,sans-serif;fill:#334155}.s{font:10.5px system-ui,sans-serif;fill:#475569}.m{font:12px ui-monospace,monospace;fill:#172033}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="960" height="500" rx="18" fill="#f8fafc"/>
+  <text x="480" y="35" text-anchor="middle" class="t">序列格子可以相同，Token 权重仍可能不同</text>
+  <g class="h" text-anchor="middle"><text x="250" y="82">acc 1</text><text x="380" y="82">acc 2</text><text x="510" y="82">acc 3</text><text x="640" y="82">acc 4</text></g>
+  <g class="h" text-anchor="end"><text x="165" y="135">DP rank 0</text><text x="165" y="215">DP rank 1</text><text x="165" y="295">DP rank 2</text></g>
+  <g fill="#eff6ff" stroke="#2563eb">
+    <rect x="190" y="100" width="120" height="58" rx="9"/><rect x="320" y="100" width="120" height="58" rx="9"/><rect x="450" y="100" width="120" height="58" rx="9"/><rect x="580" y="100" width="120" height="58" rx="9"/>
+    <rect x="190" y="180" width="120" height="58" rx="9"/><rect x="320" y="180" width="120" height="58" rx="9"/><rect x="450" y="180" width="120" height="58" rx="9"/><rect x="580" y="180" width="120" height="58" rx="9"/>
+    <rect x="190" y="260" width="120" height="58" rx="9"/><rect x="320" y="260" width="120" height="58" rx="9"/><rect x="450" y="260" width="120" height="58" rx="9"/><rect x="580" y="260" width="120" height="58" rx="9"/>
+  </g>
+  <g class="m" text-anchor="middle"><text x="250" y="125">S₀₁, N=96</text><text x="380" y="125">S₀₂, N=80</text><text x="510" y="125">S₀₃, N=96</text><text x="640" y="125">S₀₄, N=64</text><text x="250" y="205">S₁₁, N=88</text><text x="380" y="205">S₁₂, N=96</text><text x="510" y="205">S₁₃, N=72</text><text x="640" y="205">S₁₄, N=96</text><text x="250" y="285">S₂₁, N=96</text><text x="380" y="285">S₂₂, N=64</text><text x="510" y="285">S₂₃, N=88</text><text x="640" y="285">S₂₄, N=80</text></g>
+  <path d="M250 318V350H760" class="arr"/><path d="M380 318V350M510 318V350M640 318V350" stroke="#d97706" stroke-width="2"/>
+  <rect x="170" y="350" width="440" height="82" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="390" y="380" text-anchor="middle" class="h">全局 Token 目标</text>
+  <text x="390" y="407" text-anchor="middle" class="m">L = Σᵣ,ₖ Sᵣ,ₖ / Σᵣ,ₖ Nᵣ,ₖ</text>
+  <path d="M610 391H730" class="arr"/>
+  <rect x="735" y="350" width="180" height="82" rx="14" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="825" y="380" text-anchor="middle" class="h">唯一 optimizer step</text>
+  <text x="825" y="407" text-anchor="middle" class="b">一次 global batch</text>
+  <rect x="735" y="105" width="180" height="145" rx="14" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="825" y="136" text-anchor="middle" class="h">不要乘入样本数</text>
+  <text x="825" y="168" text-anchor="middle" class="b">TP：共同算同一张量</text>
+  <text x="825" y="194" text-anchor="middle" class="b">PP：共同算同一批次</text>
+  <text x="825" y="220" text-anchor="middle" class="b">CP：共同算同一序列</text>
+  <text x="480" y="475" text-anchor="middle" class="b">micro-batch mean 的无权平均，只有在各格 N 相等时才等价</text>
+</svg>

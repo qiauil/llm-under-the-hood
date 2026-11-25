@@ -1,0 +1,166 @@
+{
+  "task": "E-4",
+  "status": "PASS",
+  "seed": 20261103,
+  "environment": {
+    "python": "3.11.5",
+    "torch": "2.5.1+cu124",
+    "device": "cpu",
+    "cuda_available": false,
+    "threads_per_child": 4,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35"
+  },
+  "config": {
+    "L": 2,
+    "d": 64,
+    "H": 4,
+    "H_KV": 2,
+    "d_h": 16,
+    "d_ff": 176,
+    "V": 256,
+    "B": 8,
+    "T": 32
+  },
+  "protocol": {
+    "same_initialization_and_data": true,
+    "optimizer": "AdamW(lr=3e-3, betas=(0.9,0.95), wd=0.01)",
+    "gradient_clip_norm": 1.0,
+    "warmup_updates_excluded_from_time": 1,
+    "rss_scope": "per-child process peak RSS; not GPU memory and not allocator-only model memory"
+  },
+  "runs": [
+    {
+      "dtype_path": "cpu_fp32",
+      "micro_batch_sequences": 8,
+      "accumulation_steps": 1,
+      "global_batch_sequences": 8,
+      "updates": 6,
+      "effective_target_tokens": 1536,
+      "loss_curve": [
+        62.18983840942383,
+        60.92124557495117,
+        60.056175231933594,
+        59.59529495239258,
+        58.518218994140625,
+        58.69331741333008
+      ],
+      "grad_norm_curve_before_clipping": [
+        8.647329330444336,
+        8.522506713867188,
+        8.66776180267334,
+        8.958179473876953,
+        8.73158073425293,
+        9.035866737365723
+      ],
+      "elapsed_seconds": 0.053827625000849366,
+      "effective_tokens_per_second": 28535.533566189533,
+      "process_peak_rss_kib": 510232,
+      "final_parameter_checksum_fp64_sum": 323.78665662817184,
+      "measured": true,
+      "name": "fp32-b8-a1"
+    },
+    {
+      "dtype_path": "cpu_fp32",
+      "micro_batch_sequences": 2,
+      "accumulation_steps": 4,
+      "global_batch_sequences": 8,
+      "updates": 6,
+      "effective_target_tokens": 1536,
+      "loss_curve": [
+        62.189839363098145,
+        60.92125129699707,
+        60.05617332458496,
+        59.59529209136963,
+        58.51821708679199,
+        58.69331359863281
+      ],
+      "grad_norm_curve_before_clipping": [
+        8.647329330444336,
+        8.522506713867188,
+        8.66776180267334,
+        8.958179473876953,
+        8.73158073425293,
+        9.035866737365723
+      ],
+      "elapsed_seconds": 0.11196302296593785,
+      "effective_tokens_per_second": 13718.815009731314,
+      "process_peak_rss_kib": 505080,
+      "final_parameter_checksum_fp64_sum": 323.7866506631126,
+      "measured": true,
+      "name": "fp32-b2-a4"
+    },
+    {
+      "dtype_path": "cpu_bf16_autocast",
+      "micro_batch_sequences": 8,
+      "accumulation_steps": 1,
+      "global_batch_sequences": 8,
+      "updates": 6,
+      "effective_target_tokens": 1536,
+      "loss_curve": [
+        62.18962097167969,
+        60.9149055480957,
+        60.0527229309082,
+        59.5943717956543,
+        58.51993179321289,
+        58.69554901123047
+      ],
+      "grad_norm_curve_before_clipping": [
+        8.646780014038086,
+        8.522733688354492,
+        8.667793273925781,
+        8.959478378295898,
+        8.730875015258789,
+        9.035741806030273
+      ],
+      "elapsed_seconds": 0.06908108294010162,
+      "effective_tokens_per_second": 22234.741185685016,
+      "process_peak_rss_kib": 512548,
+      "final_parameter_checksum_fp64_sum": 323.80856526075513,
+      "measured": true,
+      "name": "bf16-b8-a1"
+    },
+    {
+      "dtype_path": "cpu_bf16_autocast",
+      "micro_batch_sequences": 2,
+      "accumulation_steps": 4,
+      "global_batch_sequences": 8,
+      "updates": 6,
+      "effective_target_tokens": 1536,
+      "loss_curve": [
+        62.18962287902832,
+        60.91850471496582,
+        60.04948806762695,
+        59.59703826904297,
+        58.51510238647461,
+        58.70207977294922
+      ],
+      "grad_norm_curve_before_clipping": [
+        8.646728515625,
+        8.522784233093262,
+        8.667566299438477,
+        8.959182739257812,
+        8.730658531188965,
+        9.035736083984375
+      ],
+      "elapsed_seconds": 0.1775872001890093,
+      "effective_tokens_per_second": 8649.272010399438,
+      "process_peak_rss_kib": 508044,
+      "final_parameter_checksum_fp64_sum": 323.8004354051518,
+      "measured": true,
+      "name": "bf16-b2-a4"
+    }
+  ],
+  "checks": {
+    "fp32_accumulation_loss_max_abs_diff": 5.7220458984375e-06,
+    "bf16_accumulation_loss_max_abs_diff": 0.00653076171875,
+    "fp32_accumulation_tolerance": 1e-05,
+    "bf16_accumulation_tolerance": 0.01,
+    "all_finite": true,
+    "all_loss_decreased": true
+  },
+  "limitations": [
+    "CPU measurements do not establish GPU throughput, CUDA memory, or Tensor Core behavior.",
+    "Six updates are a correctness/smoke comparison, not a convergence-quality study.",
+    "ru_maxrss is a process high-water mark and includes runtime/library memory."
+  ]
+}

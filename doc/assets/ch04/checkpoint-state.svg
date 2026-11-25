@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Checkpoint 原子提交与恢复状态机</title>
+  <desc id="desc">保存时先写临时分片并校验，再生成manifest和原子发布latest；恢复时验证完整状态与下一批身份，损坏版本回退。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker><style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 15px system-ui,sans-serif;fill:#172033}.b{font:12px system-ui,sans-serif;fill:#334155}.s{font:10.5px system-ui,sans-serif;fill:#475569}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}.bad{stroke:#dc2626;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="960" height="520" rx="18" fill="#f8fafc"/>
+  <text x="480" y="35" text-anchor="middle" class="t">只有已验证、已提交的状态才是恢复点</text>
+  <text x="35" y="78" class="h">保存路径</text>
+  <g stroke-width="2">
+    <rect x="35" y="95" width="155" height="82" rx="12" fill="#eef2ff" stroke="#4f46e5"/><rect x="225" y="95" width="155" height="82" rx="12" fill="#eff6ff" stroke="#2563eb"/><rect x="415" y="95" width="155" height="82" rx="12" fill="#fff7ed" stroke="#ea580c"/><rect x="605" y="95" width="155" height="82" rx="12" fill="#ecfdf5" stroke="#059669"/><rect x="795" y="95" width="130" height="82" rx="12" fill="#d1fae5" stroke="#059669"/>
+  </g>
+  <g text-anchor="middle"><text x="112" y="123" class="h">临时目录</text><text x="112" y="147" class="s">新版本，不覆盖旧点</text><text x="302" y="123" class="h">各 rank 分片</text><text x="302" y="147" class="s">模型 · optimizer · RNG</text><text x="492" y="123" class="h">校验</text><text x="492" y="147" class="s">数量 · 大小 · checksum</text><text x="682" y="123" class="h">manifest</text><text x="682" y="147" class="s">schema · 布局 · 游标</text><text x="860" y="123" class="h">原子发布</text><text x="860" y="147" class="s">latest → 新版本</text></g>
+  <path d="M190 136H223M380 136H413M570 136H603M760 136H793" class="arr"/>
+  <path d="M492 177V220H305" class="bad"/><text x="505" y="207" class="s" fill="#dc2626">失败</text>
+  <rect x="90" y="220" width="215" height="55" rx="12" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="197" y="244" text-anchor="middle" class="h">拒绝发布并保留旧 latest</text><text x="197" y="263" text-anchor="middle" class="s">不完整临时目录可隔离清理</text>
+  <text x="35" y="326" class="h">恢复路径</text>
+  <g stroke-width="2"><rect x="35" y="345" width="140" height="75" rx="12" fill="#d1fae5" stroke="#059669"/><rect x="210" y="345" width="145" height="75" rx="12" fill="#fff7ed" stroke="#ea580c"/><rect x="390" y="325" width="205" height="115" rx="12" fill="#eff6ff" stroke="#2563eb"/><rect x="630" y="345" width="145" height="75" rx="12" fill="#f5f3ff" stroke="#7c3aed"/><rect x="810" y="345" width="115" height="75" rx="12" fill="#ecfdf5" stroke="#059669"/></g>
+  <g text-anchor="middle"><text x="105" y="374" class="h">读取 latest</text><text x="105" y="398" class="s">只看已提交版本</text><text x="282" y="374" class="h">验证</text><text x="282" y="398" class="s">schema + checksum</text><text x="492" y="350" class="h">加载完整状态</text><text x="492" y="374" class="s">model · optimizer · scheduler</text><text x="492" y="395" class="s">loss scale · RNG · 数据游标</text><text x="492" y="416" class="s">global step · Token 计数</text><text x="702" y="374" class="h">恢复校验</text><text x="702" y="398" class="s">下一批身份 · 无更新前向</text><text x="867" y="374" class="h">继续训练</text><text x="867" y="398" class="s">消费下一批</text></g>
+  <path d="M175 382H208M355 382H388M595 382H628M775 382H808" class="arr"/>
+  <path d="M282 345V300H105V343" class="bad"/><text x="195" y="294" text-anchor="middle" class="s" fill="#dc2626">损坏：回退上一已提交版本</text>
+  <text x="480" y="485" text-anchor="middle" class="b">只加载模型权重是热启动；缺少 optimizer、RNG 或数据游标不能称为精确 resume</text>
+</svg>

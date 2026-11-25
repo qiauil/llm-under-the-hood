@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="570" viewBox="0 0 1200 570" role="img" aria-labelledby="title desc">
+  <title id="title">教师强制训练与自回归生成时间线</title>
+  <desc id="desc">左侧训练中真实输入全部已知，可在一次前向中预测多个位置；右侧生成中后一步必须等待前一步选出 Token。</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#d97706"/></marker>
+    <style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#172033}.h{font-size:27px;font-weight:700}.t{font-size:20px}.s{font-size:17px}.box{stroke-width:2.5}.arr{stroke:#d97706;stroke-width:3;fill:none;marker-end:url(#arr)}</style>
+  </defs>
+  <rect width="1200" height="570" rx="22" fill="#f8fafc"/>
+  <text x="300" y="48" text-anchor="middle" class="h">训练：真实历史已知</text><text x="900" y="48" text-anchor="middle" class="h">生成：历史逐步产生</text>
+  <line x1="600" y1="24" x2="600" y2="540" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+
+  <rect x="55" y="82" width="490" height="95" rx="16" fill="#eff6ff" stroke="#2563eb" class="box"/>
+  <text x="85" y="116" class="s">一次给定输入</text><text x="300" y="151" text-anchor="middle" class="t">[ BOS , A , B ]</text>
+  <path d="M155 177V225M300 177V225M445 177V225" class="arr"/>
+  <rect x="95" y="225" width="120" height="58" rx="12" fill="#dbeafe" stroke="#2563eb"/><rect x="240" y="225" width="120" height="58" rx="12" fill="#dbeafe" stroke="#2563eb"/><rect x="385" y="225" width="120" height="58" rx="12" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="155" y="261" text-anchor="middle" class="t">预测 A</text><text x="300" y="261" text-anchor="middle" class="t">预测 B</text><text x="445" y="261" text-anchor="middle" class="t">预测 EOS</text>
+  <rect x="80" y="330" width="440" height="110" rx="16" fill="#ecfdf5" stroke="#16a34a" class="box"/>
+  <text x="300" y="372" text-anchor="middle" class="t">同一次前向计算三个位置</text><text x="300" y="407" text-anchor="middle" class="s">因果掩码仍限制每个位置只能读取对应前缀</text>
+
+  <rect x="665" y="82" width="470" height="76" rx="16" fill="#eff6ff" stroke="#2563eb" class="box"/><text x="900" y="129" text-anchor="middle" class="t">步骤 1　[BOS] → 选出 A</text>
+  <path d="M900 158V202" class="arr"/>
+  <rect x="665" y="202" width="470" height="76" rx="16" fill="#eff6ff" stroke="#2563eb" class="box"/><text x="900" y="249" text-anchor="middle" class="t">步骤 2　[BOS, A] → 选出 B</text>
+  <path d="M900 278V322" class="arr"/>
+  <rect x="665" y="322" width="470" height="76" rx="16" fill="#eff6ff" stroke="#2563eb" class="box"/><text x="900" y="369" text-anchor="middle" class="t">步骤 3　[BOS, A, B] → 选出 EOS</text>
+  <rect x="665" y="446" width="470" height="70" rx="16" fill="#fff7ed" stroke="#d97706" class="box"/><text x="900" y="488" text-anchor="middle" class="t">下一步必须等待上一步的实际选择</text>
+</svg>

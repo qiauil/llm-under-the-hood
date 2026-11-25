@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">FlashAttention 的分块数据流</title><desc id="desc">Q 块遍历 K/V 块，局部 score 在片上更新 m、l、z 后丢弃。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.b{stroke:#334155;stroke-width:2}.a{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#a)}</style></defs>
+  <rect width="1200" height="700" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">HBM 中的分块输入</text>
+  <rect x="45" y="80" width="300" height="535" rx="18" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+  <text x="195" y="120" class="t" text-anchor="middle">Q blocks</text>
+  <g fill="#dbeafe" class="b"><rect x="85" y="145" width="220" height="62" rx="8"/><rect x="85" y="220" width="220" height="62" rx="8"/><rect x="85" y="295" width="220" height="62" rx="8"/><rect x="85" y="370" width="220" height="62" rx="8"/></g>
+  <g class="s" text-anchor="middle"><text x="195" y="183">Q₀</text><text x="195" y="258">Q₁（当前）</text><text x="195" y="333">Q₂</text><text x="195" y="408">Q₃</text></g>
+  <text x="195" y="475" class="t" text-anchor="middle">K/V block pairs</text>
+  <g fill="#dcfce7" class="b"><rect x="65" y="500" width="60" height="55" rx="8"/><rect x="135" y="500" width="60" height="55" rx="8"/><rect x="205" y="500" width="60" height="55" rx="8"/><rect x="275" y="500" width="50" height="55" rx="8"/></g><g class="s" text-anchor="middle"><text x="95" y="535">0</text><text x="165" y="535">1</text><text x="235" y="535">2</text><text x="300" y="535">3</text></g>
+  <rect x="415" y="85" width="520" height="530" rx="24" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text x="675" y="130" class="h" text-anchor="middle">片上：一次处理一对 Tile</text>
+  <rect class="b" x="470" y="175" width="150" height="85" rx="14" fill="#dbeafe"/><text x="545" y="226" class="t" text-anchor="middle">Qᵢ</text>
+  <rect class="b" x="730" y="165" width="150" height="55" rx="12" fill="#dcfce7"/><text x="805" y="200" class="t" text-anchor="middle">Kⱼ</text>
+  <rect class="b" x="730" y="235" width="150" height="55" rx="12" fill="#dcfce7"/><text x="805" y="270" class="t" text-anchor="middle">Vⱼ</text>
+  <rect class="b" x="545" y="325" width="260" height="85" rx="14" fill="#fee2e2"/><text x="675" y="360" class="t" text-anchor="middle">局部 Sᵢⱼ</text><text x="675" y="392" class="s" text-anchor="middle">Bᵣ × B꜀；用后丢弃</text>
+  <rect class="b" x="520" y="465" width="310" height="100" rx="14" fill="#fef3c7"/><text x="675" y="503" class="t" text-anchor="middle">逐行状态 m, ℓ, z</text><text x="675" y="538" class="s" text-anchor="middle">跨 K/V block 递推</text>
+  <path class="a" d="M620 218H680V342H545"/><path class="a" d="M730 192H680V325"/><path class="a" d="M730 262H700V325"/><path class="a" d="M675 410V465"/>
+  <path class="a" d="M345 251H470"/><path class="a" d="M345 530H390V193H730"/>
+  <rect x="985" y="145" width="170" height="100" rx="14" fill="#dcfce7" stroke="#166534" stroke-width="2"/><text x="1070" y="188" class="t" text-anchor="middle">最终 Oᵢ</text><text x="1070" y="220" class="s" text-anchor="middle">写回 HBM</text>
+  <path class="a" d="M830 515H930V195H985"/>
+  <rect x="975" y="330" width="185" height="170" rx="16" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/><text x="1067" y="372" class="t" text-anchor="middle" fill="#b91c1c">从未发生</text><text x="1067" y="420" class="s" text-anchor="middle">完整 T × T</text><text x="1067" y="452" class="s" text-anchor="middle">score / P</text><text x="1067" y="482" class="s" text-anchor="middle">写入 HBM</text>
+  <text x="600" y="665" class="t" text-anchor="middle">仍遍历全部稠密 block 对；改变驻留位置，不删除主算术</text>
+</svg>

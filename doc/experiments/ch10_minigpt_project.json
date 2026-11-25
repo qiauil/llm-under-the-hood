@@ -1,0 +1,321 @@
+{
+  "task": "W-10.1",
+  "status": "PASS",
+  "evidence_type": "cpu_character_minigpt_pipeline_check",
+  "seed": 20261111,
+  "environment": {
+    "python": "3.10.14",
+    "torch": "2.9.1+cu128",
+    "device": "cpu",
+    "dtype": "fp32",
+    "cuda_available": false,
+    "threads": 2
+  },
+  "config": {
+    "L": 2,
+    "d": 32,
+    "H": 4,
+    "H_KV": 2,
+    "d_h": 8,
+    "d_ff": 64,
+    "V": 9,
+    "B": 8,
+    "T": 24
+  },
+  "corpus": {
+    "kind": "built_in_repeated_character_fixture",
+    "unit": "to be or not to be.\n",
+    "characters": 2560,
+    "vocabulary": [
+      "\n",
+      " ",
+      ".",
+      "b",
+      "e",
+      "n",
+      "o",
+      "r",
+      "t"
+    ],
+    "block_size": 24
+  },
+  "training": {
+    "optimizer": "AdamW(lr=3e-3, betas=(0.9,0.95), wd=0.01); lr=1e-3@121,3e-4@241",
+    "updates": 320,
+    "batch_size": 8,
+    "loss_curve": [
+      {
+        "update": 1,
+        "loss": 27.914194107055664
+      },
+      {
+        "update": 11,
+        "loss": 6.4814629554748535
+      },
+      {
+        "update": 21,
+        "loss": 1.4872010946273804
+      },
+      {
+        "update": 31,
+        "loss": 0.7384276390075684
+      },
+      {
+        "update": 41,
+        "loss": 0.4025082290172577
+      },
+      {
+        "update": 51,
+        "loss": 0.17538471519947052
+      },
+      {
+        "update": 61,
+        "loss": 0.07701238244771957
+      },
+      {
+        "update": 71,
+        "loss": 0.043218642473220825
+      },
+      {
+        "update": 81,
+        "loss": 0.060099367052316666
+      },
+      {
+        "update": 91,
+        "loss": 0.07991426438093185
+      },
+      {
+        "update": 101,
+        "loss": 0.07794521003961563
+      },
+      {
+        "update": 111,
+        "loss": 0.047227561473846436
+      },
+      {
+        "update": 121,
+        "loss": 0.09127256274223328
+      },
+      {
+        "update": 131,
+        "loss": 0.05433739349246025
+      },
+      {
+        "update": 141,
+        "loss": 0.028956787660717964
+      },
+      {
+        "update": 151,
+        "loss": 0.056966688483953476
+      },
+      {
+        "update": 161,
+        "loss": 0.06203506514430046
+      },
+      {
+        "update": 171,
+        "loss": 0.051187664270401
+      },
+      {
+        "update": 181,
+        "loss": 0.07771732658147812
+      },
+      {
+        "update": 191,
+        "loss": 0.04933124780654907
+      },
+      {
+        "update": 201,
+        "loss": 0.044801995158195496
+      },
+      {
+        "update": 211,
+        "loss": 0.07494119554758072
+      },
+      {
+        "update": 221,
+        "loss": 0.052773162722587585
+      },
+      {
+        "update": 231,
+        "loss": 0.061397746205329895
+      },
+      {
+        "update": 241,
+        "loss": 0.03859569504857063
+      },
+      {
+        "update": 251,
+        "loss": 0.035457465797662735
+      },
+      {
+        "update": 261,
+        "loss": 0.057500749826431274
+      },
+      {
+        "update": 271,
+        "loss": 0.036550525575876236
+      },
+      {
+        "update": 281,
+        "loss": 0.04680507257580757
+      },
+      {
+        "update": 291,
+        "loss": 0.0589139461517334
+      },
+      {
+        "update": 301,
+        "loss": 0.04101166874170303
+      },
+      {
+        "update": 311,
+        "loss": 0.041831064969301224
+      },
+      {
+        "update": 320,
+        "loss": 0.03511693701148033
+      }
+    ]
+  },
+  "observed": {
+    "validation_loss_before": 27.868066787719727,
+    "validation_loss_after": 0.04276994988322258,
+    "generated_before": "to be                         ",
+    "generated_after": "to be or not to be.\nto be or not to be.\nto be or not t",
+    "shape_trace": {
+      "tokens": [
+        2,
+        24
+      ],
+      "embedding": [
+        2,
+        24,
+        32
+      ],
+      "q": [
+        2,
+        4,
+        24,
+        8
+      ],
+      "k": [
+        2,
+        2,
+        24,
+        8
+      ],
+      "v": [
+        2,
+        2,
+        24,
+        8
+      ],
+      "q_rope": [
+        2,
+        4,
+        24,
+        8
+      ],
+      "k_rope": [
+        2,
+        2,
+        24,
+        8
+      ],
+      "score": [
+        2,
+        4,
+        24,
+        24
+      ],
+      "probability": [
+        2,
+        4,
+        24,
+        24
+      ],
+      "attention_merged": [
+        2,
+        24,
+        32
+      ],
+      "attention_output": [
+        2,
+        24,
+        32
+      ],
+      "max_future_probability": 0.0,
+      "gate": [
+        2,
+        24,
+        64
+      ],
+      "up": [
+        2,
+        24,
+        64
+      ],
+      "swiglu_product": [
+        2,
+        24,
+        64
+      ],
+      "mlp_output": [
+        2,
+        24,
+        32
+      ],
+      "attention_input": [
+        2,
+        24,
+        32
+      ],
+      "after_attention_residual": [
+        2,
+        24,
+        32
+      ],
+      "mlp_input": [
+        2,
+        24,
+        32
+      ],
+      "block_output": [
+        2,
+        24,
+        32
+      ],
+      "final_norm": [
+        2,
+        24,
+        32
+      ],
+      "logits": [
+        2,
+        24,
+        9
+      ]
+    },
+    "causal_prefix_max_abs_diff": 0.0,
+    "checkpoint_bytes_in_memory": 250099,
+    "checkpoint_roundtrip_max_abs_logit_diff": 0.0
+  },
+  "checks": {
+    "all_logged_losses_finite": true,
+    "validation_loss_decreased": true,
+    "validation_loss_below_0_05": true,
+    "causal_prefix_max_abs_diff_le_1e_7": true,
+    "shape_trace_matches": true,
+    "autoregressive_argmax_steps": true,
+    "generated_contains_training_pattern": true,
+    "checkpoint_roundtrip_exact": true,
+    "checkpoint_has_training_state": true
+  },
+  "limitations": [
+    "The repeated character fixture tests the pipeline and memorization, not natural-language quality or generalization.",
+    "CPU FP32 measurements do not establish GPU throughput, memory, mixed-precision, or large-model behavior.",
+    "Generation recomputes the cropped prefix and does not implement or benchmark KV caching.",
+    "The checkpoint round-trip is in memory; crash-safe atomic file commit and interrupted-resume equivalence are not tested here."
+  ]
+}

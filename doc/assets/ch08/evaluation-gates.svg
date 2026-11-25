@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Assistant候选发布前的质量安全与系统性能并列门槛</title>
+  <desc id="desc">模型或系统候选必须同时通过三道并列门槛：质量与能力门检查任务指标、Base回归、污染和不确定性；安全与可靠性门检查攻击成功、误拒、有用性、权限和故障；系统性能门检查延迟、吞吐、SLO、内存和成本。三门都通过才可进入受控发布；任何单一分数不能替代其他门槛。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:21px}.s{font-size:18px}.flow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#a)}</style></defs>
+  <rect width="1200" height="720" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">发布决策是多门槛相交，不是单一总分</text>
+  <rect x="55" y="115" width="240" height="110" rx="18" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+  <text x="175" y="158" text-anchor="middle" class="h">候选版本</text><text x="175" y="193" text-anchor="middle" class="t">模型 + 模板 + 系统配置</text>
+  <path d="M295 170H360" class="flow"/>
+  <rect x="365" y="90" width="250" height="190" rx="20" fill="#ecfccb" stroke="#65a30d" stroke-width="3"/>
+  <text x="490" y="133" text-anchor="middle" class="h">质量 / 能力门</text>
+  <text x="390" y="174" class="t">• 目标任务与关键切片</text><text x="390" y="210" class="t">• Base 回归与格式</text><text x="390" y="246" class="t">• 污染、Prompt、置信区间</text>
+  <path d="M615 185H660" class="flow"/>
+  <rect x="665" y="90" width="250" height="190" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+  <text x="790" y="133" text-anchor="middle" class="h">安全 / 可靠性门</text>
+  <text x="690" y="174" class="t">• ASR、误拒与有用率</text><text x="690" y="210" class="t">• 权限、沙箱与确认</text><text x="690" y="246" class="t">• 故障、隐私与回滚</text>
+  <path d="M915 185H960" class="flow"/>
+  <rect x="965" y="90" width="190" height="190" rx="20" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+  <text x="1060" y="133" text-anchor="middle" class="h">系统性能门</text>
+  <text x="985" y="174" class="t">• TTFT / TPOT</text><text x="985" y="210" class="t">• SLO goodput</text><text x="985" y="246" class="t">• 内存 / 成本</text>
+  <path d="M1060 280V365H600" class="flow"/>
+  <rect x="370" y="370" width="460" height="95" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+  <text x="600" y="410" text-anchor="middle" class="h">三门均达标 → 受控发布</text><text x="600" y="444" text-anchor="middle" class="s">监控、降级、撤回与事件响应仍然保留</text>
+  <path d="M490 280V515H250" class="flow"/><path d="M790 280V515H600" class="flow"/><path d="M1060 280V515H950" class="flow"/>
+  <rect x="95" y="520" width="310" height="125" rx="18" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="250" y="560" text-anchor="middle" class="t">quality ↑ 但 Base 回归越界</text><text x="250" y="596" text-anchor="middle" class="h">不通过</text><text x="250" y="628" text-anchor="middle" class="s">回退或重配，而非挑指标发布</text>
+  <rect x="445" y="520" width="310" height="125" rx="18" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="600" y="560" text-anchor="middle" class="t">ASR ↓ 但良性误拒翻倍</text><text x="600" y="596" text-anchor="middle" class="h">不能只称更安全</text><text x="600" y="628" text-anchor="middle" class="s">按风险分级评估 trade-off</text>
+  <rect x="795" y="520" width="310" height="125" rx="18" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="950" y="560" text-anchor="middle" class="t">tokens/s ↑ 但质量门未过</text><text x="950" y="596" text-anchor="middle" class="h">不能称无损加速</text><text x="950" y="628" text-anchor="middle" class="s">质量协议与性能负载正交报告</text>
+</svg>

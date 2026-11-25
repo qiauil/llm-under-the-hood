@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">训练显存对象生命周期</title>
+  <desc id="desc">显示常驻状态、保存激活、梯度、临时量和更新工作空间在前向、反向和更新阶段的重叠。</desc>
+  <defs><style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 15px system-ui,sans-serif;fill:#172033}.b{font:14px system-ui,sans-serif;fill:#334155}.s{font:12px system-ui,sans-serif;fill:#475569}.axis{stroke:#64748b;stroke-width:2}</style></defs>
+  <rect width="960" height="470" rx="18" fill="#f8fafc"/>
+  <text x="480" y="36" text-anchor="middle" class="t">峰值来自同一时刻的重叠，不是全程总和</text>
+  <line x1="205" y1="410" x2="905" y2="410" class="axis"/>
+  <line x1="205" y1="68" x2="205" y2="416" class="axis"/>
+  <rect x="205" y="72" width="265" height="28" rx="8" fill="#dbeafe"/><rect x="470" y="72" width="300" height="28" rx="8" fill="#dcfce7"/><rect x="770" y="72" width="135" height="28" rx="8" fill="#ffedd5"/>
+  <text x="337" y="92" text-anchor="middle" class="h">前向</text><text x="620" y="92" text-anchor="middle" class="h">反向</text><text x="837" y="92" text-anchor="middle" class="h">更新</text>
+  <text x="190" y="140" text-anchor="end" class="b">权重 / 主权重 / Adam 状态</text>
+  <rect x="215" y="116" width="680" height="36" rx="8" fill="#bfdbfe" stroke="#2563eb"/>
+  <text x="555" y="140" text-anchor="middle" class="s">常驻或跨整个更新窗口保留</text>
+  <text x="190" y="200" text-anchor="end" class="b">保存的激活</text>
+  <path d="M215 176H770V188H690V200H600V212H505V224H410V236H215Z" fill="#bbf7d0" stroke="#16a34a"/>
+  <text x="450" y="208" text-anchor="middle" class="s">前向产生，反向按依赖逐步释放</text>
+  <text x="190" y="270" text-anchor="end" class="b">梯度</text>
+  <path d="M470 286V274H550V262H640V250H730V238H895V286Z" fill="#ddd6fe" stroke="#7c3aed"/>
+  <text x="705" y="275" text-anchor="middle" class="s">反向产生，累积到更新</text>
+  <text x="190" y="330" text-anchor="end" class="b">临时量 / Kernel 工作空间</text>
+  <rect x="300" y="306" width="90" height="34" rx="7" fill="#fed7aa" stroke="#ea580c"/>
+  <rect x="565" y="306" width="130" height="34" rx="7" fill="#fed7aa" stroke="#ea580c"/>
+  <rect x="790" y="306" width="85" height="34" rx="7" fill="#fed7aa" stroke="#ea580c"/>
+  <text x="190" y="380" text-anchor="end" class="b">其他 / 分配器保留 / 通信</text>
+  <rect x="215" y="356" width="680" height="32" rx="7" fill="#e2e8f0" stroke="#64748b" stroke-dasharray="6 4"/>
+  <line x1="650" y1="104" x2="650" y2="405" stroke="#dc2626" stroke-width="3" stroke-dasharray="7 5"/>
+  <text x="662" y="398" class="h" fill="#dc2626">候选峰值 τ*</text>
+  <text x="205" y="443" class="s">窗口开始</text><text x="905" y="443" text-anchor="end" class="s">下一窗口</text>
+</svg>

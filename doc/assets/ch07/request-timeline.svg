@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">单请求生命周期与四类延迟指标</title>
+  <desc id="desc">请求从零毫秒发出，经过排队与Prefill，在800、860、910和1000毫秒收到四个输出Token；图中分别标出TTFT、三段ITL、TPOT分母和E2E。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker>
+    <marker id="blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#2563eb"/></marker>
+    <style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.xs{font-size:16px}.line{stroke:#334155;stroke-width:4}.dash{stroke:#64748b;stroke-width:2;stroke-dasharray:8 7}.blue{stroke:#2563eb;stroke-width:4;fill:none;marker-end:url(#blue)}.orange{stroke:#ea580c;stroke-width:4}.green{stroke:#16a34a;stroke-width:4}</style>
+  </defs>
+  <rect width="1200" height="650" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">一条请求，四种时间问题</text>
+  <line x1="90" y1="305" x2="1120" y2="305" class="line" marker-end="url(#arrow)"/>
+  <rect x="100" y="130" width="680" height="90" rx="18" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="440" y="168" text-anchor="middle" class="t">网络 / 排队 / 分词 / Prefill / 首次采样 / 回传</text>
+  <text x="440" y="200" text-anchor="middle" class="s">共同进入客户端 TTFT；不能只叫 Prefill Kernel 时间</text>
+  <g text-anchor="middle">
+    <circle cx="100" cy="305" r="15" fill="#334155"/><text x="100" y="350" class="t">请求发出</text><text x="100" y="378" class="s">t₀ = 0 ms</text>
+    <circle cx="780" cy="305" r="17" fill="#2563eb"/><text x="780" y="350" class="t">Token 1</text><text x="780" y="378" class="s">t₁ = 800</text>
+    <circle cx="875" cy="305" r="15" fill="#16a34a"/><text x="875" y="350" class="t">Token 2</text><text x="875" y="378" class="s">860</text>
+    <circle cx="955" cy="305" r="15" fill="#16a34a"/><text x="955" y="350" class="t">Token 3</text><text x="955" y="378" class="s">910</text>
+    <circle cx="1095" cy="305" r="17" fill="#16a34a"/><text x="1095" y="350" class="t">Token 4</text><text x="1095" y="378" class="s">tₙ = 1000</text>
+  </g>
+  <g class="dash"><line x1="100" y1="220" x2="100" y2="570"/><line x1="780" y1="220" x2="780" y2="570"/><line x1="875" y1="280" x2="875" y2="500"/><line x1="955" y1="280" x2="955" y2="500"/><line x1="1095" y1="280" x2="1095" y2="570"/></g>
+  <path d="M105 440H775" class="blue"/><text x="440" y="430" text-anchor="middle" class="t" fill="#2563eb">TTFT = 800 ms</text>
+  <g text-anchor="middle">
+    <line x1="790" y1="455" x2="865" y2="455" class="orange"/><text x="827" y="485" class="s" fill="#c2410c">60 ms</text>
+    <line x1="885" y1="455" x2="945" y2="455" class="orange"/><text x="915" y="485" class="s" fill="#c2410c">50 ms</text>
+    <line x1="965" y1="455" x2="1085" y2="455" class="orange"/><text x="1025" y="485" class="s" fill="#c2410c">90 ms</text>
+    <text x="940" y="525" class="t">ITL：相邻流式响应间隔</text>
+    <text x="940" y="555" class="s">TPOT = (1000 − 800) / (4 − 1) = 66.67 ms/Token</text>
+  </g>
+  <path d="M105 600H1090" class="blue"/><text x="600" y="590" text-anchor="middle" class="t" fill="#2563eb">E2E = 1000 ms</text>
+</svg>

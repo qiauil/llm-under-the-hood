@@ -1,0 +1,92 @@
+{
+  "status": "PASS",
+  "evidence_type": "synthetic_fixture_metric_pipeline_check",
+  "measurement_claim": "not a model, GPU, framework, network, or service performance measurement",
+  "input": "教材/examples/ch07_synthetic_serving_trace.jsonl",
+  "window": {
+    "start_s": 0.0,
+    "end_s": 10.0,
+    "duration_s": 10.0
+  },
+  "slo": {
+    "ttft_s": 1.5,
+    "tpot_s": 0.4,
+    "e2e_s": 4.0
+  },
+  "counts": {
+    "arrived": 6,
+    "completed": 5,
+    "joint_slo": 3,
+    "status": {
+      "completed": 5,
+      "timeout": 1
+    }
+  },
+  "rates": {
+    "offered_requests_per_s": 0.6,
+    "completed_requests_per_s": 0.5,
+    "output_tokens_per_s": 1.4,
+    "joint_slo_goodput_per_s": 0.3
+  },
+  "percentile_method": "nearest-rank over completed requests",
+  "percentiles": {
+    "ttft_s": {
+      "p50": 0.7999999999999998,
+      "p95": 2.0,
+      "p99": 2.0
+    },
+    "tpot_s": {
+      "p50": 0.30000000000000004,
+      "p95": 0.5,
+      "p99": 0.5
+    },
+    "e2e_s": {
+      "p50": 1.2999999999999998,
+      "p95": 3.0,
+      "p99": 3.0
+    }
+  },
+  "per_request": [
+    {
+      "request_id": "r1",
+      "ttft_s": 0.5,
+      "tpot_s": 0.2,
+      "e2e_s": 0.9,
+      "meets_joint_slo": true
+    },
+    {
+      "request_id": "r2",
+      "ttft_s": 0.3999999999999999,
+      "tpot_s": 0.30000000000000004,
+      "e2e_s": 0.7,
+      "meets_joint_slo": true
+    },
+    {
+      "request_id": "r3",
+      "ttft_s": 1.0,
+      "tpot_s": 0.3,
+      "e2e_s": 1.9,
+      "meets_joint_slo": true
+    },
+    {
+      "request_id": "r4",
+      "ttft_s": 0.7999999999999998,
+      "tpot_s": 0.5,
+      "e2e_s": 1.2999999999999998,
+      "meets_joint_slo": false
+    },
+    {
+      "request_id": "r5",
+      "ttft_s": 2.0,
+      "tpot_s": 0.5,
+      "e2e_s": 3.0,
+      "meets_joint_slo": false
+    }
+  ],
+  "environment": {
+    "python": "3.10.14"
+  },
+  "real_service_route": "not_run: CUDA unavailable and vLLM/SGLang/TensorRT-LLM not installed",
+  "prefix_cache_route": "not_run",
+  "quantization_route": "not_run"
+}

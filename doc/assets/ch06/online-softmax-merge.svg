@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="590" viewBox="0 0 1200 590" role="img" aria-labelledby="title desc">
+  <title id="title">Online Softmax 的同尺度合并</title><desc id="desc">A 与 B 的统计量按共同最大值重缩放后相加，不能直接平均块内输出。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.b{stroke:#334155;stroke-width:2}.a{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#a)}</style></defs>
+  <rect width="1200" height="590" rx="24" fill="#f8fafc"/>
+  <text x="600" y="55" class="h" text-anchor="middle">先统一指数尺度，再合并分母与 Value 加权和</text>
+  <rect class="b" x="55" y="115" width="260" height="170" rx="18" fill="#dbeafe"/><text x="185" y="157" class="t" text-anchor="middle">旧集合 A</text><text x="90" y="200" class="s">m_A</text><text x="90" y="235" class="s">ℓ_A = Σ exp(s-m_A)</text><text x="90" y="270" class="s">z_A = Σ exp(s-m_A)v</text>
+  <rect class="b" x="55" y="330" width="260" height="170" rx="18" fill="#dcfce7"/><text x="185" y="372" class="t" text-anchor="middle">新 block B</text><text x="90" y="415" class="s">m_B</text><text x="90" y="450" class="s">ℓ_B = Σ exp(s-m_B)</text><text x="90" y="485" class="s">z_B = Σ exp(s-m_B)v</text>
+  <rect class="b" x="410" y="140" width="270" height="310" rx="20" fill="#fef3c7"/><text x="545" y="185" class="t" text-anchor="middle">共同最大值</text><text x="545" y="225" class="t" text-anchor="middle">m′ = max(m_A,m_B)</text>
+  <rect x="445" y="265" width="200" height="65" rx="12" fill="#fff" stroke="#a16207" stroke-width="2"/><text x="545" y="305" class="s" text-anchor="middle">α = exp(m_A-m′)</text>
+  <rect x="445" y="355" width="200" height="65" rx="12" fill="#fff" stroke="#a16207" stroke-width="2"/><text x="545" y="395" class="s" text-anchor="middle">β = exp(m_B-m′)</text>
+  <path class="a" d="M315 200H410"/><path class="a" d="M315 415H410"/>
+  <rect class="b" x="770" y="130" width="360" height="270" rx="20" fill="#ede9fe"/><text x="950" y="175" class="t" text-anchor="middle">同尺度相加</text><text x="810" y="225" class="s">ℓ′ = αℓ_A + βℓ_B</text><text x="810" y="275" class="s">z′ = αz_A + βz_B</text><line x1="810" y1="305" x2="1090" y2="305" stroke="#7c3aed" stroke-width="2"/><text x="950" y="355" class="t" text-anchor="middle">o′ = z′ / ℓ′</text>
+  <path class="a" d="M680 295H770"/>
+  <rect x="760" y="445" width="380" height="90" rx="14" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/><text x="805" y="500" class="h" fill="#b91c1c">×</text><text x="850" y="485" class="s">不能直接平均</text><text x="850" y="515" class="s">o_A 与 o_B</text>
+</svg>

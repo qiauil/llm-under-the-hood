@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Reward Model、DPO和在线RL需要的数据与模型对象</title>
+  <desc id="desc">三列比较偏好路线。Reward Model使用同一prompt的chosen和rejected训练标量奖励模型；DPO使用离线偏好对、可训练Policy和冻结Reference计算四个序列log probability；在线RL使用prompt、rollout Policy、Reward Model或checker、旧策略与Reference形成生成奖励更新闭环。三条路线都进入独立质量、安全和回归评测。</desc>
+  <defs><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:21px}.s{font-size:17px}.card{stroke-width:3}.row{stroke:#94a3b8;stroke-width:2}</style></defs>
+  <rect width="1200" height="760" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">算法名称不同，所需数据与模型对象也不同</text>
+  <rect x="45" y="95" width="345" height="530" rx="20" fill="#fff7ed" stroke="#ea580c" class="card"/>
+  <rect x="428" y="95" width="345" height="530" rx="20" fill="#fae8ff" stroke="#a21caf" class="card"/>
+  <rect x="810" y="95" width="345" height="530" rx="20" fill="#e0f2fe" stroke="#0284c7" class="card"/>
+  <text x="218" y="140" text-anchor="middle" class="h">Reward Model</text>
+  <text x="600" y="140" text-anchor="middle" class="h">DPO</text>
+  <text x="983" y="140" text-anchor="middle" class="h">在线 RL</text>
+  <g class="row"><path d="M65 165H370M448 165H753M830 165H1135"/><path d="M65 285H370M448 285H753M830 285H1135"/><path d="M65 425H370M448 425H753M830 425H1135"/></g>
+  <text x="75" y="195" class="s">数据</text><text x="75" y="232" class="t">同一 x 的 y⁺ / y⁻</text><text x="75" y="263" class="s">离线偏好、tie、rubric</text>
+  <text x="458" y="195" class="s">数据</text><text x="458" y="232" class="t">同一 x 的 y⁺ / y⁻</text><text x="458" y="263" class="s">离线 pair，按 prompt 切分</text>
+  <text x="840" y="195" class="s">数据</text><text x="840" y="232" class="t">prompt + 在线 rollout</text><text x="840" y="263" class="s">数据分布随 Policy 变化</text>
+  <text x="75" y="315" class="s">模型对象</text><text x="75" y="352" class="t">可训练 RM</text><text x="75" y="383" class="s">主干 + 标量 head</text><text x="75" y="410" class="s">输出 r(x,y)</text>
+  <text x="458" y="315" class="s">模型对象</text><text x="458" y="352" class="t">Policy + 冻结 Reference</text><text x="458" y="383" class="s">四个序列 log probability</text><text x="458" y="410" class="s">无需显式 RM / rollout</text>
+  <text x="840" y="315" class="s">模型对象</text><text x="840" y="352" class="t">Policy / Old / Reference</text><text x="840" y="383" class="s">RM 或 checker；可含 Critic</text><text x="840" y="410" class="s">rollout Worker + Learner</text>
+  <text x="75" y="455" class="s">直接优化</text><text x="75" y="492" class="t">chosen 的相对胜率</text><text x="75" y="525" class="s">成对 log loss</text>
+  <text x="458" y="455" class="s">直接优化</text><text x="458" y="492" class="t">Policy / Ref margin</text><text x="458" y="525" class="s">βΔ 的 logsigmoid</text>
+  <text x="840" y="455" class="s">直接优化</text><text x="840" y="492" class="t">期望 reward / advantage</text><text x="840" y="525" class="s">ratio、clip、KL 等约束</text>
+  <text x="75" y="565" class="s">风险：长度/措辞捷径、OOD</text><text x="75" y="598" class="s">被策略搜索后 reward hacking</text>
+  <text x="458" y="565" class="s">风险：偏好偏差、长度、mask</text><text x="458" y="598" class="s">Reference/模板错配</text>
+  <text x="840" y="565" class="s">风险：reward 漏洞、漂移、staleness</text><text x="840" y="598" class="s">生成成本与系统背压</text>
+  <rect x="185" y="660" width="830" height="65" rx="16" fill="#ecfccb" stroke="#65a30d" stroke-width="3"/>
+  <text x="600" y="701" text-anchor="middle" class="t">共同验收：独立质量与事实性　│　安全切片　│　Base 回归　│　长度与分布外样本</text>
+</svg>

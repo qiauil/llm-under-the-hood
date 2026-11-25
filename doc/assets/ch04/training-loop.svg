@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="title desc">
+  <title id="title">从数据 batch 到可恢复 checkpoint</title>
+  <desc id="desc">数据manifest产生batch，多个micro-batch累积梯度，通过有限性检查后唯一更新并提交checkpoint，失败则不推进成功步。</desc>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker>
+    <style>.t{font:700 22px system-ui,sans-serif;fill:#172033}.h{font:700 16px system-ui,sans-serif;fill:#172033}.b{font:13px system-ui,sans-serif;fill:#334155}.s{font:11px system-ui,sans-serif;fill:#475569}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}</style>
+  </defs>
+  <rect width="960" height="440" rx="18" fill="#f8fafc"/>
+  <text x="480" y="36" text-anchor="middle" class="t">一次成功更新是一条可验证的状态转换</text>
+  <rect x="30" y="95" width="150" height="110" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text x="105" y="127" text-anchor="middle" class="h">数据 manifest</text>
+  <text x="105" y="154" text-anchor="middle" class="b">版本 · sampler</text>
+  <text x="105" y="178" text-anchor="middle" class="b">下一批身份</text>
+  <path d="M180 150H230" class="arr"/>
+  <rect x="235" y="68" width="315" height="245" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="392" y="96" text-anchor="middle" class="h">更新窗口：共享一个梯度缓冲</text>
+  <g fill="#fff" stroke="#60a5fa"><rect x="260" y="120" width="80" height="80" rx="10"/><rect x="352" y="120" width="80" height="80" rx="10"/><rect x="444" y="120" width="80" height="80" rx="10"/></g>
+  <g class="s" text-anchor="middle"><text x="300" y="143">micro 1</text><text x="300" y="162">forward</text><text x="300" y="181">backward</text><text x="392" y="143">micro 2</text><text x="392" y="162">forward</text><text x="392" y="181">backward</text><text x="484" y="143">micro K</text><text x="484" y="162">forward</text><text x="484" y="181">backward</text></g>
+  <path d="M300 200V230H392M392 200V230M484 200V230H392" fill="none" stroke="#2563eb" stroke-width="2"/>
+  <rect x="290" y="230" width="205" height="48" rx="10" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="392" y="259" text-anchor="middle" class="b">同步 → unscale → finite? → clip</text>
+  <path d="M550 190H600" class="arr"/>
+  <polygon points="655,132 715,190 655,248 595,190" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="655" y="184" text-anchor="middle" class="h">梯度</text><text x="655" y="204" text-anchor="middle" class="h">有限？</text>
+  <path d="M715 190H755" class="arr"/><text x="727" y="178" class="s">是</text>
+  <rect x="760" y="112" width="170" height="155" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="845" y="140" text-anchor="middle" class="h">唯一成功点</text>
+  <text x="845" y="168" text-anchor="middle" class="b">optimizer.step</text>
+  <text x="845" y="192" text-anchor="middle" class="b">scheduler.step</text>
+  <text x="845" y="216" text-anchor="middle" class="b">successful_step + 1</text>
+  <text x="845" y="242" text-anchor="middle" class="s">日志 + checkpoint</text>
+  <path d="M655 248V325H520" fill="none" class="arr"/><text x="666" y="286" class="s">否</text>
+  <rect x="275" y="325" width="245" height="62" rx="12" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="397" y="350" text-anchor="middle" class="h">丢弃窗口并保留证据</text>
+  <text x="397" y="372" text-anchor="middle" class="s">清空梯度 · 回退 scale · 不推进成功步</text>
+  <path d="M845 267V355H565" fill="none" class="arr"/>
+  <text x="722" y="344" text-anchor="middle" class="b">已提交状态决定下一批</text>
+</svg>

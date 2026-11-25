@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="650" viewBox="0 0 1100 650" role="img" aria-labelledby="title desc">
+  <title id="title">第十章六个项目的能力依赖与建议路线</title>
+  <desc id="desc">左侧项目一和项目二分别产出可训练模型与资源账本。它们共同支持中间的分布式训练、Attention Kernel和推理服务三个项目；三条能力线最终汇入项目六，用同一模型和manifest完成四个Gate。底部区分低资源证据路线与目标硬件测量路线。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title{font:700 28px sans-serif;fill:#172033}.sub{font:15px sans-serif;fill:#475569}.h{font:700 21px sans-serif;fill:#172033}.t{font:16px sans-serif;fill:#172033}.small{font:14px sans-serif;fill:#334155}.line{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:9 7}.card{stroke-width:2.5}.label{font:700 15px sans-serif;fill:#172033}
+    </style>
+  </defs>
+  <rect width="1100" height="650" rx="24" fill="#f8fafc"/>
+  <text x="50" y="52" class="title">六个项目不是六份孤立作业，而是一条能力依赖链</text>
+  <text x="50" y="82" class="sub">先获得可运行对象与可复算账本，再分别研究并行、Kernel 和服务，最后用同一 manifest 汇流。</text>
+
+  <rect x="55" y="130" width="250" height="150" rx="18" fill="#dbeafe" stroke="#2563eb" class="card"/>
+  <text x="80" y="165" class="h">10.1  Mini-GPT</text>
+  <text x="80" y="198" class="t">得到：可训练、可生成的对象</text>
+  <text x="80" y="228" class="small">代码 · checkpoint · 因果检查</text>
+  <text x="80" y="252" class="small">CPU 夹具先验证管线</text>
+
+  <rect x="55" y="320" width="250" height="150" rx="18" fill="#dbeafe" stroke="#2563eb" class="card"/>
+  <text x="80" y="355" class="h">10.2  资源分析器</text>
+  <text x="80" y="388" class="t">得到：可复算的四本账</text>
+  <text x="80" y="418" class="small">参数 · FLOPs · 状态 · KV</text>
+  <text x="80" y="442" class="small">解析账本与实测字段分开</text>
+
+  <rect x="425" y="105" width="255" height="125" rx="18" fill="#ffedd5" stroke="#ea580c" class="card"/>
+  <text x="450" y="142" class="h">10.3  分布式训练</text>
+  <text x="450" y="175" class="t">候选布局与通信/空泡账</text>
+  <text x="450" y="202" class="small">目标硬件：Step Time / Peak</text>
+
+  <rect x="425" y="265" width="255" height="125" rx="18" fill="#ffedd5" stroke="#ea580c" class="card"/>
+  <text x="450" y="302" class="h">10.4  Attention Kernel</text>
+  <text x="450" y="335" class="t">正确性、Runtime 与 HBM 证据</text>
+  <text x="450" y="362" class="small">CPU 代理 ≠ Flash 实测</text>
+
+  <rect x="425" y="425" width="255" height="125" rx="18" fill="#ffedd5" stroke="#ea580c" class="card"/>
+  <text x="450" y="462" class="h">10.5  推理服务</text>
+  <text x="450" y="495" class="t">请求 trace、尾延迟与 SLO</text>
+  <text x="450" y="522" class="small">合成管线 ≠ 真实部署</text>
+
+  <rect x="800" y="220" width="245" height="220" rx="22" fill="#dcfce7" stroke="#16a34a" class="card"/>
+  <text x="830" y="265" class="h">10.6  最终项目</text>
+  <text x="830" y="304" class="t">同一模型 + 同一 manifest</text>
+  <text x="830" y="340" class="small">Gate 1：结构</text>
+  <text x="830" y="369" class="small">Gate 2：资源</text>
+  <text x="830" y="398" class="small">Gate 3：训练/并行</text>
+  <text x="830" y="427" class="small">Gate 4：部署/优化</text>
+
+  <path d="M305 205 C355 205 365 167 425 167" class="line"/>
+  <path d="M305 205 C355 205 365 327 425 327" class="line"/>
+  <path d="M305 395 C355 395 365 167 425 167" class="line"/>
+  <path d="M305 395 C355 395 365 327 425 327" class="line"/>
+  <path d="M305 395 C355 395 365 487 425 487" class="line"/>
+  <path d="M680 167 C735 167 748 275 800 285" class="line"/>
+  <path d="M680 327 L800 327" class="line"/>
+  <path d="M680 487 C735 487 748 385 800 375" class="line"/>
+
+  <line x1="65" y1="590" x2="245" y2="590" stroke="#2563eb" stroke-width="4" stroke-dasharray="10 7"/>
+  <text x="260" y="596" class="label">低资源路线：解析 / CPU 夹具 / 合成 trace，只验证方法与管线</text>
+  <line x1="65" y1="622" x2="245" y2="622" stroke="#ea580c" stroke-width="4"/>
+  <text x="260" y="628" class="label">目标硬件路线：GPU / 分布式 runtime / 真实服务，才支持性能结论</text>
+</svg>

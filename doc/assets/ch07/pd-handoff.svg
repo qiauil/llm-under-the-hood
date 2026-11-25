@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Prefill到Decode的KV交接时序与所有权</title>
+  <desc id="desc">入口把请求交给Prefill，调度器先在Decode侧预留容量，Prefill生成KV后保持源副本并传输逻辑KV与元数据，Decode校验版本、shape、位置和布局后返回确认，只有确认后Prefill才释放源KV；失败时可重传或重新Prefill。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.life{stroke:#64748b;stroke-width:2;stroke-dasharray:8 7}.flow{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#arrow)}.hot{stroke:#ea580c;stroke-width:4;fill:none;marker-end:url(#arrow)}</style></defs>
+  <rect width="1200" height="820" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">先预留目标容量，再转移 KV 所有权</text>
+  <g text-anchor="middle" class="t">
+    <rect x="55" y="90" width="210" height="65" rx="14" fill="#e2e8f0" stroke="#334155" stroke-width="2"/><text x="160" y="132">入口 / Router</text>
+    <rect x="345" y="90" width="210" height="65" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text x="450" y="132">Prefill Worker</text>
+    <rect x="645" y="90" width="210" height="65" rx="14" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/><text x="750" y="132">调度 / 容量</text>
+    <rect x="935" y="90" width="210" height="65" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="1040" y="132">Decode Worker</text>
+  </g>
+  <g class="life"><line x1="160" y1="155" x2="160" y2="735"/><line x1="450" y1="155" x2="450" y2="735"/><line x1="750" y1="155" x2="750" y2="735"/><line x1="1040" y1="155" x2="1040" y2="735"/></g>
+  <path d="M160 205H450" class="flow"/><text x="305" y="195" text-anchor="middle" class="s">请求 + 模型/Adapter 版本</text>
+  <rect x="375" y="225" width="150" height="65" rx="12" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/><text x="450" y="252" text-anchor="middle" class="s">PREFILL</text><text x="450" y="277" text-anchor="middle" class="s">生成全层 KV</text>
+  <path d="M450 320H750" class="flow"/><text x="600" y="310" text-anchor="middle" class="s">KV_READY：请求长度与所需容量</text>
+  <path d="M750 365H1040" class="flow"/><text x="895" y="355" text-anchor="middle" class="s">预留目标 KV 块 + slot</text>
+  <path d="M1040 410H450" class="flow"/><text x="745" y="400" text-anchor="middle" class="s">TRANSFER_RESERVED + handoff_epoch</text>
+  <rect x="360" y="435" width="180" height="72" rx="12" fill="#fef3c7" stroke="#ea580c" stroke-width="2"/><text x="450" y="463" text-anchor="middle" class="s">源 KV 继续保留</text><text x="450" y="490" text-anchor="middle" class="s">作为失败恢复点</text>
+  <path d="M450 535H1040" class="hot"/><text x="745" y="522" text-anchor="middle" class="t" fill="#c2410c">传逻辑 KV + dtype/shape/位置/分片元数据</text>
+  <rect x="955" y="560" width="170" height="80" rx="12" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><text x="1040" y="588" text-anchor="middle" class="s">校验并重建</text><text x="1040" y="613" text-anchor="middle" class="s">本地 Block Table</text><text x="1040" y="636" text-anchor="middle" class="s">DECODE_READY</text>
+  <path d="M1040 665H450" class="flow"/><text x="745" y="655" text-anchor="middle" class="t">ACK：目标已可用</text>
+  <text x="450" y="720" text-anchor="middle" class="t" fill="#15803d">ACK 后释放源 KV</text><text x="1040" y="720" text-anchor="middle" class="t" fill="#15803d">开始 Decode</text>
+  <rect x="575" y="755" width="340" height="48" rx="12" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="745" y="786" text-anchor="middle" class="s" fill="#b91c1c">超时/失败：重传、恢复或重新 Prefill</text>
+</svg>

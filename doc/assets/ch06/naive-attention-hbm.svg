@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">显式 Attention 的 HBM 往返</title>
+  <desc id="desc">QK、Softmax、PV 三个分离 Kernel 通过 HBM 中的 S 和 P 交换二次规模中间量。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#334155"/></marker>
+    <marker id="hot" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#dc2626"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.box{stroke:#334155;stroke-width:2}.flow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#arrow)}.hot{fill:none;stroke:#dc2626;stroke-width:6;marker-end:url(#hot)}
+    </style>
+  </defs>
+  <rect width="1200" height="650" rx="24" fill="#f8fafc"/>
+  <text x="60" y="55" class="h">HBM：输入、二次规模中间量与输出</text>
+  <rect x="45" y="80" width="1110" height="185" rx="20" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+  <g text-anchor="middle">
+    <g><rect class="box" x="80" y="125" width="105" height="78" rx="12" fill="#dbeafe"/><text x="132" y="174" class="t">Q</text></g>
+    <g><rect class="box" x="210" y="125" width="105" height="78" rx="12" fill="#dbeafe"/><text x="262" y="174" class="t">K</text></g>
+    <g><rect class="box" x="340" y="125" width="105" height="78" rx="12" fill="#dbeafe"/><text x="392" y="174" class="t">V</text></g>
+    <g><rect class="box" x="525" y="108" width="150" height="112" rx="12" fill="#fee2e2"/><text x="600" y="155" class="t">S</text><text x="600" y="190" class="s">T × T</text></g>
+    <g><rect class="box" x="760" y="108" width="150" height="112" rx="12" fill="#fee2e2"/><text x="835" y="155" class="t">P</text><text x="835" y="190" class="s">T × T</text></g>
+    <g><rect class="box" x="1010" y="125" width="105" height="78" rx="12" fill="#dcfce7"/><text x="1062" y="174" class="t">O</text></g>
+  </g>
+  <text x="60" y="320" class="h">三个分离 Kernel</text>
+  <g text-anchor="middle">
+    <g><rect class="box" x="125" y="370" width="220" height="100" rx="18" fill="#bfdbfe"/><text x="235" y="412" class="t">QK MatMul</text><text x="235" y="447" class="s">产生 score</text></g>
+    <g><rect class="box" x="490" y="370" width="220" height="100" rx="18" fill="#fde68a"/><text x="600" y="412" class="t">Softmax</text><text x="600" y="447" class="s">逐行归一化</text></g>
+    <g><rect class="box" x="855" y="370" width="220" height="100" rx="18" fill="#bbf7d0"/><text x="965" y="412" class="t">PV MatMul</text><text x="965" y="447" class="s">聚合 Value</text></g>
+  </g>
+  <path class="flow" d="M132 203 V335 H200 V370"/><path class="flow" d="M262 203 V335 H270 V370"/>
+  <path class="hot" d="M310 370 V300 H600 V220"/><text x="365" y="292" class="s" fill="#dc2626">① 写 S</text>
+  <path class="hot" d="M600 220 V335 H570 V370"/><text x="612" y="318" class="s" fill="#dc2626">② 读 S</text>
+  <path class="hot" d="M630 370 V300 H835 V220"/><text x="720" y="292" class="s" fill="#dc2626">③ 写 P</text>
+  <path class="hot" d="M835 220 V335 H925 V370"/><text x="842" y="318" class="s" fill="#dc2626">④ 读 P</text>
+  <path class="flow" d="M392 203 V520 H1005 V470"/><path class="flow" d="M965 470 V540 H1062 V203"/>
+  <rect x="300" y="555" width="600" height="58" rx="12" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="600" y="592" text-anchor="middle" class="t" fill="#b91c1c">四次 T² 规模 HBM 往返；不是四次计算</text>
+</svg>

@@ -1,0 +1,68 @@
+project:
+  type: book
+  output-dir: _book
+  resources:
+    - examples/**
+    - experiments/**
+    - assets/**
+
+lang: zh
+
+book:
+  title: "拆开大模型"
+  subtitle: "从 Token 到 GPU 与推理服务"
+  reader-mode: true
+  search: true
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - part: "模型基础与结构"
+      chapters:
+        - chapters/01-foundations.md
+        - chapters/02-transformer.md
+        - chapters/03-compute-and-gpu.md
+    - part: "训练与并行系统"
+      chapters:
+        - chapters/04-pretraining.md
+        - chapters/05-distributed-training.md
+        - chapters/06-efficient-attention.md
+    - part: "推理、后训练与前沿"
+      chapters:
+        - chapters/07-inference-serving.md
+        - chapters/08-post-training-evaluation.md
+        - chapters/09-frontiers.md
+    - part: "综合实践"
+      chapters:
+        - chapters/10-projects.md
+  appendices:
+    - appendices/prerequisites.md
+    - appendices/notation.md
+    - appendices/exercise-solutions.md
+    - appendices/references.md
+
+format:
+  html:
+    theme:
+      light: [cosmo, styles.scss]
+      dark: [darkly, styles.scss]
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    code-copy: hover
+    code-overflow: wrap
+    link-external-newwindow: true
+    html-math-method: mathjax
+  pdf:
+    documentclass: ctexbook
+    pdf-engine: xelatex
+    classoption:
+      - UTF8
+      - openany
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    colorlinks: true
+
+execute:
+  enabled: false
+

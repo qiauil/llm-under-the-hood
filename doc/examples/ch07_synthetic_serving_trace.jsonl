@@ -1,0 +1,6 @@
+{"request_id":"r1","arrival_s":0.0,"first_token_s":0.5,"last_token_s":0.9,"completion_s":0.9,"prompt_tokens":8,"output_tokens":3,"token_event_s":[0.5,0.7,0.9],"status":"completed"}
+{"request_id":"r2","arrival_s":1.0,"first_token_s":1.4,"last_token_s":1.7,"completion_s":1.7,"prompt_tokens":16,"output_tokens":2,"token_event_s":[1.4,1.7],"status":"completed"}
+{"request_id":"r3","arrival_s":2.0,"first_token_s":3.0,"last_token_s":3.9,"completion_s":3.9,"prompt_tokens":8,"output_tokens":4,"token_event_s":[3.0,3.3,3.6,3.9],"status":"completed"}
+{"request_id":"r4","arrival_s":4.0,"first_token_s":4.8,"last_token_s":5.3,"completion_s":5.3,"prompt_tokens":32,"output_tokens":2,"token_event_s":[4.8,5.3],"status":"completed"}
+{"request_id":"r5","arrival_s":6.0,"first_token_s":8.0,"last_token_s":9.0,"completion_s":9.0,"prompt_tokens":16,"output_tokens":3,"token_event_s":[8.0,8.5,9.0],"status":"completed"}
+{"request_id":"r6","arrival_s":8.0,"first_token_s":null,"last_token_s":null,"completion_s":null,"prompt_tokens":64,"output_tokens":0,"token_event_s":[],"status":"timeout"}

@@ -1,0 +1,47 @@
+{
+  "task": "E-1",
+  "status": "not_run_missing_checkpoint",
+  "environment": {
+    "python": "3.11.5",
+    "torch": "2.5.1+cu124",
+    "transformers": "4.32.1",
+    "device": "cpu"
+  },
+  "model_requested": "sshleifer/tiny-gpt2",
+  "local_files_only": true,
+  "comparison_note": "Parallel short statements are illustrative, not a proof of translation equivalence. Compare token count together with Unicode code points and UTF-8 bytes.",
+  "byte_baseline": [
+    {
+      "language": "zh",
+      "text": "人工智能帮助人们解决问题。",
+      "unicode_code_points": 13,
+      "utf8_bytes": 39,
+      "byte_token_count_if_one_byte_per_token": 39
+    },
+    {
+      "language": "en",
+      "text": "Artificial intelligence helps people solve problems.",
+      "unicode_code_points": 52,
+      "utf8_bytes": 52,
+      "byte_token_count_if_one_byte_per_token": 52
+    },
+    {
+      "language": "de",
+      "text": "Künstliche Intelligenz hilft Menschen, Probleme zu lösen.",
+      "unicode_code_points": 57,
+      "utf8_bytes": 59,
+      "byte_token_count_if_one_byte_per_token": 59
+    },
+    {
+      "language": "es",
+      "text": "La inteligencia artificial ayuda a resolver problemas.",
+      "unicode_code_points": 54,
+      "utf8_bytes": 54,
+      "byte_token_count_if_one_byte_per_token": 54
+    }
+  ],
+  "error_type": "OSError",
+  "error": "We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like sshleifer/tiny-gpt2 is not the path to a directory containing a file named config.json.\nCheckout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+  "token_counts": [],
+  "generations": []
+}

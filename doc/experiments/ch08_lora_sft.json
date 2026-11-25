@@ -1,0 +1,155 @@
+{
+  "task": "E-8",
+  "status": "PASS",
+  "evidence_type": "cpu_synthetic_lora_sft_pipeline_check",
+  "seed": 20261111,
+  "environment": {
+    "python": "3.10.14",
+    "torch": "2.9.1+cu128",
+    "device": "cpu",
+    "dtype": "torch.float32",
+    "cuda_available": false,
+    "threads": 2
+  },
+  "config": {
+    "L": 1,
+    "d": 32,
+    "H": 4,
+    "H_KV": 2,
+    "d_h": 8,
+    "d_ff": 64,
+    "V": 64,
+    "B": 12,
+    "T": 6
+  },
+  "lora": {
+    "rank": 4,
+    "alpha": 8.0,
+    "target_modules": [
+      "q",
+      "k",
+      "v",
+      "o",
+      "gate",
+      "up",
+      "down"
+    ],
+    "wrapped_linear_count": 7,
+    "expected_trainable_parameters": 2048,
+    "actual_trainable_parameters": 2048
+  },
+  "data": {
+    "kind": "synthetic classification serialized as chat-like token sequences",
+    "train_sequences": 12,
+    "heldout_test_sequences": 8,
+    "sequence_tokens": 7,
+    "supervised_target_positions_per_sequence": 2,
+    "test_fixed_before_training": true
+  },
+  "optimizer": "AdamW(lr=0.03, betas=(0.9,0.95), weight_decay=0)",
+  "updates": 160,
+  "before": {
+    "assistant_token_loss": 30.30460548400879,
+    "assistant_token_accuracy": 0.0,
+    "answer_token_accuracy": 0.0,
+    "exact_answer_plus_eos_accuracy": 0.0
+  },
+  "after": {
+    "assistant_token_loss": 2.6747488846012857e-06,
+    "assistant_token_accuracy": 1.0,
+    "answer_token_accuracy": 1.0,
+    "exact_answer_plus_eos_accuracy": 1.0
+  },
+  "training_trace_every_10_updates": [
+    {
+      "update": 1,
+      "assistant_token_loss": 30.422943115234375
+    },
+    {
+      "update": 11,
+      "assistant_token_loss": 0.6188568472862244
+    },
+    {
+      "update": 21,
+      "assistant_token_loss": 0.002583073452115059
+    },
+    {
+      "update": 31,
+      "assistant_token_loss": 0.0006631831056438386
+    },
+    {
+      "update": 41,
+      "assistant_token_loss": 2.6304305720259435e-05
+    },
+    {
+      "update": 51,
+      "assistant_token_loss": 9.010116627905518e-06
+    },
+    {
+      "update": 61,
+      "assistant_token_loss": 6.248506451811409e-06
+    },
+    {
+      "update": 71,
+      "assistant_token_loss": 4.798144800588489e-06
+    },
+    {
+      "update": 81,
+      "assistant_token_loss": 4.177271421212936e-06
+    },
+    {
+      "update": 91,
+      "assistant_token_loss": 3.7302413602446904e-06
+    },
+    {
+      "update": 101,
+      "assistant_token_loss": 3.357715968377306e-06
+    },
+    {
+      "update": 111,
+      "assistant_token_loss": 3.0944645459385356e-06
+    },
+    {
+      "update": 121,
+      "assistant_token_loss": 2.8113443022448337e-06
+    },
+    {
+      "update": 131,
+      "assistant_token_loss": 2.632531504787039e-06
+    },
+    {
+      "update": 141,
+      "assistant_token_loss": 2.4388175461353967e-06
+    },
+    {
+      "update": 151,
+      "assistant_token_loss": 2.284839638377889e-06
+    },
+    {
+      "update": 160,
+      "assistant_token_loss": 2.1159605694265338e-06
+    }
+  ],
+  "numeric": {
+    "frozen_checksum_before": 18.61702974607033,
+    "frozen_checksum_after": 18.61702974607033,
+    "merge_max_abs_diff": 1.9073486328125e-06
+  },
+  "checks": {
+    "trainable_count": true,
+    "only_lora_trainable": true,
+    "frozen_checksum_exact": true,
+    "finite_losses": true,
+    "train_loss_decreased": true,
+    "heldout_loss_improved": true,
+    "heldout_answer_accuracy_improved": true,
+    "heldout_exact_response_accuracy": true,
+    "merge_equivalence": true
+  },
+  "limitations": [
+    "Synthetic token task only; this does not establish natural-language instruction quality.",
+    "Held-out fillers test the fixed pipeline but are not a public benchmark.",
+    "CPU float32 correctness run only; no GPU memory, throughput, QLoRA, or quality claim.",
+    "No preference optimization was run; the optional extension remains unrun."
+  ]
+}

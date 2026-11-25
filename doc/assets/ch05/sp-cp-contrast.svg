@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">Sequence Parallelism 与 Context Parallelism 的布局区别</title>
+  <desc id="desc">左侧 SP 在逐 Token 区域保持序列分片，但进入张量并行投影前 All-Gather 完整序列，Attention 的本地头仍看完整上下文；右侧 CP 让序列分片贯穿整个 Block，本地 Query 只保留部分 Token，Attention 内交换远端 K/V 并合并全局 softmax。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#e67e00"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#17202a}.h{font-size:24px;font-weight:700}.t{font-size:17px}.s{font-size:14px;fill:#46525e}.b{fill:#eaf2ff;stroke:#2166f3;stroke-width:2}.g{fill:#e8f8f0;stroke:#009b68;stroke-width:2}.o{fill:#fff3e3;stroke:#e67e00;stroke-width:2}.a{stroke:#e67e00;stroke-width:2.5;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="960" height="500" rx="18" fill="#f7f9fb"/><text x="480" y="38" text-anchor="middle" class="h">同样沿 Token 切，Attention 边界不同</text>
+  <rect x="28" y="70" width="430" height="380" rx="16" fill="#fff" stroke="#2166f3" stroke-width="2"/><text x="243" y="102" text-anchor="middle" class="h">SP：服务于 TP 布局转换</text>
+  <rect x="55" y="130" width="150" height="76" rx="10" class="g"/><text x="130" y="157" text-anchor="middle" class="t">逐 Token 区域</text><text x="130" y="182" text-anchor="middle" class="s">各 rank 常驻 T/q</text>
+  <rect x="278" y="130" width="150" height="76" rx="10" class="b"/><text x="353" y="157" text-anchor="middle" class="t">TP 线性区</text><text x="353" y="182" text-anchor="middle" class="s">每 rank 恢复完整 T</text><path d="M205 168H278" class="a"/><text x="242" y="148" text-anchor="middle" class="s">All-Gatherₜ</text>
+  <rect x="278" y="246" width="150" height="76" rx="10" class="b"/><text x="353" y="273" text-anchor="middle" class="t">本地 TP 头</text><text x="353" y="298" text-anchor="middle" class="s">仍看完整上下文 T</text><path d="M353 206V246" class="a"/>
+  <rect x="55" y="246" width="150" height="76" rx="10" class="g"/><text x="130" y="273" text-anchor="middle" class="t">残差 / Norm</text><text x="130" y="298" text-anchor="middle" class="s">恢复 T/q 常驻</text><path d="M278 284H205" class="a"/><text x="242" y="337" text-anchor="middle" class="s">Reduce-Scatterₜ（先 SUM）</text>
+  <text x="243" y="386" text-anchor="middle" class="t">主要减少非 Attention 区域的复制激活</text><text x="243" y="416" text-anchor="middle" class="s">不自动把 score/softmax 的序列依赖分散</text>
+  <rect x="502" y="70" width="430" height="380" rx="16" fill="#fff" stroke="#009b68" stroke-width="2"/><text x="717" y="102" text-anchor="middle" class="h">CP：上下文分片贯穿 Block</text>
+  <rect x="530" y="130" width="150" height="76" rx="10" class="g"/><text x="605" y="157" text-anchor="middle" class="t">本地 Qᵢ / Token</text><text x="605" y="182" text-anchor="middle" class="s">长期只保留 T/c</text>
+  <rect x="754" y="130" width="150" height="76" rx="10" class="o"/><text x="829" y="157" text-anchor="middle" class="t">远端 Kⱼ / Vⱼ</text><text x="829" y="182" text-anchor="middle" class="s">逐块交换或环传</text><path d="M680 168H754" class="a"/>
+  <rect x="642" y="246" width="150" height="76" rx="10" class="b"/><text x="717" y="273" text-anchor="middle" class="t">分块 Attention</text><text x="717" y="298" text-anchor="middle" class="s">合并 (m, ℓ, o)</text><path d="M605 206V230H690M829 206V230H744" class="a"/>
+  <rect x="642" y="350" width="150" height="62" rx="10" class="g"/><text x="717" y="377" text-anchor="middle" class="t">本地输出 T/c</text><text x="717" y="399" text-anchor="middle" class="s">不物化完整序列</text><path d="M717 322V350" class="a"/>
+  <text x="717" y="438" text-anchor="middle" class="s">Query 仍须覆盖所有允许位置的 Key；因果 mask 用绝对位置。</text>
+</svg>

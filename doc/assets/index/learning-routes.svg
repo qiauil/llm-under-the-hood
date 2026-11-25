@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">三类读者的建议学习路线</title>
+  <desc id="desc">首次系统学习依次经过基础、训练、推理后训练和项目；系统工程路线从资源账本进入分布式、Kernel、服务与项目；后训练与前沿路线从基础和结构进入后训练、前沿与项目。</desc>
+  <style>
+    :root{color-scheme:light dark}
+    .bg{fill:#ffffff}.band{fill:#f5f7fb;stroke:#c9d2e3;stroke-width:2}.node{fill:#e8f1ff;stroke:#3b70b7;stroke-width:2}.project{fill:#e8f7ef;stroke:#25845b;stroke-width:2}.label{font:700 24px "Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#172033}.small{font:500 19px "Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#344054}.route1{stroke:#2864b7}.route2{stroke:#d16b27}.route3{stroke:#7b52b9}.line{fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}.dot{stroke:#fff;stroke-width:3}
+    @media(prefers-color-scheme:dark){.bg{fill:#12161d}.band{fill:#1c2430;stroke:#536175}.node{fill:#1c3555;stroke:#75a8ef}.project{fill:#173d31;stroke:#6fd0a4}.label,.small{fill:#edf2f7}.dot{stroke:#12161d}}
+  </style>
+  <rect class="bg" width="1200" height="620" rx="24"/>
+  <text class="label" x="55" y="58">先按问题选路；遇到缺口再回补，不必从附录开始背诵</text>
+  <rect class="band" x="45" y="92" width="1110" height="116" rx="18"/>
+  <rect class="band" x="45" y="242" width="1110" height="116" rx="18"/>
+  <rect class="band" x="45" y="392" width="1110" height="116" rx="18"/>
+  <text class="label" x="72" y="137">首次系统学习</text>
+  <text class="small" x="72" y="174">从 Token 到可验收项目</text>
+  <text class="label" x="72" y="287">系统与性能工程</text>
+  <text class="small" x="72" y="324">从资源账本定位瓶颈</text>
+  <text class="label" x="72" y="437">后训练与前沿专题</text>
+  <text class="small" x="72" y="474">从模型边界进入能力评测</text>
+  <path class="line route1" d="M330 150 H1090"/>
+  <path class="line route2" d="M330 300 H1090"/>
+  <path class="line route3" d="M330 450 H1090"/>
+  <g class="node"><circle class="dot route1" cx="350" cy="150" r="22"/><circle class="dot route1" cx="470" cy="150" r="22"/><circle class="dot route1" cx="590" cy="150" r="22"/><circle class="dot route1" cx="710" cy="150" r="22"/><circle class="dot route1" cx="830" cy="150" r="22"/></g>
+  <g class="node"><circle class="dot route2" cx="350" cy="300" r="22"/><circle class="dot route2" cx="530" cy="300" r="22"/><circle class="dot route2" cx="710" cy="300" r="22"/><circle class="dot route2" cx="890" cy="300" r="22"/></g>
+  <g class="node"><circle class="dot route3" cx="350" cy="450" r="22"/><circle class="dot route3" cx="530" cy="450" r="22"/><circle class="dot route3" cx="710" cy="450" r="22"/><circle class="dot route3" cx="890" cy="450" r="22"/></g>
+  <g class="small" text-anchor="middle">
+    <text x="350" y="157">1–2</text><text x="470" y="157">3</text><text x="590" y="157">4–6</text><text x="710" y="157">7</text><text x="830" y="157">8–9</text>
+    <text x="350" y="307">3</text><text x="530" y="307">5–6</text><text x="710" y="307">7</text><text x="890" y="307">8</text>
+    <text x="350" y="457">1–2</text><text x="530" y="457">8</text><text x="710" y="457">9</text><text x="890" y="457">7</text>
+  </g>
+  <g class="project">
+    <rect x="1030" y="118" width="86" height="64" rx="14"/><rect x="1030" y="268" width="86" height="64" rx="14"/><rect x="1030" y="418" width="86" height="64" rx="14"/>
+  </g>
+  <g class="label" text-anchor="middle"><text x="1073" y="158">10</text><text x="1073" y="308">10</text><text x="1073" y="458">10</text></g>
+  <g class="small" text-anchor="middle"><text x="600" y="562">蓝：系统学习　橙：工程定位　紫：后训练/前沿　绿：综合项目</text><text x="600" y="592">章节号表示建议顺序，不表示跳过章节的知识不再需要</text></g>
+</svg>

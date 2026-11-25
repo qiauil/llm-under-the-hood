@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">SFT对话序列的目标位移与assistant-only loss mask</title>
+  <desc id="desc">一条序列依次包含BOS、system、user、assistant角色头、三个回答Token和EOS。模型输入去掉最后一个Token，目标序列左移一位。只有回答Token与EOS的目标格标为一并计入损失，system、user与assistant角色头不计损失但仍作为Attention上下文。</desc>
+  <defs><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:21px}.s{font-size:17px}.label{font-size:20px;font-weight:700}.cell{stroke:#475569;stroke-width:2}</style></defs>
+  <rect width="1200" height="700" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">先对齐目标位置，再生成 assistant-only mask</text>
+  <text x="55" y="102" class="label">序列化 Token z₁…zₜ</text>
+  <g transform="translate(210 72)">
+    <rect x="0" y="0" width="100" height="65" rx="10" fill="#e2e8f0" class="cell"/><text x="50" y="40" text-anchor="middle" class="t">BOS</text>
+    <rect x="100" y="0" width="135" height="65" rx="10" fill="#dbeafe" class="cell"/><text x="168" y="40" text-anchor="middle" class="t">system</text>
+    <rect x="235" y="0" width="135" height="65" rx="10" fill="#fef3c7" class="cell"/><text x="303" y="40" text-anchor="middle" class="t">user</text>
+    <rect x="370" y="0" width="145" height="65" rx="10" fill="#fae8ff" class="cell"/><text x="443" y="40" text-anchor="middle" class="t">assistant</text>
+    <rect x="515" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="568" y="40" text-anchor="middle" class="t">答₁</text>
+    <rect x="620" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="673" y="40" text-anchor="middle" class="t">答₂</text>
+    <rect x="725" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="778" y="40" text-anchor="middle" class="t">答₃</text>
+    <rect x="830" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="883" y="40" text-anchor="middle" class="t">EOS</text>
+  </g>
+  <text x="55" y="226" class="label">输入 tokens[:, :-1]</text>
+  <g transform="translate(210 190)">
+    <rect x="0" y="0" width="100" height="65" rx="10" fill="#e2e8f0" class="cell"/><text x="50" y="40" text-anchor="middle" class="t">BOS</text>
+    <rect x="100" y="0" width="135" height="65" rx="10" fill="#dbeafe" class="cell"/><text x="168" y="40" text-anchor="middle" class="t">system</text>
+    <rect x="235" y="0" width="135" height="65" rx="10" fill="#fef3c7" class="cell"/><text x="303" y="40" text-anchor="middle" class="t">user</text>
+    <rect x="370" y="0" width="145" height="65" rx="10" fill="#fae8ff" class="cell"/><text x="443" y="40" text-anchor="middle" class="t">assistant</text>
+    <rect x="515" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="568" y="40" text-anchor="middle" class="t">答₁</text>
+    <rect x="620" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="673" y="40" text-anchor="middle" class="t">答₂</text>
+    <rect x="725" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="778" y="40" text-anchor="middle" class="t">答₃</text>
+  </g>
+  <text x="55" y="346" class="label">目标 tokens[:, 1:]</text>
+  <g transform="translate(210 310)">
+    <rect x="0" y="0" width="135" height="65" rx="10" fill="#dbeafe" class="cell"/><text x="68" y="40" text-anchor="middle" class="t">system</text>
+    <rect x="135" y="0" width="135" height="65" rx="10" fill="#fef3c7" class="cell"/><text x="203" y="40" text-anchor="middle" class="t">user</text>
+    <rect x="270" y="0" width="145" height="65" rx="10" fill="#fae8ff" class="cell"/><text x="343" y="40" text-anchor="middle" class="t">assistant</text>
+    <rect x="415" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="468" y="40" text-anchor="middle" class="t">答₁</text>
+    <rect x="520" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="573" y="40" text-anchor="middle" class="t">答₂</text>
+    <rect x="625" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="678" y="40" text-anchor="middle" class="t">答₃</text>
+    <rect x="730" y="0" width="105" height="65" rx="10" fill="#dcfce7" class="cell"/><text x="783" y="40" text-anchor="middle" class="t">EOS</text>
+  </g>
+  <text x="55" y="468" class="label">目标 mask aₜ</text>
+  <g transform="translate(210 430)">
+    <rect x="0" y="0" width="135" height="65" rx="10" fill="#e2e8f0" class="cell"/><text x="68" y="41" text-anchor="middle" class="h">0</text>
+    <rect x="135" y="0" width="135" height="65" rx="10" fill="#e2e8f0" class="cell"/><text x="203" y="41" text-anchor="middle" class="h">0</text>
+    <rect x="270" y="0" width="145" height="65" rx="10" fill="#e2e8f0" class="cell"/><text x="343" y="41" text-anchor="middle" class="h">0</text>
+    <rect x="415" y="0" width="105" height="65" rx="10" fill="#16a34a" class="cell"/><text x="468" y="41" text-anchor="middle" class="h" fill="#fff">1</text>
+    <rect x="520" y="0" width="105" height="65" rx="10" fill="#16a34a" class="cell"/><text x="573" y="41" text-anchor="middle" class="h" fill="#fff">1</text>
+    <rect x="625" y="0" width="105" height="65" rx="10" fill="#16a34a" class="cell"/><text x="678" y="41" text-anchor="middle" class="h" fill="#fff">1</text>
+    <rect x="730" y="0" width="105" height="65" rx="10" fill="#16a34a" class="cell"/><text x="783" y="41" text-anchor="middle" class="h" fill="#fff">1</text>
+  </g>
+  <rect x="70" y="550" width="1060" height="95" rx="18" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="600" y="585" text-anchor="middle" class="t">mask=0：不直接贡献 loss，但仍是回答位置的 Attention 上下文</text>
+  <text x="600" y="620" text-anchor="middle" class="t">mask=1：按所有有效 assistant 目标 Token 的 NLL 总和 / Token 总数归一</text>
+</svg>

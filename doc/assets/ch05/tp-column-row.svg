@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">两路张量并行中的 Column—Row 布局链</title>
+  <desc id="desc">复制输入分别进入两个 Column Parallel 权重分片，产生蓝色和绿色特征分片；局部非线性不通信，随后匹配的 Row Parallel 权重产生两个完整形状部分和，最后逐元素求和恢复复制输出。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#e67e00"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#17202a} .h{font-size:24px;font-weight:700}.t{font-size:17px}.s{font-size:14px;fill:#44515e}.b{fill:#eaf2ff;stroke:#2166f3;stroke-width:2}.g{fill:#e9f8f1;stroke:#009b68;stroke-width:2}.o{fill:#fff3e5;stroke:#e67e00;stroke-width:2}.k{fill:#f5f6f7;stroke:#68727d;stroke-width:1.5}.a{stroke:#e67e00;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="960" height="430" rx="18" fill="#f7f9fb"/>
+  <text x="480" y="38" text-anchor="middle" class="h">Column 分片贯穿局部计算，Row 只在输出处求和</text>
+  <rect x="32" y="158" width="126" height="76" rx="12" class="k"/><text x="95" y="187" text-anchor="middle" class="t">复制输入 X</text><text x="95" y="213" text-anchor="middle" class="s">每 rank 都有 n×dᵢₙ</text>
+  <path d="M158 196H212" class="a"/>
+  <rect x="214" y="78" width="150" height="92" rx="12" class="b"/><text x="289" y="108" text-anchor="middle" class="t">rank 0：W₀ 列片</text><text x="289" y="134" text-anchor="middle" class="s">Y₀ = XW₀</text><text x="289" y="155" text-anchor="middle" class="s">输出特征 0…k−1</text>
+  <rect x="214" y="250" width="150" height="92" rx="12" class="g"/><text x="289" y="280" text-anchor="middle" class="t">rank 1：W₁ 列片</text><text x="289" y="306" text-anchor="middle" class="s">Y₁ = XW₁</text><text x="289" y="327" text-anchor="middle" class="s">输出特征 k…2k−1</text>
+  <path d="M190 196V124H214M190 196V296H214" class="a"/>
+  <rect x="405" y="78" width="142" height="92" rx="12" class="b"/><text x="476" y="110" text-anchor="middle" class="t">局部非线性</text><text x="476" y="136" text-anchor="middle" class="s">SiLU(Y₀) 等</text><text x="476" y="157" text-anchor="middle" class="s">无需通信</text>
+  <rect x="405" y="250" width="142" height="92" rx="12" class="g"/><text x="476" y="282" text-anchor="middle" class="t">局部非线性</text><text x="476" y="308" text-anchor="middle" class="s">SiLU(Y₁) 等</text><text x="476" y="329" text-anchor="middle" class="s">无需通信</text>
+  <path d="M364 124H405M364 296H405" class="a"/>
+  <rect x="588" y="78" width="158" height="92" rx="12" class="b"/><text x="667" y="108" text-anchor="middle" class="t">rank 0：Row 片</text><text x="667" y="134" text-anchor="middle" class="s">Z₀ = Y₀W↓₀</text><text x="667" y="155" text-anchor="middle" class="s">完整输出形状的部分和</text>
+  <rect x="588" y="250" width="158" height="92" rx="12" class="g"/><text x="667" y="280" text-anchor="middle" class="t">rank 1：Row 片</text><text x="667" y="306" text-anchor="middle" class="s">Z₁ = Y₁W↓₁</text><text x="667" y="327" text-anchor="middle" class="s">完整输出形状的部分和</text>
+  <path d="M547 124H588M547 296H588" class="a"/>
+  <rect x="788" y="158" width="142" height="76" rx="12" class="o"/><text x="859" y="187" text-anchor="middle" class="t">逐元素 SUM</text><text x="859" y="213" text-anchor="middle" class="s">复制输出 Z₀+Z₁</text>
+  <path d="M746 124H770V196H788M746 296H770V196" class="a"/>
+  <text x="480" y="394" text-anchor="middle" class="s">中间特征保持分片，省去一次“先 All-Gather、随后再切分”的往返；SUM 仍不可省略。</text>
+</svg>

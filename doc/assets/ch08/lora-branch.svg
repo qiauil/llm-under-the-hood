@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">行向量约定下LoRA冻结主支路与低秩适配支路</title>
+  <desc id="desc">输入X分成两路。主路乘冻结的W0得到XW0；适配路先乘形状d_in乘r的A，再乘形状r乘d_out的B并乘alpha除以r。两路相加得到Y。部署时可以保留两支路动态切换Adapter，也可在足够精度中把低秩增量合并进W0。</desc>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.box{stroke:#334155;stroke-width:2}.flow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#a)}</style></defs>
+  <rect width="1200" height="700" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">LoRA：主权重冻结，低秩支路学习增量</text>
+  <rect x="55" y="285" width="180" height="90" rx="18" fill="#dbeafe" class="box"/>
+  <text x="145" y="325" text-anchor="middle" class="h">输入 X</text><text x="145" y="357" text-anchor="middle" class="s">最后一维 dᵢₙ</text>
+  <path d="M235 320H330V180H405" class="flow"/><path d="M235 340H330V465H405" class="flow"/>
+  <rect x="410" y="120" width="300" height="125" rx="18" fill="#e2e8f0" class="box"/>
+  <text x="560" y="160" text-anchor="middle" class="h">冻结主支路</text><text x="560" y="198" text-anchor="middle" class="t">X W₀</text><text x="560" y="228" text-anchor="middle" class="s">W₀ ∈ ℝᵈⁱⁿˣᵈᵒᵘᵗ，无梯度/Adam</text>
+  <rect x="410" y="395" width="230" height="140" rx="18" fill="#fae8ff" stroke="#a21caf" stroke-width="3"/>
+  <text x="525" y="435" text-anchor="middle" class="h">可训练 A</text><text x="525" y="473" text-anchor="middle" class="t">X A</text><text x="525" y="508" text-anchor="middle" class="s">A ∈ ℝᵈⁱⁿˣʳ</text>
+  <path d="M640 465H705" class="flow"/>
+  <rect x="710" y="395" width="230" height="140" rx="18" fill="#fae8ff" stroke="#a21caf" stroke-width="3"/>
+  <text x="825" y="435" text-anchor="middle" class="h">可训练 B</text><text x="825" y="473" text-anchor="middle" class="t">(X A) B</text><text x="825" y="508" text-anchor="middle" class="s">B ∈ ℝʳˣᵈᵒᵘᵗ，再乘 α/r</text>
+  <path d="M710 182H970V302" class="flow"/><path d="M940 465H970V360" class="flow"/>
+  <circle cx="970" cy="330" r="38" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+  <text x="970" y="340" text-anchor="middle" class="h">＋</text>
+  <path d="M1008 330H1110" class="flow"/>
+  <text x="1150" y="323" text-anchor="middle" class="h">Y</text><text x="1150" y="357" text-anchor="middle" class="s">dₒᵤₜ</text>
+  <rect x="85" y="585" width="1030" height="75" rx="16" fill="#ecfccb" stroke="#65a30d" stroke-width="3"/>
+  <text x="600" y="616" text-anchor="middle" class="t">动态部署：保留两支路，按请求切换 Adapter　│　Merge：W₀ ← W₀ + (α/r)AB</text>
+  <text x="600" y="646" text-anchor="middle" class="s">可训练参数少，不会让冻结权重、激活、Attention、workspace 或误差反传自动消失</text>
+</svg>

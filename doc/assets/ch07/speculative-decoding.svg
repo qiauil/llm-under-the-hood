@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Speculative Decoding的Draft、Verify、接受与拒绝流程</title>
+  <desc id="desc">Draft模型自回归提出K个候选，Target模型一次并行评分这些位置，然后从左到右验收。首次拒绝时从校正分布提交一个Token并丢弃后缀；全部接受时再从Target额外分布提交一个Token。候选KV先暂存，只提交已接受前缀并回滚拒绝后的状态。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L10 3L0 6Z" fill="#334155"/></marker><style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#0f172a}.h{font-size:30px;font-weight:700}.t{font-size:22px}.s{font-size:18px}.box{stroke:#334155;stroke-width:2}.flow{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#arrow)}.yes{stroke:#16a34a;stroke-width:4;fill:none;marker-end:url(#arrow)}.no{stroke:#dc2626;stroke-width:4;fill:none;marker-end:url(#arrow)}</style></defs>
+  <rect width="1200" height="760" rx="24" fill="#f8fafc"/>
+  <text x="55" y="55" class="h">候选可以推测，提交必须服从 Target 分布</text>
+  <rect x="65" y="105" width="250" height="95" rx="18" fill="#dbeafe" class="box"/>
+  <text x="190" y="142" text-anchor="middle" class="t">当前上下文 h</text><text x="190" y="174" text-anchor="middle" class="s">已提交 Token + KV</text>
+  <path d="M315 152H400" class="flow"/>
+  <rect x="405" y="95" width="330" height="115" rx="18" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text x="570" y="135" text-anchor="middle" class="h">Draft：提出 K 个候选</text><text x="570" y="174" text-anchor="middle" class="t">y₁ → y₂ → … → yₖ</text><text x="570" y="199" text-anchor="middle" class="s">Draft KV 暂存</text>
+  <path d="M735 152H820" class="flow"/>
+  <rect x="825" y="95" width="310" height="115" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+  <text x="980" y="135" text-anchor="middle" class="h">Target：一次 Verify</text><text x="980" y="174" text-anchor="middle" class="t">并行得到 p₁ … pₖ</text><text x="980" y="199" text-anchor="middle" class="s">以及全接受后的额外分布</text>
+  <path d="M980 210V285H600" class="flow"/>
+  <rect x="390" y="270" width="420" height="95" rx="18" fill="#e2e8f0" class="box"/>
+  <text x="600" y="308" text-anchor="middle" class="h">从左到右逐位置验收</text><text x="600" y="342" text-anchor="middle" class="t">aₜ(y)=min(1, pₜ(y)/qₜ(y))</text>
+  <path d="M490 365V430H270" class="no"/><text x="335" y="405" class="t" fill="#b91c1c">首次拒绝</text>
+  <path d="M710 365V430H930" class="yes"/><text x="820" y="405" class="t" fill="#15803d">K 个全接受</text>
+  <rect x="65" y="435" width="410" height="150" rx="20" fill="#fff1f2" stroke="#dc2626" stroke-width="3"/>
+  <text x="270" y="477" text-anchor="middle" class="h">拒绝分支</text>
+  <text x="270" y="514" text-anchor="middle" class="t">从校正分布 rₜ 提交 1 Token</text>
+  <text x="270" y="549" text-anchor="middle" class="s">保留此前已接受前缀</text>
+  <text x="270" y="574" text-anchor="middle" class="s">丢弃/回滚拒绝点后的候选 KV</text>
+  <rect x="725" y="435" width="410" height="150" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+  <text x="930" y="477" text-anchor="middle" class="h">全接受分支</text>
+  <text x="930" y="514" text-anchor="middle" class="t">提交 K 个候选</text>
+  <text x="930" y="549" text-anchor="middle" class="s">再从 Target 额外分布提交 1 Token</text>
+  <text x="930" y="574" text-anchor="middle" class="s">一轮最多提交 K + 1 Token</text>
+  <path d="M270 585V645H530" class="flow"/><path d="M930 585V645H670" class="flow"/>
+  <rect x="430" y="625" width="340" height="75" rx="16" fill="#dbeafe" class="box"/>
+  <text x="600" y="657" text-anchor="middle" class="t">提交 Token 与对应 KV</text><text x="600" y="685" text-anchor="middle" class="s">进入下一轮；EOS 则停止</text>
+  <rect x="210" y="716" width="780" height="32" rx="10" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="600" y="739" text-anchor="middle" class="s" fill="#b91c1c">直接从 p 重采或保留拒绝后缀，都会破坏目标分布或状态一致性</text>
+</svg>

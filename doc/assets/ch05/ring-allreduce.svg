@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc">
+  <title id="title">四rank Ring All-Reduce的两阶段</title>
+  <desc id="desc">四个rank沿环在三轮Reduce-Scatter中归约并各保留一个已归约分片，再在三轮All-Gather中传播全部分片，最终每rank得到完整结果。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d97706"/></marker><style>.t{font:700 23px system-ui,sans-serif;fill:#172033}.h{font:700 16px system-ui,sans-serif;fill:#172033}.b{font:13px system-ui,sans-serif;fill:#334155}.s{font:11px system-ui,sans-serif;fill:#475569}.r{font:700 12px system-ui,sans-serif;fill:#fff}.arr{stroke:#d97706;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1000" height="520" rx="20" fill="#f8fafc"/><text x="500" y="38" text-anchor="middle" class="t">Ring All-Reduce = Reduce-Scatter 阶段 + All-Gather 阶段</text>
+  <g transform="translate(25,75)"><rect width="455" height="350" rx="16" fill="#fff" stroke="#ea580c" stroke-width="2"/><text x="227" y="30" text-anchor="middle" class="h">阶段 1：Reduce-Scatter（3 轮）</text>
+    <g transform="translate(92,62)"><circle cx="135" cy="30" r="34" fill="#2563eb"/><circle cx="270" cy="145" r="34" fill="#2563eb"/><circle cx="135" cy="260" r="34" fill="#2563eb"/><circle cx="0" cy="145" r="34" fill="#2563eb"/><g class="r" text-anchor="middle"><text x="135" y="34">r0</text><text x="270" y="149">r1</text><text x="135" y="264">r2</text><text x="0" y="149">r3</text></g><path d="M166 46Q245 73 256 115M253 174Q226 242 169 254M103 254Q29 226 15 176M15 114Q48 48 101 38" class="arr"/>
+      <g class="s" text-anchor="middle"><text x="205" y="76">chunk 轮转 + SUM</text><text x="227" y="145">每轮发/收 N/4</text><text x="135" y="198">第 3 轮后</text><text x="135" y="218">每 rank 只留 1 个已归约 chunk</text></g>
+    </g>
+  </g>
+  <path d="M480 250H520" class="arr"/>
+  <g transform="translate(520,75)"><rect width="455" height="350" rx="16" fill="#fff" stroke="#059669" stroke-width="2"/><text x="227" y="30" text-anchor="middle" class="h">阶段 2：All-Gather（3 轮）</text>
+    <g transform="translate(92,62)"><circle cx="135" cy="30" r="34" fill="#059669"/><circle cx="270" cy="145" r="34" fill="#059669"/><circle cx="135" cy="260" r="34" fill="#059669"/><circle cx="0" cy="145" r="34" fill="#059669"/><g class="r" text-anchor="middle"><text x="135" y="34">r0</text><text x="270" y="149">r1</text><text x="135" y="264">r2</text><text x="0" y="149">r3</text></g><path d="M166 46Q245 73 256 115M253 174Q226 242 169 254M103 254Q29 226 15 176M15 114Q48 48 101 38" class="arr"/>
+      <g class="s" text-anchor="middle"><text x="205" y="76">传播已归约 chunk</text><text x="227" y="145">每轮发/收 N/4</text><text x="135" y="198">第 3 轮后</text><text x="135" y="218">每 rank 都拥有 4 个 chunk</text></g>
+    </g>
+  </g>
+  <rect x="175" y="448" width="650" height="42" rx="12" fill="#fff7ed" stroke="#d97706"/><text x="500" y="466" text-anchor="middle" class="b">每 rank 单方向发送总量：2(p−1)N/p；轮数：2(p−1)</text><text x="500" y="483" text-anchor="middle" class="s">这是实现 All-Reduce 语义的一种物理算法，不是新的 collective</text>
+</svg>

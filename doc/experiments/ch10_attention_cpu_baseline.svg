@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+<title id="title">CPU causal Attention baseline, not FlashAttention</title>
+<desc id="desc">Representative single-thread CPU timings compare an explicit causal Attention implementation with PyTorch CPU SDPA; the chart contains no CUDA, HBM, GPU memory, or FlashAttention result.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:sans-serif;fill:#222}.axis{stroke:#333}.grid{stroke:#ddd}.e{fill:#4c78a8}.s{fill:#f58518}</style>
+<text x="380" y="24" text-anchor="middle" font-size="16">CPU causal Attention baseline (not FlashAttention)</text>
+<line class="axis" x1="72" y1="44" x2="72" y2="350"/>
+<line class="axis" x1="72" y1="350" x2="730" y2="350"/>
+<line class="grid" x1="72" y1="350.0" x2="730" y2="350.0"/>
+<text x="64" y="354.0" text-anchor="end" font-size="11">0.000</text>
+<line class="grid" x1="72" y1="273.5" x2="730" y2="273.5"/>
+<text x="64" y="277.5" text-anchor="end" font-size="11">0.059</text>
+<line class="grid" x1="72" y1="197.0" x2="730" y2="197.0"/>
+<text x="64" y="201.0" text-anchor="end" font-size="11">0.117</text>
+<line class="grid" x1="72" y1="120.5" x2="730" y2="120.5"/>
+<text x="64" y="124.5" text-anchor="end" font-size="11">0.176</text>
+<line class="grid" x1="72" y1="44.0" x2="730" y2="44.0"/>
+<text x="64" y="48.0" text-anchor="end" font-size="11">0.234</text>
+<rect class="e" x="96.0" y="233.5" width="18" height="116.5"/>
+<rect class="s" x="118.0" y="303.6" width="18" height="46.4"/>
+<text x="114.0" y="370" text-anchor="middle" font-size="12">T=64</text>
+<rect class="e" x="406.0" y="83.9" width="18" height="266.1"/>
+<rect class="s" x="428.0" y="236.5" width="18" height="113.5"/>
+<text x="424.0" y="370" text-anchor="middle" font-size="12">T=128</text>
+<text x="18" y="197.0" transform="rotate(-90 18 197.0)" text-anchor="middle" font-size="12">median runtime (ms)</text>
+<rect class="e" x="245" y="382" width="14" height="14"/><text x="265" y="394" font-size="12">explicit score matrix</text>
+<rect class="s" x="430" y="382" width="14" height="14"/><text x="450" y="394" font-size="12">PyTorch CPU SDPA</text>
+<text x="380" y="420" text-anchor="middle" font-size="10">B=1, H=2, d_h=64, FP32; actual CPU timing, no CUDA/HBM/Flash claim</text>
+</svg>

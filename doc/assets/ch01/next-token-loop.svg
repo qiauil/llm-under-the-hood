@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="350" viewBox="0 0 780 350" role="img" aria-labelledby="title desc">
+  <title id="title">从文本到下一 Token 的处理闭环</title>
+  <desc id="desc">提示文本在上排依次经过分词和整数 ID，下排继续经过模型前向得到 logits、Softmax 得到概率并选择下一 Token；选中结果追加回文本，形成循环。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c96b18"/>
+    </marker>
+    <style>
+      .box { fill: #e8f1fb; stroke: #27649a; stroke-width: 2; }
+      .state { fill: #e7f5ec; stroke: #2f7d4a; stroke-width: 2; }
+      .label { fill: #17212b; font: 22px sans-serif; text-anchor: middle; }
+      .sub { fill: #3d4b59; font: 15px sans-serif; text-anchor: middle; }
+      .edge { fill: none; stroke: #c96b18; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="35" y="35" width="175" height="90" rx="12" class="state"/>
+  <text x="122" y="73" class="label">提示文本</text>
+  <text x="122" y="102" class="sub">“猫正在”</text>
+  <rect x="302" y="35" width="175" height="90" rx="12" class="box"/>
+  <text x="389" y="73" class="label">Token</text>
+  <text x="389" y="102" class="sub">离散文本单位</text>
+  <rect x="569" y="35" width="175" height="90" rx="12" class="box"/>
+  <text x="656" y="73" class="label">ID</text>
+  <text x="656" y="102" class="sub">整数序列</text>
+  <rect x="569" y="225" width="175" height="90" rx="12" class="box"/>
+  <text x="656" y="263" class="label">logits</text>
+  <text x="656" y="292" class="sub">未归一化分数</text>
+  <rect x="302" y="225" width="175" height="90" rx="12" class="box"/>
+  <text x="389" y="263" class="label">概率</text>
+  <text x="389" y="292" class="sub">词表分布</text>
+  <rect x="35" y="225" width="175" height="90" rx="12" class="state"/>
+  <text x="122" y="263" class="label">下一 Token</text>
+  <text x="122" y="292" class="sub">选择并追加</text>
+  <path d="M 210 80 L 295 80" class="edge"/>
+  <path d="M 477 80 L 562 80" class="edge"/>
+  <path d="M 656 125 L 656 218" class="edge"/>
+  <path d="M 569 270 L 484 270" class="edge"/>
+  <path d="M 302 270 L 217 270" class="edge"/>
+  <path d="M 122 218 C 122 180, 22 180, 22 80 C 22 55, 28 50, 35 50" class="edge"/>
+</svg>
