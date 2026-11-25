@@ -55,6 +55,11 @@ format:
   pdf:
     documentclass: ctexbook
     pdf-engine: xelatex
+    author:
+      - Qiauil
+      - ChatGPT
+    template-partials:
+      - pdf/before-body.tex
     classoption:
       - UTF8
       - openany

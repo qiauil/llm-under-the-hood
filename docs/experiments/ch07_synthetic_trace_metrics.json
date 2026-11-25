@@ -2,7 +2,7 @@
   "status": "PASS",
   "evidence_type": "synthetic_fixture_metric_pipeline_check",
   "measurement_claim": "not a model, GPU, framework, network, or service performance measurement",
-  "input": "doc/examples/ch07_synthetic_serving_trace.jsonl",
+  "input": "docs/examples/ch07_synthetic_serving_trace.jsonl",
   "window": {
     "start_s": 0.0,
     "end_s": 10.0,

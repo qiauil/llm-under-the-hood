@@ -216,7 +216,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output",
-        default="doc/experiments/ch05_distributed_correctness.json",
+        default="docs/experiments/ch05_distributed_correctness.json",
     )
     parser.add_argument("--world-size", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.05)

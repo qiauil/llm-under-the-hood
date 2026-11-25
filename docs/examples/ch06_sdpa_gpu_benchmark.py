@@ -64,7 +64,7 @@ def main() -> None:
     parser.add_argument("--repeats", type=int, default=100)
     parser.add_argument("--max-abs-tol", type=float, default=5e-2)
     parser.add_argument("--rel-l2-tol", type=float, default=1e-2)
-    parser.add_argument("--output", default="doc/experiments/ch06_sdpa_gpu_benchmark.json")
+    parser.add_argument("--output", default="docs/experiments/ch06_sdpa_gpu_benchmark.json")
     args = parser.parse_args()
     if not args.allow_run:
         raise SystemExit("Refusing to benchmark without --allow-run")

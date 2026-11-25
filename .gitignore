@@ -1,7 +1,7 @@
-/doc/.quarto/
-/doc/_book/
-/doc/*.tex
-/doc/*.log
-/doc/*.aux
+/docs/.quarto/
+/docs/_book/
+/docs/*.tex
+/docs/*.log
+/docs/*.aux
 codex_task
 

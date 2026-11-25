@@ -175,8 +175,8 @@ def main():
             "The checkpoint round-trip is in memory; crash-safe atomic file commit and interrupted-resume equivalence are not tested here.",
         ],
     }
-    output = Path("doc/experiments/ch10_minigpt_project.json" if status == "PASS"
-                  else "doc/experiments/ch10_minigpt_project_failed_attempt_01.json")
+    output = Path("docs/experiments/ch10_minigpt_project.json" if status == "PASS"
+                  else "docs/experiments/ch10_minigpt_project_failed_attempt_01.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))

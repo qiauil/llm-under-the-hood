@@ -1,0 +1,27 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+  \includegraphics[width=\linewidth,height=.94\textheight,keepaspectratio]{assets/book-cover.png}
+\end{center}
+\vspace*{\fill}
+\clearpage
+
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+  {\Huge\bfseries $title$\par}
+$if(subtitle)$
+  \vspace{1em}
+  {\Large $subtitle$\par}
+$endif$
+  \vspace{3em}
+  {\large 作者\par}
+  \vspace{.6em}
+  {\Large $for(author)$$author$$sep$、$endfor$\par}
+\end{center}
+\vspace*{\fill}
+\clearpage

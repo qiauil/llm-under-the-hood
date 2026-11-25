@@ -361,9 +361,9 @@ $$
 
 ```bash
 HF_HOME=/tmp/ch01-hf-cache TRANSFORMERS_OFFLINE=1 \
-python doc/examples/ch01_tokenizer_generation.py \
+python docs/examples/ch01_tokenizer_generation.py \
   --model sshleifer/tiny-gpt2 \
-  --output doc/experiments/ch01_tokenizer_generation.json
+  --output docs/experiments/ch01_tokenizer_generation.json
 ```
 
 若课程已审核某个本地小型 CausalLM checkpoint，将 `--model` 改为该目录。只有在允许网络访问、已核对许可和下载大小时才加 `--allow-download`。Tokenizer 的编码接口和 `generate` 的 `temperature`/`top_p` 语义固定参照 [Transformers 4.32 tokenizer](https://huggingface.co/docs/transformers/v4.32.0/en/main_classes/tokenizer) 与 [text generation](https://huggingface.co/docs/transformers/v4.32.0/en/main_classes/text_generation) 文档。

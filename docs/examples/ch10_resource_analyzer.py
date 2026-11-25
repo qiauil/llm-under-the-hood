@@ -79,8 +79,8 @@ def main():
             "Logical bytes are not physical allocated/reserved peak memory.",
             "The 3x training FLOPs factor omits recomputation and lower-order operations."],
     }
-    output = Path("doc/experiments/ch10_resource_analyzer.json" if result["status"] == "PASS"
-                  else "doc/experiments/ch10_resource_analyzer_failed_attempt_01.json")
+    output = Path("docs/experiments/ch10_resource_analyzer.json" if result["status"] == "PASS"
+                  else "docs/experiments/ch10_resource_analyzer_failed_attempt_01.json")
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["status"] != "PASS":

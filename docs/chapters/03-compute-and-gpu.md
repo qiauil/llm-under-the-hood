@@ -437,17 +437,17 @@ Roofline只给上界，不解释所有差距。未合并访问、Bank Conflict�
 **环境与命令。** 本机记录为Python 3.11.5、PyTorch 2.5.1+cu124；CUDA不可用且`nvidia-smi`无法连接驱动。已实际执行CPU路线：
 
 ```bash
-python doc/examples/ch03_profile_mini.py \
+python docs/examples/ch03_profile_mini.py \
   --device cpu --batch 2 --seq 32 --warmup 3 --steps 3 \
-  --output doc/experiments/ch03_cpu_profile.json
+  --output docs/experiments/ch03_cpu_profile.json
 ```
 
 有可用CUDA的环境再执行以下命令；本机**未运行**，不得引用CPU结果证明GPU性能：
 
 ```bash
-python doc/examples/ch03_profile_mini.py \
+python docs/examples/ch03_profile_mini.py \
   --device cuda --batch 2 --seq 32 --warmup 10 --steps 20 \
-  --output doc/experiments/ch03_cuda_profile.json
+  --output docs/experiments/ch03_cuda_profile.json
 ```
 
 **步骤与记录字段。** 先核对脚本理论参数量与`sum(p.numel())`相等；再记录前向主要FLOPs、三倍训练主项、逐dtype参数状态字节。Profiler启用`record_shapes=True`、`profile_memory=True`和`with_flops=True`，保存环境、配置、Loss、聚合算子CPU时间、张量内存变化和受支持算子的FLOPs。官方文档说明`with_flops`只估算部分算子，shape/memory追踪也会引入开销，因此该运行用于结构核对，不作为严谨吞吐Benchmark。[torch.profiler 2.5文档](https://docs.pytorch.org/docs/2.5/profiler.html)

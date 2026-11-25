@@ -713,7 +713,7 @@ $$
 **环境与命令。** 本机实际使用Python 3.11.5、PyTorch 2.5.1+cu124、CPU FP32：
 
 ```bash
-python doc/examples/ch02_transformer_shapes.py
+python docs/examples/ch02_transformer_shapes.py
 ```
 
 脚本将结果写入[原始JSON](../experiments/ch02_transformer_shapes.json)。PyTorch `Linear.weight` 存为`[out,in]`，脚本使用`F.linear`时由框架应用转置，与全书行向量$\mathbf Y=\mathbf X\mathbf W$、$\mathbf W$为`[in,out]`一致。

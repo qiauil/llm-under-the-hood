@@ -213,7 +213,7 @@ def main():
             "No preference optimization was run; the optional extension remains unrun.",
         ],
     }
-    output = Path("doc/experiments/ch08_lora_sft.json")
+    output = Path("docs/experiments/ch08_lora_sft.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))

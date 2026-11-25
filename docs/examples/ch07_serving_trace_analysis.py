@@ -56,8 +56,8 @@ def validate_row(row: dict, start: float, end: float) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default="doc/examples/ch07_synthetic_serving_trace.jsonl")
-    parser.add_argument("--output", default="doc/experiments/ch07_synthetic_trace_metrics.json")
+    parser.add_argument("--input", default="docs/examples/ch07_synthetic_serving_trace.jsonl")
+    parser.add_argument("--output", default="docs/experiments/ch07_synthetic_trace_metrics.json")
     parser.add_argument("--window-start", type=float, default=0.0)
     parser.add_argument("--window-end", type=float, default=10.0)
     parser.add_argument("--ttft-slo", type=float, default=1.5)

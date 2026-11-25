@@ -187,7 +187,7 @@ def main():
             "The bounds omit input stalls, topology contention, load imbalance and kernel efficiency changes.",
         ],
     }
-    output = Path("doc/experiments/ch10_distributed_strategy_analysis.json")
+    output = Path("docs/experiments/ch10_distributed_strategy_analysis.json")
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["status"] != "PASS":

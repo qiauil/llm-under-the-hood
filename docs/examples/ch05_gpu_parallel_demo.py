@@ -58,7 +58,7 @@ def train_one_step(model: nn.Module, x: torch.Tensor, y: torch.Tensor, lr: float
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="doc/experiments/ch05_gpu_parallel.json")
+    parser.add_argument("--output", default="docs/experiments/ch05_gpu_parallel.json")
     parser.add_argument("--lr", type=float, default=0.05)
     parser.add_argument("--tolerance", type=float, default=1e-10)
     args = parser.parse_args()

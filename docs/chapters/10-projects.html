@@ -766,7 +766,7 @@ window.Quarto = {
 <section id="cpu字符夹具已运行" class="level3">
 <h3 class="anchored" data-anchor-id="cpu字符夹具已运行">CPU字符夹具：已运行</h3>
 <p><a href="../examples/ch10_minigpt_project.py">项目脚本</a>使用内置重复字符夹具<code>to be or not to be.\n</code>，配置为<span class="math inline">\(L=2,d=32,H=4,H_{kv}=2,d_h=8,d_{ff}=64,V=9,B=8,T=24\)</span>。它复用第2章模型，在CPU FP32上执行320次AdamW更新、两段学习率衰减、贪心生成、shape/因果检查和内存checkpoint round-trip。实际命令为：</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> doc/examples/ch10_minigpt_project.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> docs/examples/ch10_minigpt_project.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 <p>最终<a href="../experiments/ch10_minigpt_project.json">原始JSON</a>记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU两线程、CUDA不可用。主要结果为：</p>
 <table class="caption-top table">
 <thead>
@@ -851,7 +851,7 @@ window.Quarto = {
 <section id="已运行结果" class="level3">
 <h3 class="anchored" data-anchor-id="已运行结果">已运行结果</h3>
 <p>实际命令为：</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> doc/examples/ch10_resource_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> docs/examples/ch10_resource_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 <p><a href="../experiments/ch10_resource_analyzer.json">PASS JSON</a>记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU、CUDA不可用。主要账本如下：</p>
 <table class="caption-top table">
 <colgroup>
@@ -942,8 +942,8 @@ B_{\mathrm{global}}=b_{\mathrm{micro}}m p_{\mathrm{DP}},
 <h3 class="anchored" data-anchor-id="gpu实现测量协议与调试边界">GPU实现、测量协议与调试边界</h3>
 <p><a href="../examples/ch05_gpu_parallel_demo.py">第5章GPU示例</a>已经用相同初始化和rank局部batch执行DDP、FSDP一步更新，并用手工Row/Column Parallel验证TP布局。先运行这个正确性门槛，再把<a href="../examples/ch10_minigpt_project.py">MiniGPT项目</a>的模型与数据接入独立性能驱动；不要用<span class="math inline">\(4\times2\)</span>线性层的耗时代表LLM。2卡正确性命令为：</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">torchrun</span> <span class="at">--standalone</span> <span class="at">--nproc_per_node</span><span class="op">=</span>2 <span class="dt">\</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch05_gpu_parallel_demo.py <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch05_gpu_parallel.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  docs/examples/ch05_gpu_parallel_demo.py <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> docs/experiments/ch05_gpu_parallel.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 <p>性能实验对single/DDP/FSDP使用相同模型、dtype、global batch、有效Token和optimizer语义；若单卡放不下，应报告OOM并改用一个三者都能运行的小配置，而不是悄悄改变模型。每方案独立进程启动，固定seed与数据顺序，至少5次warmup、20次稳态成功更新；每次计时前后同步设备，保存原始分布并报告中位数和P95。Tokens/s以成功更新的有效目标Token除以端到端时间；Peak Memory同时报告<code>max_memory_allocated</code>与<code>max_memory_reserved</code>，并说明峰值重置点。通信时间由Profiler/NCCL trace或显式事件区间取得，并注明与计算重叠，因此不要求分项之和等于Step Time。</p>
 <p>正确性FAIL包括：DDP/FSDP完整参数更新超出预设容限，global batch或Token归一化不一致，任一rank失败，shape不可整除，loss非有限或结果文件缺失。性能FAIL包括：无同步计时、把warmup混入稳态、只报最好一次、OOM样本被静默删除、Peak Memory口径缺失，或把解析秒数标成实测。硬件允许时增加TP，但必须先过Dense等价检查，并把TP组放置和链路写入报告。</p>
 </section>
@@ -951,7 +951,7 @@ B_{\mathrm{global}}=b_{\mathrm{micro}}m p_{\mathrm{DP}},
 <h3 class="anchored" data-anchor-id="本机已运行的解析策略账本">本机已运行的解析策略账本</h3>
 <p><a href="../examples/ch10_distributed_strategy_analyzer.py">策略分析器</a>以贯穿模型<span class="math inline">\(P=5{,}802{,}037{,}248\)</span>、<span class="math inline">\(L=32,d=4096,H=32,H_{\mathrm{KV}}=8,d_{\mathrm{ff}}=11008,T=4096\)</span>为输入。假想设备输入为300 TFLOP/s峰值、无通信时MFU 0.40、节点内/节点间有效带宽300/50 GB/s、时延5/20 <span class="math inline">\(\mu\)</span>s；它们只是可修改参数，不对应本机产品。实际运行命令为：</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch10_distributed_strategy_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  docs/examples/ch10_distributed_strategy_analyzer.py</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 <p><a href="../experiments/ch10_distributed_strategy_analysis.json">原始JSON</a>状态为PASS。固定global batch为16时，单卡、8路DDP、8路理想ZeRO-3/FSDP的参数相关逻辑状态分别为64.842819、64.842819、8.105352 GiB/rank；后者不含临时参数物化。单卡解析计算时间为22.5297 s，DDP的部分模型区间为2.8162–3.2467 s；FSDP虽然显示相同的已建模基线，但其参数All-Gather/Reduce-Scatter尚未建模，<code>performance_comparison_eligible=false</code>，不得据此断言与DDP同速。</p>
 <p>128卡扩展复算如下。两方案均取<span class="math inline">\(p_{\mathrm{DP}}=8,b_{\mathrm{micro}}=1,m=16\)</span>，故global batch为128、每更新输入Token为524,288；每rank参数状态理想下界均为4.052676 GiB。</p>
 <table class="caption-top table">
@@ -1021,10 +1021,10 @@ B_{\mathrm{global}}=b_{\mathrm{micro}}m p_{\mathrm{DP}},
 <p>每个GPU配置在独立进程中创建相同输入，预热至少20次，再以CUDA Event或前后同步测至少100次，保留原始分布并报告median/P10/P90。峰值测量在输入就绪后同步并重置统计，分别报告执行前基线、<code>max_memory_allocated</code>与<code>max_memory_reserved</code>的绝对值和增量；不同后端须使用相同的缓存清理策略。Runtime与Peak Memory必须分列，不能从较少的逻辑字节直接推导更短时间。</p>
 <p>无Profiler运行负责最终计时；另选已通过正确性的代表shape，用PyTorch Profiler确认实际Kernel，并用硬件计数器记录DRAM read/write、Kernel duration、Compute/Tensor pipe、occupancy、寄存器/Shared Memory和spill。只有实际后端、误差、峰值与同步时间均有效的行才能进入FlashAttention性能对比图；横轴标<span class="math inline">\(T\)</span>，按<span class="math inline">\(B,d_h,dtype,causal\)</span>分面，纵轴同时保留原始毫秒，不能只画加速比。</p>
 <p><a href="../examples/ch06_sdpa_gpu_benchmark.py">第6章GPU驱动</a>已经实现强制math/Flash后端、同步计时、allocated/reserved与误差记录。目标GPU路线对矩阵逐行运行，例如：</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> doc/examples/ch06_sdpa_gpu_benchmark.py <span class="at">--allow-run</span> <span class="dt">\</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> docs/examples/ch06_sdpa_gpu_benchmark.py <span class="at">--allow-run</span> <span class="dt">\</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--batch</span> 1 <span class="at">--heads</span> 32 <span class="at">--length</span> 2048 <span class="at">--head-dim</span> 128 <span class="dt">\</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--dtype</span> bfloat16 <span class="at">--causal</span> <span class="at">--warmup</span> 20 <span class="at">--repeats</span> 100 <span class="dt">\</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch10_attention_gpu_B1_T2048_D128_bf16.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> docs/experiments/ch10_attention_gpu_B1_T2048_D128_bf16.json</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="本机低资源结果与图" class="level3">
 <h3 class="anchored" data-anchor-id="本机低资源结果与图">本机低资源结果与图</h3>
@@ -1116,9 +1116,9 @@ B_{\mathrm{global}}=b_{\mathrm{micro}}m p_{\mathrm{DP}},
 <h3 class="anchored" data-anchor-id="本机低资源指标管线已运行">本机低资源指标管线：已运行</h3>
 <p><a href="../examples/ch07_serving_trace_analysis.py">第7章trace分析器</a>已复用到本项目；输入为<a href="../examples/ch07_synthetic_serving_trace.jsonl">6条合成事件</a>，其中5条完成、1条timeout。实际命令为：</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/liu/anaconda3/envs/stock/bin/python</span> <span class="dt">\</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  doc/examples/ch07_serving_trace_analysis.py <span class="dt">\</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> doc/examples/ch07_synthetic_serving_trace.jsonl <span class="dt">\</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> doc/experiments/ch10_serving_trace_metrics.json <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  docs/examples/ch07_serving_trace_analysis.py <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> docs/examples/ch07_synthetic_serving_trace.jsonl <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> docs/experiments/ch10_serving_trace_metrics.json <span class="dt">\</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--window-start</span> 0 <span class="at">--window-end</span> 10 <span class="dt">\</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ttft-slo</span> 1.5 <span class="at">--tpot-slo</span> 0.4 <span class="at">--e2e-slo</span> 4</span></code></pre></div><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></div>
 <p><a href="../experiments/ch10_serving_trace_metrics.json">实际JSON</a>在Python 3.10.14上状态PASS。10 s构造窗口的offered load为0.6 requests/s、完成吞吐0.5 requests/s、output throughput 1.4 tokens/s、联合SLO goodput 0.3 requests/s；TTFT P50/P95/P99为0.8/2.0/2.0 s，TPOT为0.3/0.5/0.5 s，E2E为1.3/3.0/3.0 s。1条timeout保留在状态计数中，3/5条完成请求满足联合SLO。</p>

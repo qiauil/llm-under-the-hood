@@ -809,7 +809,7 @@ $$
 脚本把一层Q/K/V/O与gate/up/down七个线性层替换为行向量LoRA，取$r=4,\alpha=8$，Base及embedding/norm全部冻结；参数量按各层$r(d_{\mathrm{in}}+d_{\mathrm{out}})$相加为2,048。实际命令为：
 
 ~~~bash
-/home/liu/anaconda3/envs/stock/bin/python doc/examples/ch08_lora_sft.py
+/home/liu/anaconda3/envs/stock/bin/python docs/examples/ch08_lora_sft.py
 ~~~
 
 实际环境与结果见[输出JSON](../experiments/ch08_lora_sft.json)：Python 3.10.14、PyTorch 2.9.1+cu128、CPU FP32、2线程、`torch.cuda.is_available()==False`。160次全batch AdamW更新的结果为：

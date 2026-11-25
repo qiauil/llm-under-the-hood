@@ -119,9 +119,9 @@ def main():
               "limitations": ["CPU SDPA is not a CUDA FlashAttention kernel.",
                               "The score bytes are an analytic logical intermediate, not measured peak memory.",
                               "CPU timings do not predict GPU speedup or HBM traffic."]}
-    Path("doc/experiments/ch10_attention_cpu_baseline.json").write_text(
+    Path("docs/experiments/ch10_attention_cpu_baseline.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    svg_chart(rows, "doc/experiments/ch10_attention_cpu_baseline.svg")
+    svg_chart(rows, "docs/experiments/ch10_attention_cpu_baseline.svg")
     print(json.dumps({"status": result["status"], "checks": checks,
                       "max_abs_error": max(row["output_max_abs_error"] for row in rows)}, indent=2))
     if result["status"] != "PASS":

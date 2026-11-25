@@ -1155,9 +1155,9 @@ Profiler会扰动时序，详细trace宜在代表性短窗口采集，吞吐/尾
 [合成事件日志](../examples/ch07_synthetic_serving_trace.jsonl)包含10 s窗口内6条构造请求：5条完成、1条timeout。它不是模型输出或网络采样，只用于检查“未完成请求不能消失”、TPOT分母、nearest-rank百分位和联合SLO计数。[分析脚本](../examples/ch07_serving_trace_analysis.py)仅使用Python标准库，校验时间戳与Token事件后计算式（07-Serving-Benchmark）：
 
 ~~~bash
-python doc/examples/ch07_serving_trace_analysis.py \
-  --input doc/examples/ch07_synthetic_serving_trace.jsonl \
-  --output doc/experiments/ch07_synthetic_trace_metrics.json \
+python docs/examples/ch07_serving_trace_analysis.py \
+  --input docs/examples/ch07_synthetic_serving_trace.jsonl \
+  --output docs/experiments/ch07_synthetic_trace_metrics.json \
   --window-start 0 --window-end 10 \
   --ttft-slo 1.5 --tpot-slo 0.4 --e2e-slo 4
 ~~~

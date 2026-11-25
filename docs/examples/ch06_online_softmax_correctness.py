@@ -94,7 +94,7 @@ def max_error(a: torch.Tensor, b: torch.Tensor) -> float:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="doc/experiments/ch06_online_softmax_correctness.json")
+    parser.add_argument("--output", default="docs/experiments/ch06_online_softmax_correctness.json")
     parser.add_argument("--tolerance", type=float, default=1e-12)
     args = parser.parse_args()
 

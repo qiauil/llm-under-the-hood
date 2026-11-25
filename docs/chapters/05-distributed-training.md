@@ -1244,8 +1244,8 @@ $$
 
 ~~~bash
 torchrun --standalone --nproc_per_node=2 \
-  doc/examples/ch05_gpu_parallel_demo.py \
-  --output doc/experiments/ch05_gpu_parallel.json
+  docs/examples/ch05_gpu_parallel_demo.py \
+  --output docs/experiments/ch05_gpu_parallel.json
 ~~~
 
 在目标GPU环境分别以2、4、8进程执行；每次记录GPU型号、驱动、PyTorch/NCCL版本、world size、dtype、输入shape、最大绝对误差。若增加性能测量，须另加预热、同步、至少20次稳态重复及中位数/P95，并报告每策略allocated/reserved峰值与有效Token/s。
@@ -1255,9 +1255,9 @@ torchrun --standalone --nproc_per_node=2 \
 **本机低资源路线及实际状态。** [CPU脚本](../examples/ch05_distributed_correctness.py)先尝试2进程Gloo；两次均在进程组初始化阶段被沙箱socket权限阻止，未进入模型计算。随后实际运行单进程CPU代数模拟：
 
 ~~~bash
-python doc/examples/ch05_distributed_correctness.py \
+python docs/examples/ch05_distributed_correctness.py \
   --mode simulate --world-size 2 \
-  --output doc/experiments/ch05_distributed_correctness.json
+  --output docs/experiments/ch05_distributed_correctness.json
 ~~~
 
 [原始JSON](../experiments/ch05_distributed_correctness.json)为PASS：模拟DDP平均梯度与串行global batch更新最大误差$1.39\times10^{-17}$，Row/Column分解误差分别$2.22\times10^{-16}$和0。它只验证公式代数，**没有运行distributed runtime、DDP/FSDP封装、GPU、NCCL或性能测试**。GPU脚本仅通过Python语法检查，运行状态仍是未运行。

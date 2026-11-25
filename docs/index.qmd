@@ -3,9 +3,11 @@ title: "读者导览"
 description: "《拆开大模型：从 Token 到 GPU 与推理服务》在线教材"
 ---
 
+::: {.content-visible when-format="html"}
 ![](assets/book-cover.png){fig-alt="《拆开大模型》封面，分层展示 Token、Transformer、GPU 与推理服务器" width="320px" fig-align="center"}
 
 本书由 Qiauil 与 ChatGPT 共同创作。
+:::
 
 教材正文、附录和原创插图采用 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。`examples/` 下的原创示例代码和实验脚本采用 [MIT](https://opensource.org/license/mit)。第三方材料遵循其各自的许可条款。
 

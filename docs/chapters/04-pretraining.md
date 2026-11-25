@@ -718,7 +718,7 @@ PyTorch的通用checkpoint教程也明确：恢复训练不能只存模型`state
 运行命令：
 
 ```bash
-python3 doc/examples/ch04_train_matrix.py
+python3 docs/examples/ch04_train_matrix.py
 ```
 
 **正确性标准。** 四组loss与梯度范数均有限且末次loss低于首次；同dtype两种累积划分的loss曲线最大绝对差，FP32不超过$10^{-5}$、BF16不超过$10^{-2}$。BF16容限较宽是因为分块与低精度归约顺序可改变舍入，不能要求逐bit相同。第一轮以$5\times10^{-3}$为BF16容限时观测到0.006531并返回FAIL；复核后将明确容限改为0.01并完整重跑，不删除差异。

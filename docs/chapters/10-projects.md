@@ -83,7 +83,7 @@ Checkpoint至少保存模型、optimizer、成功更新数、配置、Tokenizer�
 [项目脚本](../examples/ch10_minigpt_project.py)使用内置重复字符夹具`to be or not to be.\n`，配置为$L=2,d=32,H=4,H_{kv}=2,d_h=8,d_{ff}=64,V=9,B=8,T=24$。它复用第2章模型，在CPU FP32上执行320次AdamW更新、两段学习率衰减、贪心生成、shape/因果检查和内存checkpoint round-trip。实际命令为：
 
 ```bash
-/home/liu/anaconda3/envs/stock/bin/python doc/examples/ch10_minigpt_project.py
+/home/liu/anaconda3/envs/stock/bin/python docs/examples/ch10_minigpt_project.py
 ```
 
 最终[原始JSON](../experiments/ch10_minigpt_project.json)记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU两线程、CUDA不可用。主要结果为：
@@ -142,7 +142,7 @@ Checkpoint至少保存模型、optimizer、成功更新数、配置、Tokenizer�
 实际命令为：
 
 ```bash
-/home/liu/anaconda3/envs/stock/bin/python doc/examples/ch10_resource_analyzer.py
+/home/liu/anaconda3/envs/stock/bin/python docs/examples/ch10_resource_analyzer.py
 ```
 
 [PASS JSON](../experiments/ch10_resource_analyzer.json)记录Python 3.10.14、PyTorch 2.9.1+cu128、CPU、CUDA不可用。主要账本如下：
@@ -202,8 +202,8 @@ $$
 
 ```bash
 torchrun --standalone --nproc_per_node=2 \
-  doc/examples/ch05_gpu_parallel_demo.py \
-  --output doc/experiments/ch05_gpu_parallel.json
+  docs/examples/ch05_gpu_parallel_demo.py \
+  --output docs/experiments/ch05_gpu_parallel.json
 ```
 
 性能实验对single/DDP/FSDP使用相同模型、dtype、global batch、有效Token和optimizer语义；若单卡放不下，应报告OOM并改用一个三者都能运行的小配置，而不是悄悄改变模型。每方案独立进程启动，固定seed与数据顺序，至少5次warmup、20次稳态成功更新；每次计时前后同步设备，保存原始分布并报告中位数和P95。Tokens/s以成功更新的有效目标Token除以端到端时间；Peak Memory同时报告`max_memory_allocated`与`max_memory_reserved`，并说明峰值重置点。通信时间由Profiler/NCCL trace或显式事件区间取得，并注明与计算重叠，因此不要求分项之和等于Step Time。
@@ -216,7 +216,7 @@ torchrun --standalone --nproc_per_node=2 \
 
 ```bash
 /home/liu/anaconda3/envs/stock/bin/python \
-  doc/examples/ch10_distributed_strategy_analyzer.py
+  docs/examples/ch10_distributed_strategy_analyzer.py
 ```
 
 [原始JSON](../experiments/ch10_distributed_strategy_analysis.json)状态为PASS。固定global batch为16时，单卡、8路DDP、8路理想ZeRO-3/FSDP的参数相关逻辑状态分别为64.842819、64.842819、8.105352 GiB/rank；后者不含临时参数物化。单卡解析计算时间为22.5297 s，DDP的部分模型区间为2.8162–3.2467 s；FSDP虽然显示相同的已建模基线，但其参数All-Gather/Reduce-Scatter尚未建模，`performance_comparison_eligible=false`，不得据此断言与DDP同速。
@@ -265,10 +265,10 @@ TP通信采用“每层Attention/MLP各一次隐藏状态大小ring、训练主�
 [第6章GPU驱动](../examples/ch06_sdpa_gpu_benchmark.py)已经实现强制math/Flash后端、同步计时、allocated/reserved与误差记录。目标GPU路线对矩阵逐行运行，例如：
 
 ```bash
-python doc/examples/ch06_sdpa_gpu_benchmark.py --allow-run \
+python docs/examples/ch06_sdpa_gpu_benchmark.py --allow-run \
   --batch 1 --heads 32 --length 2048 --head-dim 128 \
   --dtype bfloat16 --causal --warmup 20 --repeats 100 \
-  --output doc/experiments/ch10_attention_gpu_B1_T2048_D128_bf16.json
+  --output docs/experiments/ch10_attention_gpu_B1_T2048_D128_bf16.json
 ```
 
 ### 本机低资源结果与图
@@ -338,9 +338,9 @@ GPU Memory Usage至少分列模型加载后基线、执行峰值`allocated/reser
 
 ```bash
 /home/liu/anaconda3/envs/stock/bin/python \
-  doc/examples/ch07_serving_trace_analysis.py \
-  --input doc/examples/ch07_synthetic_serving_trace.jsonl \
-  --output doc/experiments/ch10_serving_trace_metrics.json \
+  docs/examples/ch07_serving_trace_analysis.py \
+  --input docs/examples/ch07_synthetic_serving_trace.jsonl \
+  --output docs/experiments/ch10_serving_trace_metrics.json \
   --window-start 0 --window-end 10 \
   --ttft-slo 1.5 --tpot-slo 0.4 --e2e-slo 4
 ```

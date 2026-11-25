@@ -501,8 +501,8 @@ CUDA默认异步，Python调用返回时间不是Kernel完成时间。每个配�
 **本机CPU步骤与实际结果。** [正确性脚本](../examples/ch06_online_softmax_correctness.py)逐Q/K/V Block维护$m,\ell,z$，与显式稳定Attention和PyTorch CPU SDPA math比较。已实际运行：
 
 ~~~bash
-python doc/examples/ch06_online_softmax_correctness.py \
-  --output doc/experiments/ch06_online_softmax_correctness.json
+python docs/examples/ch06_online_softmax_correctness.py \
+  --output docs/experiments/ch06_online_softmax_correctness.json
 ~~~
 
 [原始JSON](../experiments/ch06_online_softmax_correctness.json)为PASS。非因果时分块输出最大绝对误差$4.44\times10^{-16}$，Q/K/V梯度最大误差分别$1.22\times10^{-15}$、$8.88\times10^{-16}$、$4.44\times10^{-16}$；因果时输出误差$6.66\times10^{-16}$，三项梯度误差分别$6.66\times10^{-16}$、$6.66\times10^{-16}$、$8.88\times10^{-16}$。CPU SDPA对同一参考的输出/梯度也均不超过$1.11\times10^{-15}$，低于预设$10^{-12}$容限。
@@ -512,10 +512,10 @@ python doc/examples/ch06_online_softmax_correctness.py \
 **GPU路线（当前未运行）。** [GPU脚本](../examples/ch06_sdpa_gpu_benchmark.py)要求显式`--allow-run`，分别强制`SDPBackend.MATH`与`FLASH_ATTENTION`，预热20次、CUDA Event测100次，并记录median/P10/P90、peak allocated/reserved、最大绝对误差与相对L2误差。目标环境运行：
 
 ~~~bash
-python doc/examples/ch06_sdpa_gpu_benchmark.py --allow-run \
+python docs/examples/ch06_sdpa_gpu_benchmark.py --allow-run \
   --batch 1 --heads 32 --length 2048 --head-dim 128 \
   --dtype bfloat16 --causal --warmup 20 --repeats 100 \
-  --output doc/experiments/ch06_sdpa_gpu_benchmark.json
+  --output docs/experiments/ch06_sdpa_gpu_benchmark.json
 ~~~
 
 默认正确性标准为最大绝对误差不超过0.05且相对L2误差不超过0.01；改变dtype/长度前须预先调整并记录容限。强制Flash不可用、出现fallback、OOM、非有限值或误差越界均不得计入加速比。Profiler另选已通过正确性的代表shape运行，记录Kernel名、HBM Traffic、duration、Compute/Tensor pipe、occupancy、寄存器/Shared Memory和spill；Profiler时间不并入上面的无Profiler基准。
